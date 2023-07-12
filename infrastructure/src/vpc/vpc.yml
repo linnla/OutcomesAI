@@ -1,0 +1,93 @@
+AWSTemplateFormatVersion: '2010-09-09'
+
+Parameters:
+  Stage:
+    Type: String
+    Description: dev, staging, or prod
+    Default: dev
+    AllowedValues:
+      - dev
+      - staging
+      - prod
+    ConstraintDescription: Must be one of dev, staging, prod
+
+ResourceNamePrefix:
+  Type: String
+  Description: Prefix for naming resources
+  Default: outcomesai
+  AllowedPattern: ^[a-zA-Z0-9\-]*$
+  ConstraintDescription: Must be alphanumeric and may contain hyphens
+
+Resources:
+  VPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.0.0.0/16
+      EnableDnsHostnames: true
+      EnableDnsSupport: true
+      InstanceTenancy: default
+      Tags:
+        - Key: Name
+          Value: !Sub '${ResourceNamePrefix}-${Stage}-VPC'
+
+  Subnet1:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VPC
+      CidrBlock: 10.0.1.0/24
+      AvailabilityZone: !Select [0, !GetAZs '']
+      Tags:
+        - Key: Name
+          Value: !Sub '${ResourceNamePrefix}-${Stage}-subnet-1'
+
+  Subnet2:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VPC
+      CidrBlock: 10.0.2.0/24
+      AvailabilityZone: !Select [0, !GetAZs '']
+      Tags:
+        - Key: Name
+          Value: !Sub '${ResourceNamePrefix}-${Stage}-subnet-2'
+
+  Subnet1RouteTable:
+    Type: 'AWS::EC2::RouteTable'
+    Properties:
+      VpcId: !Ref VPC
+      Tags:
+        - Key: Name
+          Value: !Sub '${ResourceNamePrefix}-${Stage}-subnet-1-rt'
+
+  Subnet2RouteTable:
+    Type: 'AWS::EC2::RouteTable'
+    Properties:
+      VpcId: !Ref VPC
+      Tags:
+        - Key: Name
+          Value: !Sub '${ResourceNamePrefix}-${Stage}-subnet-2-rt'
+
+EC2VPCEndpoint:
+  Type: 'AWS::EC2::VPCEndpoint'
+  Properties:
+    VpcEndpointType: 'Interface'
+    VpcId: 'vpc-048abf81303b6dfe8'
+    ServiceName: !Sub 'com.amazonaws.${AWS::Region}.secretsmanager'
+    PolicyDocument: |
+      {
+        "Statement": [
+          {
+            "Action": "*", 
+            "Effect": "Allow", 
+            "Principal": "*", 
+            "Resource": "*"
+          }
+        ]
+      }
+    SubnetIds:
+      - 'subnet-0c1c8364e5045a1d2'
+      - 'subnet-063846f4dac40c71b'
+      - 'subnet-0ffb4874a055fb071'
+      - 'subnet-0b5e9cf36b222c366'
+    PrivateDnsEnabled: true
+    SecurityGroupIds:
+      - 'sg-03a40029adec2c7d2'

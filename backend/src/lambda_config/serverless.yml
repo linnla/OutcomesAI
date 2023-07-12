@@ -1,0 +1,44 @@
+service: utils-country-codes
+
+frameworkVersion: '3'
+
+plugins:
+  - serverless-prune-plugin
+
+custom:
+  config: ${file(../../lambda_config/outcomesai-${self:provider.stage}-config.json)}
+  prune:
+    automatic: true
+    number: 3
+    dryRun: false
+    olderThan: 7
+
+provider:
+  name: aws
+  runtime: python3.8
+  stage: ${opt:stage, 'dev'}
+  region: ${opt:region, 'us-west-2'}
+  deploymentBucket: outcomesai-${opt:stage}
+  logRetentionInDays: 3
+  environment:
+    SECRET: '{{resolve:ssm:/${self:provider.stage}/SECRET}}'
+    REGION: ${self:provider.region}
+    HOST: '{{resolve:ssm:/${self:provider.stage}/HOST}}'
+    DATABASE: '{{resolve:ssm:/${self:provider.stage}/DATABASE}}'
+  iam:
+    role: ${self:custom.config.iamRole}
+  vpc:
+    securityGroupIds: ${self:custom.config.securityGroupIds}
+    subnetIds: ${self:custom.config.subnets}
+
+functions:
+  load_data:
+    name: ${self:service}-${self:provider.stage}
+    layers:
+      - ${self:custom.config.psycopg2_jetbridge_layer}
+      - ${self:custom.config.sqlalchemy_layer}
+      - ${self:custom.config.pandas_3_8_layer}
+    handler: utils-country-codes.lambda_handler
+    description: Load Country Codees into RDS PostgreSQL countries table.
+    memorySize: 512
+    timeout: 300

@@ -1,0 +1,172 @@
+AWSTemplateFormatVersion: '2010-09-09'
+
+Resources:
+  EC2SecurityGroup1:
+    Type: 'AWS::EC2::SecurityGroup'
+    Properties:
+      GroupDescription:
+        !Sub 'Security group attached to ${RDSDBInstance} to allow EC2 instances
+        with specific security groups attached to connect to the database.
+        Modification could lead to connection loss.'
+      GroupName: 'rds-ec2'
+      VpcId: 'vpc-048abf81303b6dfe8'
+      SecurityGroupIngress:
+        - SourceSecurityGroupId: !Ref EC2SecurityGroup2
+          SourceSecurityGroupOwnerId: !Ref AWS::AccountId
+          Description:
+            !Sub 'Rule to allow connections from EC2 instances with
+            ${EC2SecurityGroup2} attached'
+          FromPort: !GetAtt RDSDBInstance.Endpoint.Port
+          IpProtocol: 'tcp'
+          ToPort: !GetAtt RDSDBInstance.Endpoint.Port
+
+  EC2SecurityGroup2:
+    Type: 'AWS::EC2::SecurityGroup'
+    Properties:
+      GroupDescription:
+        !Sub 'Security group attached to instances to securely connect to
+        ${RDSDBInstance}. Modification could lead to connection loss.'
+      GroupName: 'ec2-rds'
+      VpcId: 'vpc-048abf81303b6dfe8'
+      SecurityGroupEgress:
+        - DestinationSecurityGroupId: !Ref EC2SecurityGroup1
+          Description:
+            !Sub 'Rule to allow connections to ${RDSDBInstance} from any
+            instances this security group is attached to'
+          FromPort: !GetAtt RDSDBInstance.Endpoint.Port
+          IpProtocol: 'tcp'
+          ToPort: !GetAtt RDSDBInstance.Endpoint.Port
+
+  EC2SecurityGroup3:
+    Type: 'AWS::EC2::SecurityGroup'
+    Properties:
+      GroupDescription: 'Created by RDS management console'
+      GroupName: 'rds-securitygroup'
+      VpcId: 'vpc-048abf81303b6dfe8'
+      SecurityGroupIngress:
+        - CidrIp: '172.114.231.168/32'
+          Description: 'Manhattan Beach'
+          FromPort: !GetAtt RDSDBInstance.Endpoint.Port
+          IpProtocol: 'tcp'
+          ToPort: !GetAtt RDSDBInstance.Endpoint.Port
+        - CidrIp: '35.129.73.82/32'
+          Description: 'Big Bear'
+          FromPort: !GetAtt RDSDBInstance.Endpoint.Port
+          IpProtocol: 'tcp'
+          ToPort: !GetAtt RDSDBInstance.Endpoint.Port
+      SecurityGroupEgress:
+        - CidrIp: '0.0.0.0/0'
+          IpProtocol: '-1'
+
+  EC2SecurityGroup4:
+    Type: 'AWS::EC2::SecurityGroup'
+    Properties:
+      GroupDescription:
+        !Sub 'Security group attached to ${RDSDBInstance} to allow Lambda
+        functions specific security groups attached to connect to the database.
+        Modification could lead to connection loss.'
+      GroupName: 'rds-lambda-1'
+      VpcId: 'vpc-048abf81303b6dfe8'
+      SecurityGroupIngress:
+        - SourceSecurityGroupId: 'sg-0d09574dd338c8eb9' #### Lambda to RDS
+          SourceSecurityGroupOwnerId: !Ref AWS::AccountId
+          Description: 'Lambda functions in VPC'
+          FromPort: !GetAtt RDSDBInstance.Endpoint.Port
+          IpProtocol: 'tcp'
+          ToPort: !GetAtt RDSDBInstance.Endpoint.Port
+      SecurityGroupEgress:
+        - CidrIp: '0.0.0.0/0'
+          IpProtocol: '-1'
+
+  EC2SecurityGroup4: sg-0d09574dd338c8eb9
+
+  RDSDBSubnetGroup:
+    Type: 'AWS::RDS::DBSubnetGroup'
+    Properties:
+      DBSubnetGroupDescription: 'Created from the RDS Management Console'
+      DBSubnetGroupName: 'rds-ec2-db-subnet-group-2'
+      SubnetIds:
+        - 'subnet-0c1c8364e5045a1d2'
+        - 'subnet-063846f4dac40c71b'
+        - 'subnet-0ffb4874a055fb071'
+        - 'subnet-0b5e9cf36b222c366'
+
+  RDSDBInstance:
+    Type: 'AWS::RDS::DBInstance'
+    Properties:
+      DBInstanceIdentifier: 'outcomesai-dev'
+      AllocatedStorage: 20
+      DBInstanceClass: 'db.t3.micro'
+      Engine: 'mysql'
+      MasterUsername: 'admin'
+      MasterUserPassword: 'REPLACEME'
+      DBName: 'outcomesai'
+      PreferredBackupWindow: '06:48-07:18'
+      BackupRetentionPeriod: 7
+      AvailabilityZone: !Sub '${AWS::Region}b'
+      PreferredMaintenanceWindow: 'wed:09:28-wed:09:58'
+      MultiAZ: false
+      EngineVersion: '8.0.32'
+      AutoMinorVersionUpgrade: true
+      LicenseModel: 'general-public-license'
+      PubliclyAccessible: false
+      StorageType: 'gp2'
+      Port: 3306
+      StorageEncrypted: true
+      KmsKeyId: !Sub 'arn:aws:kms:${AWS::Region}:${AWS::AccountId}:key/783e6c16-d257-4848-841f-3257451ec05f'
+      CopyTagsToSnapshot: true
+      MonitoringInterval: 0
+      EnableIAMDatabaseAuthentication: false
+      EnablePerformanceInsights: false
+      DeletionProtection: false
+      DBSubnetGroupName: 'rds-ec2-db-subnet-group-2'
+      VPCSecurityGroups:
+        - 'sg-00257684498a2383d'
+        - 'sg-0d40c8f97df97d67f'
+        - 'sg-0b40be428471c74db'
+      MaxAllocatedStorage: 1000
+      DBParameterGroupName: 'default.mysql8.0'
+      OptionGroupName: 'default:mysql-8-0'
+      EnableCloudwatchLogsExports:
+        - 'audit'
+        - 'error'
+        - 'general'
+        - 'slowquery'
+      CACertificateIdentifier: 'rds-ca-2019'
+
+  RDSDBSubnetGroup2:
+    Type: 'AWS::RDS::DBSubnetGroup'
+    Properties:
+      DBSubnetGroupDescription: 'Created from the RDS Management Console'
+      DBSubnetGroupName: 'rds-ec2-db-subnet-group-1'
+      SubnetIds:
+        - 'subnet-0d0458e4e2bb9a2c9'
+        - 'subnet-0a665f0a26ce1ec08'
+        - 'subnet-067491a0cf12d00b6'
+        - 'subnet-0f654fe76e432ed62'
+
+  EC2VPCEndpoint:
+    Type: 'AWS::EC2::VPCEndpoint'
+    Properties:
+      VpcEndpointType: 'Interface'
+      VpcId: 'vpc-048abf81303b6dfe8'
+      ServiceName: !Sub 'com.amazonaws.${AWS::Region}.secretsmanager'
+      PolicyDocument: |
+        {
+          "Statement": [
+            {
+              "Action": "*", 
+              "Effect": "Allow", 
+              "Principal": "*", 
+              "Resource": "*"
+            }
+          ]
+        }
+      SubnetIds:
+        - 'subnet-0c1c8364e5045a1d2'
+        - 'subnet-063846f4dac40c71b'
+        - 'subnet-0ffb4874a055fb071'
+        - 'subnet-0b5e9cf36b222c366'
+      PrivateDnsEnabled: true
+      SecurityGroupIds:
+        - 'sg-03a40029adec2c7d2'

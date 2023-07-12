@@ -1,0 +1,14 @@
+{
+  "vpcId": "vpc-048abf81303b6dfe8",
+  "securityGroupIds": ["sg-0d09574dd338c8eb9"],
+  "subnets": [
+    "subnet-0c1c8364e5045a1d2",
+    "subnet-063846f4dac40c71b",
+    "subnet-0ffb4874a055fb071",
+    "subnet-0b5e9cf36b222c366"
+  ],
+  "iamRole": "arn:aws:iam::258232201551:role/Lambda-VPC-SecretsManager",
+  "psycopg2_jetbridge_layer": "arn:aws:lambda:us-west-2:898466741470:layer:psycopg2-py38:1",
+  "sqlalchemy_layer": "arn:aws:lambda:us-west-2:258232201551:layer:sqlalchemy:1",
+  "pandas_3_8_layer": "arn:aws:lambda:us-west-2:336392948345:layer:AWSSDKPandas-Python38:9"
+}

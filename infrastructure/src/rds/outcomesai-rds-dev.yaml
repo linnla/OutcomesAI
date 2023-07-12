@@ -1,0 +1,53 @@
+# outcomesai-rds-dev
+
+AWSTemplateFormatVersion: '2010-09-09'
+
+Parameters:
+  StageVariable:
+    Type: String
+    Description: Stage variable value
+    Default: 'dev'
+  VPCStackName:
+    Type: String
+    Description: Stack name of the VPC template
+    Default: 'outcomesai-vpc-subnets-nacl-securitygroup-dev'
+  DBName:
+    Type: String
+    Description:
+      Database must not exists in region, 8 characters or numbers, no symbols.
+    Default: 'outcomesai'
+  DBInstanceClass:
+    Type: String
+    Description: RDS instance class
+    Default: 'db.t3.micro'
+
+Resources:
+  RDSInstance:
+    Type: 'AWS::RDS::DBInstance'
+    Properties:
+      AllocatedStorage: '20'
+      AllowMajorVersionUpgrade: true
+      AutoMinorVersionUpgrade: true
+      BackupRetentionPeriod: 0
+      DBInstanceClass: !Ref DBInstanceClass
+      DBInstanceIdentifier: !Sub '${DBName}-db-${StageVariable}'
+      DBName: !Ref DBName
+      DBSubnetGroupName:
+        Fn::ImportValue: !Sub '${VPCStackName}-DBSubnetGroupName'
+      DeletionProtection: false
+      Engine: mysql
+      MasterUsername: '{{resolve:secretsmanager:rds-dev-credentials:SecretString:MasterUserName-Dev}}'
+      MasterUserPassword: '{{resolve:secretsmanager:rds-dev-credentials:SecretString:MasterUserPassword-Dev}}'
+      PubliclyAccessible: false
+      StorageEncrypted: true
+      StorageType: gp2
+      Tags:
+        - Key: Name
+          Value: 'outcomesai-dev-RDSInstance'
+      VPCSecurityGroups:
+        - Fn::ImportValue: !Sub '${VPCStackName}-SecurityGroupId'
+
+Outputs:
+  RDSInstanceEndpoint:
+    Value: !GetAtt RDSInstance.Endpoint.Address
+    Description: Endpoint of the RDS instance
