@@ -1,0 +1,27 @@
+{
+  "authSelections": "userPoolOnly",
+  "resourceName": "outcomesaia36f44eb",
+  "serviceType": "imported",
+  "region": "us-west-2",
+  "usernameAttributes": [
+    "email"
+  ],
+  "authProvidersUserPool": [],
+  "requiredAttributes": [
+    "given_name",
+    "family_name",
+    "email"
+  ],
+  "passwordPolicyMinLength": 8,
+  "passwordPolicyCharacters": [
+    "Requires Lowercase",
+    "Requires Uppercase",
+    "Requires Numbers",
+    "Requires Symbols"
+  ],
+  "mfaConfiguration": "OFF",
+  "autoVerifiedAttributes": [
+    "email"
+  ],
+  "mfaTypes": []
+}
