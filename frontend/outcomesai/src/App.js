@@ -50,7 +50,7 @@ const components = {
       );
     },
     Content() {
-      const navigate = useNavigate();
+      //const navigate = useNavigate();
 
       const handleSignIn = () => {
         // navigate('/leftnavpage');
@@ -76,8 +76,16 @@ const Login = () => {
 
   const checkUserAuthentication = async () => {
     try {
-      await Auth.currentAuthenticatedUser();
-      setIsLoggedIn(true);
+      const user = await Auth.currentAuthenticatedUser();
+      const { 'cognito:user_status': userStatus } = user.attributes;
+
+      if (userStatus === 'FORCE_CHANGE_PASSWORD') {
+        console.log('User first login. Prompt for password change.');
+        // Prompt the user to change their password
+      } else {
+        console.log('User not first login.');
+        setIsLoggedIn(true);
+      }
     } catch (error) {
       setIsLoggedIn(false);
     }
