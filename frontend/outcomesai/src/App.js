@@ -10,6 +10,7 @@ function App() {
 
   useEffect(() => {
     fetchJwtToken();
+    createUser();
   }, []);
 
   const fetchJwtToken = async () => {
@@ -18,8 +19,45 @@ function App() {
       const session = await Auth.currentSession();
       const token = session.getIdToken().getJwtToken();
       setJwtToken(token);
+      const sessionToken = `${jwtToken}`;
+      sessionStorage.setItem('token', sessionToken);
     } catch (error) {
       console.log('Error fetching JWT token:', error);
+    }
+  };
+
+  const createUser = async () => {
+    try {
+      const user = await Auth.currentAuthenticatedUser();
+      const { given_name, family_name, email } = user.attributes;
+      const userInfo = {
+        first_name: given_name,
+        last_name: family_name,
+        email,
+      };
+
+      // Retrieve the token from the session storage
+      const token = sessionStorage.getItem('token');
+
+      // Send the user information to your API
+      const response = await fetch(
+        'https://1q35lcvj4f.execute-api.us-west-2.amazonaws.com/dev/users',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: token, // Use the retrieved token
+          },
+          body: JSON.stringify(userInfo),
+        }
+      );
+
+      const responseData = await response.json(); // Convert the response to JSON
+      console.log('API Response:', responseData);
+
+      console.log('User information sent to API:', userInfo);
+    } catch (error) {
+      console.log('Error sending user information to API:', error);
     }
   };
 
@@ -78,7 +116,7 @@ function App() {
     >
       {({ signOut, user }) => (
         <div>
-          Welcome {user.username}
+          Welcome {user.attributes.given_name}
           <button onClick={signOut}>Sign out</button>
           <h4>Your JWT token:</h4>
           {jwtToken}

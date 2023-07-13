@@ -3,15 +3,9 @@ import ReactDOM from 'react-dom';
 import { Amplify, Auth } from 'aws-amplify';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import awsExports from './aws-exports';
+import awsConfig from './aws-exports';
 
-Amplify.configure({
-  Auth: {
-    region: awsExports.REGION,
-    userPoolId: awsExports.USER_POOL_ID,
-    userPoolWebClientId: awsExports.USER_POOL_APP_CLIENT_ID,
-  },
-});
+Amplify.configure(awsConfig);
 
 ReactDOM.render(
   <React.StrictMode>
