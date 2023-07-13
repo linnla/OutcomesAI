@@ -9,7 +9,7 @@ function App() {
   const [jwtToken, setJwtToken] = useState('');
 
   useEffect(() => {
-    fetchJwtToken();
+    //fetchJwtToken();
     createUser();
   }, []);
 
@@ -29,33 +29,40 @@ function App() {
   const createUser = async () => {
     try {
       const user = await Auth.currentAuthenticatedUser();
+      const session = await Auth.currentSession();
+      const token = session.getIdToken().getJwtToken();
+
+      //const user = await Auth.currentAuthenticatedUser();
       const { given_name, family_name, email } = user.attributes;
       const userInfo = {
+        cognito_id: user.username,
         first_name: given_name,
         last_name: family_name,
         email,
       };
 
       // Retrieve the token from the session storage
-      const token = sessionStorage.getItem('token');
+      //const token = sessionStorage.getItem('token');
 
       // Send the user information to your API
+      console.log('Token');
+      console.log(token);
       const response = await fetch(
-        'https://1q35lcvj4f.execute-api.us-west-2.amazonaws.com/dev/users',
+        'https://1q35lcvj4f.execute-api.us-west-2.amazonaws.com/dev/users?email=laure.linn@yahoo.com',
         {
-          method: 'POST',
+          method: 'GET',
           headers: {
             'Content-Type': 'application/json',
-            Authorization: token, // Use the retrieved token
-          },
-          body: JSON.stringify(userInfo),
+            Authorization: token,
+          }, //,
+          //body: JSON.stringify(userInfo),
         }
       );
 
-      const responseData = await response.json(); // Convert the response to JSON
-      console.log('API Response:', responseData);
+      //const responseData = await response.json(); // Convert the response to JSON
+      console.log('API Response:', response);
 
-      console.log('User information sent to API:', userInfo);
+      console.log('GET request');
     } catch (error) {
       console.log('Error sending user information to API:', error);
     }
