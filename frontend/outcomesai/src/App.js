@@ -96,7 +96,7 @@ const Login = () => {
     <Authenticator
       loginMechanisms={['email']}
       components={components}
-      hideSignUp={false}
+      hideSignUp={true}
     >
       {({ signOut }) => {
         if (isLoggedIn) {
