@@ -59,7 +59,7 @@ class PracticeUser(Base):
         }
 
     all_params_select = False
-    select_required_params = ["practice_id", "user_id"]
+    select_required_params = ["practice_id", "user_id", "email"]
     select_filters = ["last_name", "first_name"]
     create_required_fields = ["practice_id", "user_id", "role_id"]
     create_allowed_fields = []

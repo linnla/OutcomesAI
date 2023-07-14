@@ -1,3 +1,4 @@
+
 import logging
 from database import (
     select_entity,
@@ -15,6 +16,10 @@ logging.basicConfig(
     datefmt="%Y-%m-%d %H:%M:%S",
 )
 logger = logging.getLogger()
+
+headers = {
+    'Access-Control-Allow-Origin': '*'
+}
 
 
 def validate_request_body(request_body, required_fields, non_null_fields):
@@ -41,11 +46,12 @@ def validate_request_body(request_body, required_fields, non_null_fields):
 
 
 def create_error_response(error_message):
+    
     try:
         body = {"errorType": "Bad Request", "errorMessage": error_message}
-        response = {"statusCode": 400, "body": dumps(body)}
+        response = {"statusCode": 400, "headers": headers, "body": dumps(body)}
     except Exception as e:
-        response = {"statusCode": 500, "body": dumps(str(e))}
+        response = {"statusCode": 500, "headers": headers, "body": dumps(str(e))}
 
     logger.error(response)
     return response
@@ -103,14 +109,15 @@ def select(event, entity_class, required_params, all_params):
             ]
 
             db_response.body["data"] = filtered_data
-
+        
         response = {
             "statusCode": db_response.response_code,
+            "headers": headers,
             "body": dumps(db_response.body),
         }
 
     except Exception as e:
-        response = {"statusCode": 500, "body": dumps(str(e))}
+        response = {"statusCode": 500, "headers": headers, "body": dumps(str(e))}
 
     return response
 
@@ -141,10 +148,11 @@ def create(event, entity_class, required_fields, allowed_fields):
         db_response = create_entity(entity_class, create_data)
         response = {
             "statusCode": db_response.response_code,
+            "headers": headers,
             "body": dumps(db_response.body),
         }
     except Exception as e:
-        response = {"statusCode": 500, "body": dumps(str(e))}
+        response = {"statusCode": 500, "headers": headers, "body": dumps(str(e))}
 
     return response
 
@@ -181,10 +189,11 @@ def update(event, entity_class, required_fields, allowed_fields, non_null_fields
         db_response = update_entity(entity_instance, update_data)
         response = {
             "statusCode": db_response.response_code,
+            "headers": headers,
             "body": dumps(db_response.body),
         }
     except Exception as e:
-        response = {"statusCode": 500, "body": dumps(str(e))}
+        response = {"statusCode": 500, "headers": headers, "body": dumps(str(e))}
 
     return response
 
@@ -216,10 +225,11 @@ def delete(event, entity_class, required_fields):
         db_response = delete_entity(entity_instance)
         response = {
             "statusCode": db_response.response_code,
+            "headers": headers,
             "body": dumps(db_response.body),
         }
     except Exception as e:
-        response = {"statusCode": 500, "body": dumps(str(e))}
+        response = {"statusCode": 500, "headers": headers, "body": dumps(str(e))}
 
     return response
 

@@ -1,20 +1,19 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
-import { Amplify, Auth } from 'aws-amplify';
+import ReactDOM from 'react-dom/client';
+import { Amplify } from 'aws-amplify';
 import App from './App';
-import reportWebVitals from './reportWebVitals';
-import awsConfig from './aws-exports';
+import { searchTable } from './api';
+import { config } from './config';
+import { awsConfig } from './config';
 
 Amplify.configure(awsConfig);
 
-ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
-);
+searchTable('users', { email: 'tess.koo@yahoo.com' });
+searchTable('practice_users', { practice_id: 100101 });
+searchTable('practice_patients', { practice_id: 100101 });
+searchTable('offices', { practice_id: 100101 });
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-//reportWebVitals();
+const el = document.getElementById('root');
+const root = ReactDOM.createRoot(el);
+
+root.render(<App />);
