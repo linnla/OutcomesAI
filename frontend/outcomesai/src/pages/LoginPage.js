@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import WebPageLayout from '../components/WebPageLayout';
 import { Authenticator } from '@aws-amplify/ui-react';
 import { Auth } from 'aws-amplify';
 import '@aws-amplify/ui-react/styles.css';
@@ -11,6 +12,15 @@ function LoginPage() {
   useEffect(() => {
     fetchJwtToken();
   }, []);
+
+  const title = 'Login Page';
+  const metaTags = [
+    {
+      name: 'description',
+      content: 'This is the login page of the app OutcomesAI.',
+    },
+    // Add more meta tags as needed
+  ];
 
   const fetchJwtToken = async () => {
     try {
@@ -69,28 +79,30 @@ function LoginPage() {
   };
 
   return (
-    <Authenticator
-      loginMechanisms={['email']}
-      signUpAttributes={['family_name', 'given_name']}
-    >
-      {({ signOut, user }) => {
-        if (user) {
-          handleUserCreation(user);
-          return (
-            <>
-              <p>Welcome {user.attributes.given_name}</p>
-              <button onClick={signOut}>Sign out</button>
-            </>
-          );
-        } else {
-          return (
-            <>
-              <p>Please sign in</p>
-            </>
-          );
-        }
-      }}
-    </Authenticator>
+    <WebPageLayout title={title} metaTags={metaTags}>
+      <Authenticator
+        loginMechanisms={['email']}
+        signUpAttributes={['family_name', 'given_name']}
+      >
+        {({ signOut, user }) => {
+          if (user) {
+            handleUserCreation(user);
+            return (
+              <>
+                <p>Welcome {user.attributes.given_name}</p>
+                <button onClick={signOut}>Sign out</button>
+              </>
+            );
+          } else {
+            return (
+              <>
+                <p>Please sign in</p>
+              </>
+            );
+          }
+        }}
+      </Authenticator>
+    </WebPageLayout>
   );
 }
 
