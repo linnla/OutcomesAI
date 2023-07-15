@@ -1,5 +1,6 @@
 import React from 'react';
 import GoogleTagManager from './GoogleTagManager';
+import '../styles/Footer.css'; // Import the CSS file
 
 function WebPageLayout({ children, title, metaTags }) {
   return (
