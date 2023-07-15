@@ -1,8 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button, Typography } from '@mui/material';
-import backgroundImage from '../images/AI-in-Mental-Health.jpg'; // Update the image path
+import backgroundImage from '../images/AI-in-Mental-Health.jpg';
+import LoginPage from '../pages/LoginPage';
 
 function SplashPage() {
+  const [isLoginVisible, setIsLoginVisible] = useState(true);
+
+  const handleLoginClick = () => {
+    setIsLoginVisible(false);
+  };
+
   return (
     <div
       style={{
@@ -35,17 +42,21 @@ function SplashPage() {
       >
         Transforming Mental Health with AI
       </Typography>
-      <Button
-        variant='contained'
-        color='primary'
-        sx={{
-          py: 2, // Increase the padding vertically
-          px: 7, // Increase the padding horizontally
-          fontSize: '1.5rem', // Increase the font size
-        }}
-      >
-        Login
-      </Button>
+      {isLoginVisible && (
+        <Button
+          variant='contained'
+          color='primary'
+          sx={{
+            py: 2,
+            px: 7,
+            fontSize: '1.5rem',
+          }}
+          onClick={handleLoginClick}
+        >
+          Login
+        </Button>
+      )}
+      {!isLoginVisible && <LoginPage />}
     </div>
   );
 }
