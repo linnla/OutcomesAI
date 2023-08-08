@@ -11,14 +11,17 @@ function WebPageLayout({ children, title, metaTags }) {
         {metaTags &&
           metaTags.map((tag, index) => <meta key={index} {...tag} />)}
       </head>
-      <header>{/* Add your header content */}</header>
-      <main>{children}</main>
-      <footer className='footer'>
-        {' '}
-        {/* Add the 'footer' class */}
-        &copy; {new Date().getFullYear()} CloudRaiders LLC. All rights reserved.
-      </footer>
-      <GoogleTagManager />
+      <div>
+        <header>{/* Add your header content */}</header>
+        <main>{children}</main>
+        <footer className='footer'>
+          {' '}
+          {/* Add the 'footer' class */}
+          &copy; {new Date().getFullYear()} CloudRaiders LLC. All rights
+          reserved.
+        </footer>
+        <GoogleTagManager />
+      </div>
     </div>
   );
 }
