@@ -91,18 +91,6 @@ function Login() {
       {({ user }) => {
         if (user) {
           handleSignIn(user);
-          return (
-            <>
-              <p>Welcome {user.attributes.given_name}</p>
-              <button onClick={handleSignOut}>Sign out</button>
-            </>
-          );
-        } else {
-          return (
-            <>
-              <p>Please sign in</p>
-            </>
-          );
         }
       }}
     </Authenticator>
