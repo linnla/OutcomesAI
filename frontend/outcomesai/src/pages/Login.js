@@ -24,7 +24,6 @@ function Login() {
       const session = await Auth.currentSession();
       const idToken = session.getIdToken().getJwtToken();
       sessionStorage.setItem('idToken', idToken);
-      console.log(idToken);
       return true;
     } catch (error) {
       console.log('Error fetching JWT token:', error);
@@ -34,15 +33,10 @@ function Login() {
 
   const checkUserExists = async (user) => {
     try {
-      const response = await queryTable('users', {
+      const userData = await queryTable('users', {
         email: user.attributes.email,
       });
-
-      if (response.status !== 200) {
-        return false;
-      } else {
-        return true;
-      }
+      return userData;
     } catch (error) {
       console.log('Error checking if user exists:', error);
       return false;
@@ -71,13 +65,27 @@ function Login() {
   };
 
   const handleSignIn = async (user) => {
-    const jwtToken = await fetchJwtToken();
-    if (jwtToken) {
-      const userExists = await checkUserExists(user);
-      if (!userExists) {
-        await createUser(user);
+    try {
+      const jwtToken = await fetchJwtToken();
+      const userData = await checkUserExists(user);
+      if (!userData) {
+        const result = await createUser(user);
+        if (!result) {
+          return;
+        }
+      } else {
+        const user_id = userData.data.data[0].id;
+        const last_name = userData.data.data[0].last_name;
+        const first_name = userData.data.data[0].first_name;
+        const cognito_id = userData.data.data[0].cognito_id;
+
+        sessionStorage.setItem('user_id', user_id);
+        sessionStorage.setItem('first_name', first_name);
+        sessionStorage.setItem('cognito_id', cognito_id);
+        sessionStorage.setItem('practice_id', 100101);
       }
-    } else {
+    } catch (error) {
+      console.log('Error creating user:', error);
       return;
     }
     navigate('/');

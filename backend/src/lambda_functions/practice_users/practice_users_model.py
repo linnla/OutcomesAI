@@ -41,21 +41,14 @@ class PracticeUser(Base):
         full_name = f"{user['first_name']} {user['last_name']}"
 
         return {
-            "practice_id": self.practice_id,
-            "user_id": self.user_id,
-            "role_id": self.role_id,
-            "status": self.status,
-            "practice_name": practice["name"],
-            "practice_city": practice["city"],
-            "practice_state": practice["state"],
-            "practice_postal_code": practice["postal_code"],
-            "practice_country_code": practice["country_code"],
-            "practice_status": practice["status"],
+            "id": self.user_id,
+            "cognito_id": user["cognito_id"],
             "full_name": full_name,
             "last_name": user["last_name"],
             "first_name": user["first_name"],
             "email": user["email"],
             "role": role["name"],
+            "status": self.status,
         }
 
     all_params_select = False

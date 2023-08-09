@@ -23,13 +23,12 @@ const Offices = () => {
   }, [navigate]);
 
   const verifySession = async () => {
-    console.log('Verify Session');
     try {
-      const session = await Auth.currentSession();
-      console.log(session);
+      await Auth.currentAuthenticatedUser();
+      console.log('User is authenticated');
       return true;
     } catch (error) {
-      console.log('Error verifying session,', error);
+      console.log(error);
       return false;
     }
   };

@@ -1,18 +1,34 @@
 import { Box, Typography, useTheme } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import { tokens } from '../theme';
-import { mockDataTeam } from '../data/mockData';
 import AdminPanelSettingsOutlinedIcon from '@mui/icons-material/AdminPanelSettingsOutlined';
 import LockOpenOutlinedIcon from '@mui/icons-material/LockOpenOutlined';
 import SecurityOutlinedIcon from '@mui/icons-material/SecurityOutlined';
 import Header from '../components/Header';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Auth } from 'aws-amplify';
+import { queryTable } from '../api/Api';
+import ErrorModal from '../components/ErrorModal';
 
 const Team = () => {
-  const navigate = useNavigate();
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
 
+  const [data, setData] = useState([]);
+  const [error, setError] = useState(null);
+  const [modalOpen, setModalOpen] = useState(false);
+
+  const openModal = () => {
+    setModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setModalOpen(false);
+    setError(null); // Clear the error when modal is closed
+  };
+
+  const navigate = useNavigate();
   useEffect(() => {
     const checkAndNavigate = async () => {
       const sessionValid = await verifySession();
@@ -25,21 +41,63 @@ const Team = () => {
   }, [navigate]);
 
   const verifySession = async () => {
-    console.log('Verify Session');
     try {
-      const session = await Auth.currentSession();
-      console.log(session);
+      const user = await Auth.currentAuthenticatedUser();
+      const currentIdToken = user.signInUserSession.idToken.jwtToken;
+      const savedIdToken = sessionStorage.getItem('idToken');
+      if (currentIdToken !== savedIdToken) {
+        console.log('Saving id token');
+        sessionStorage.setItem('idToken', currentIdToken);
+      }
+      console.log('User is authenticated');
       return true;
     } catch (error) {
-      console.log('Error verifying session,', error);
+      console.log(error);
       return false;
     }
   };
 
   verifySession();
 
-  const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    //const practice_id = sessionStorage.getItem('practice_id');
+    const practice_id = 100106;
+
+    try {
+      const response = await queryTable('practice_users', {
+        practice_id: practice_id,
+      });
+      console.log('non-error response.status', response.status);
+      console.log('non-error response.data', response.data);
+      setData(response.data.data);
+    } catch (response) {
+      console.log('error response', response);
+      console.log('error response.response.data', response.response.data);
+      if (response.response.data.message == 'The incoming token has expired') {
+        const sessionValid = await verifySession();
+        if (!sessionValid) {
+          navigate('/login'); // Redirect to login page
+        } else {
+          fetchData();
+        }
+      } else {
+        const errorObject = JSON.parse(response.response.data);
+        if ('errorType' in errorObject) {
+          setError({
+            errorType: errorObject.errorType,
+            errorDescription: errorObject.errorDescription,
+            errorMessage: errorObject.errorMessage,
+          });
+          openModal();
+        }
+      }
+    }
+  };
+
   const columns = [
     { field: 'id', headerName: 'ID' },
     {
@@ -72,7 +130,7 @@ const Team = () => {
           <Box
             width='60%'
             m='0 auto'
-            p='5px'
+            p='15px'
             display='flex'
             justifyContent='center'
             backgroundColor={
@@ -97,40 +155,51 @@ const Team = () => {
   ];
 
   return (
-    <Box m='20px'>
-      <Header title='TEAM' subtitle='Managing the Team Members' />
-      <Box
-        m='40px 0 0 0'
-        height='75vh'
-        sx={{
-          '& .MuiDataGrid-root': {
-            border: 'none',
-          },
-          '& .MuiDataGrid-cell': {
-            borderBottom: 'none',
-          },
-          '& .name-column--cell': {
-            color: colors.greenAccent[300],
-          },
-          '& .MuiDataGrid-columnHeaders': {
-            backgroundColor: colors.blueAccent[700],
-            borderBottom: 'none',
-          },
-          '& .MuiDataGrid-virtualScroller': {
-            backgroundColor: colors.primary[400],
-          },
-          '& .MuiDataGrid-footerContainer': {
-            borderTop: 'none',
-            backgroundColor: colors.blueAccent[700],
-          },
-          '& .MuiCheckbox-root': {
-            color: `${colors.greenAccent[200]} !important`,
-          },
-        }}
-      >
-        <DataGrid checkboxSelection rows={mockDataTeam} columns={columns} />
+    <div>
+      {/* Render the modal when modalOpen is true */}
+      {modalOpen && (
+        <ErrorModal
+          errorType={error.errorType}
+          errorDescription={error.errorDescription}
+          errorMessage={error.errorMessage}
+          onClose={closeModal}
+        />
+      )}
+      <Box m='20px'>
+        <Header title='TEAM' subtitle='Managing the Team Members' />
+        <Box
+          m='40px 0 0 0'
+          height='75vh'
+          sx={{
+            '& .MuiDataGrid-root': {
+              border: 'none',
+            },
+            '& .MuiDataGrid-cell': {
+              borderBottom: 'none',
+            },
+            '& .name-column--cell': {
+              color: colors.greenAccent[300],
+            },
+            '& .MuiDataGrid-columnHeaders': {
+              backgroundColor: colors.blueAccent[700],
+              borderBottom: 'none',
+            },
+            '& .MuiDataGrid-virtualScroller': {
+              backgroundColor: colors.primary[400],
+            },
+            '& .MuiDataGrid-footerContainer': {
+              borderTop: 'none',
+              backgroundColor: colors.blueAccent[700],
+            },
+            '& .MuiCheckbox-root': {
+              color: `${colors.greenAccent[200]} !important`,
+            },
+          }}
+        >
+          <DataGrid checkboxSelection rows={data} columns={columns} />
+        </Box>
       </Box>
-    </Box>
+    </div>
   );
 };
 
