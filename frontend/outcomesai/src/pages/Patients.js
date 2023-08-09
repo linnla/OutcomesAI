@@ -4,8 +4,38 @@ import { tokens } from '../theme';
 import { mockDataPatients } from '../data/mockData';
 import Header from '../components/Header';
 import { useTheme } from '@mui/material';
+import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Auth } from 'aws-amplify';
 
 const Patients = () => {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const checkAndNavigate = async () => {
+      const sessionValid = await verifySession();
+      if (!sessionValid) {
+        navigate('/login'); // Redirect to login page
+      }
+    };
+
+    checkAndNavigate();
+  }, [navigate]);
+
+  const verifySession = async () => {
+    console.log('Verify Session');
+    try {
+      const session = await Auth.currentSession();
+      console.log(session);
+      return true;
+    } catch (error) {
+      console.log('Error verifying session,', error);
+      return false;
+    }
+  };
+
+  verifySession();
+
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 

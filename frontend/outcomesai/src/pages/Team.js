@@ -6,8 +6,38 @@ import AdminPanelSettingsOutlinedIcon from '@mui/icons-material/AdminPanelSettin
 import LockOpenOutlinedIcon from '@mui/icons-material/LockOpenOutlined';
 import SecurityOutlinedIcon from '@mui/icons-material/SecurityOutlined';
 import Header from '../components/Header';
+import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Auth } from 'aws-amplify';
 
 const Team = () => {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const checkAndNavigate = async () => {
+      const sessionValid = await verifySession();
+      if (!sessionValid) {
+        navigate('/login'); // Redirect to login page
+      }
+    };
+
+    checkAndNavigate();
+  }, [navigate]);
+
+  const verifySession = async () => {
+    console.log('Verify Session');
+    try {
+      const session = await Auth.currentSession();
+      console.log(session);
+      return true;
+    } catch (error) {
+      console.log('Error verifying session,', error);
+      return false;
+    }
+  };
+
+  verifySession();
+
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const columns = [
