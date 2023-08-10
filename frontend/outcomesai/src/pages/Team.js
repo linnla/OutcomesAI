@@ -6,95 +6,48 @@ import LockOpenOutlinedIcon from '@mui/icons-material/LockOpenOutlined';
 import SecurityOutlinedIcon from '@mui/icons-material/SecurityOutlined';
 import Header from '../components/Header';
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Auth } from 'aws-amplify';
 import { queryTable } from '../api/Api';
 import ErrorModal from '../components/ErrorModal';
+import ErrorResponse from '../components/ErrorResponse';
+import Authenticate from '../components/Authenticate';
 
 const Team = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-
   const [data, setData] = useState([]);
   const [error, setError] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
 
-  const openModal = () => {
+  const openModal = (error) => {
+    setError(error);
     setModalOpen(true);
   };
 
   const closeModal = () => {
+    setError(null);
     setModalOpen(false);
-    setError(null); // Clear the error when modal is closed
   };
 
-  const navigate = useNavigate();
   useEffect(() => {
     const checkAndNavigate = async () => {
-      const sessionValid = await verifySession();
-      if (!sessionValid) {
-        navigate('/login'); // Redirect to login page
+      const sessionValid = await Authenticate();
+      if (sessionValid) {
+        fetchData();
       }
     };
 
     checkAndNavigate();
-  }, [navigate]);
-
-  const verifySession = async () => {
-    try {
-      const user = await Auth.currentAuthenticatedUser();
-      const currentIdToken = user.signInUserSession.idToken.jwtToken;
-      const savedIdToken = sessionStorage.getItem('idToken');
-      if (currentIdToken !== savedIdToken) {
-        console.log('Saving id token');
-        sessionStorage.setItem('idToken', currentIdToken);
-      }
-      console.log('User is authenticated');
-      return true;
-    } catch (error) {
-      console.log(error);
-      return false;
-    }
-  };
-
-  verifySession();
-
-  useEffect(() => {
-    fetchData();
   }, []);
 
   const fetchData = async () => {
-    //const practice_id = sessionStorage.getItem('practice_id');
-    const practice_id = 100106;
-
+    const practice_id = sessionStorage.getItem('practice_id');
     try {
       const response = await queryTable('practice_users', {
         practice_id: practice_id,
       });
-      console.log('non-error response.status', response.status);
-      console.log('non-error response.data', response.data);
       setData(response.data.data);
     } catch (response) {
-      console.log('error response', response);
-      console.log('error response.response.data', response.response.data);
-      if (response.response.data.message == 'The incoming token has expired') {
-        const sessionValid = await verifySession();
-        if (!sessionValid) {
-          navigate('/login'); // Redirect to login page
-        } else {
-          fetchData();
-        }
-      } else {
-        const errorObject = JSON.parse(response.response.data);
-        if ('errorType' in errorObject) {
-          setError({
-            errorType: errorObject.errorType,
-            errorDescription: errorObject.errorDescription,
-            errorMessage: errorObject.errorMessage,
-          });
-          openModal();
-        }
-      }
+      ErrorResponse(response, openModal);
     }
   };
 
