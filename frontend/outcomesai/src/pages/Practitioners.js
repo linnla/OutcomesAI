@@ -1,5 +1,4 @@
 import { Box } from '@mui/material';
-import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import { tokens } from '../theme';
 import { mockDataPractitioners } from '../data/mockData';
 import Header from '../components/Header';
@@ -7,6 +6,7 @@ import { useTheme } from '@mui/material';
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Auth } from 'aws-amplify';
+import { DataGridPremium, GridToolbar } from '@mui/x-data-grid-premium';
 
 const Practitioners = () => {
   const navigate = useNavigate();
@@ -114,7 +114,7 @@ const Practitioners = () => {
           },
         }}
       >
-        <DataGrid
+        <DataGridPremium
           rows={mockDataPractitioners}
           columns={columns}
           components={{ Toolbar: GridToolbar }}

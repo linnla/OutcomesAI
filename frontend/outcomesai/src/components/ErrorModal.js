@@ -2,7 +2,11 @@ import { tokens } from '../theme';
 import { Box, Typography, useTheme } from '@mui/material';
 import '../styles/ErrorModal.css';
 
-function ErrorModal({ errorType, errorDescription, errorMessage, onClose }) {
+function ErrorModal(props) {
+  const { errorType, errorDescription, errorMessage, onClose } = props;
+
+  console.log('ErrorModal', errorMessage);
+
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 

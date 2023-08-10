@@ -1,5 +1,18 @@
 import { Box, Typography, useTheme } from '@mui/material';
-import { DataGrid } from '@mui/x-data-grid';
+import Button from '@mui/material/Button';
+import AddIcon from '@mui/icons-material/Add';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/DeleteOutlined';
+import SaveIcon from '@mui/icons-material/Save';
+import CancelIcon from '@mui/icons-material/Close';
+import {
+  DataGridPremium,
+  GridToolbar,
+  GridRowModes,
+  GridToolbarContainer,
+  GridActionsCellItem,
+  GridRowEditStopReasons,
+} from '@mui/x-data-grid-premium';
 import { tokens } from '../theme';
 import AdminPanelSettingsOutlinedIcon from '@mui/icons-material/AdminPanelSettingsOutlined';
 import LockOpenOutlinedIcon from '@mui/icons-material/LockOpenOutlined';
@@ -8,23 +21,71 @@ import Header from '../components/Header';
 import React, { useEffect, useState } from 'react';
 import { queryTable } from '../api/Api';
 import ErrorModal from '../components/ErrorModal';
-import ErrorResponse from '../components/ErrorResponse';
+//import handleErrorResponse from '../components/ErrorResponse';
 import Authenticate from '../components/Authenticate';
+
+const createErrorResponse = async (error, openModal, navigate) => {
+  //console.log('createErrorResponse error:', error);
+  let errorType = error.code;
+  let errorDescription = error.request.responseURL;
+  let errorMessage = error.message;
+
+  if (error.response.data.message === 'The incoming token has expired') {
+    const sessionValid = await Authenticate(); // Adjust as needed
+    if (!sessionValid) {
+      navigate('/login');
+      return;
+    }
+  }
+
+  let errorObject = {};
+  try {
+    errorObject = JSON.parse(error.response.data);
+  } catch (parseError) {
+    console.log('createErrorMessage JSON parse:', parseError);
+    errorObject = error.response.data;
+  }
+
+  console.log('errorObject:', errorObject);
+  if ('errorType' in errorObject) {
+    errorType = errorObject.errorType;
+    //console.log(errorType);
+  }
+
+  if ('errorDescription' in errorObject) {
+    errorDescription = errorObject.errorDescription;
+    //console.log(errorDescription);
+  }
+
+  if ('errorMessage' in errorObject) {
+    errorMessage = errorObject.errorMessage;
+    //console.log(errorMessage);
+  }
+
+  //console.log('createErrorResponse', errorType, errorDescription, errorMessage);
+  openModal(errorType, errorDescription, errorMessage);
+};
 
 const Team = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [data, setData] = useState([]);
-  const [error, setError] = useState(null);
+  const [errorType, setErrorType] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [errorDescription, setErrorDescription] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
 
-  const openModal = (error) => {
-    setError(error);
+  const openModal = (errorType, errorDescription, errorMessage) => {
+    setErrorType(errorType);
+    setErrorMessage(errorMessage);
+    setErrorDescription(errorDescription);
     setModalOpen(true);
   };
 
   const closeModal = () => {
-    setError(null);
+    setErrorType(null);
+    setErrorMessage(null);
+    setErrorDescription(null);
     setModalOpen(false);
   };
 
@@ -46,26 +107,109 @@ const Team = () => {
         practice_id: practice_id,
       });
       setData(response.data.data);
-    } catch (response) {
-      ErrorResponse(response, openModal);
+    } catch (error) {
+      //console.log('error', error);
+      //console.log('code', error.code);
+      //console.log('message', error.message);
+      //console.log('errorType', error.response.data.errorType);
+      //console.log('errorMessage', error.response.data.errorMessage);
+      createErrorResponse(error, openModal);
     }
   };
 
+  function EditToolbar(props) {
+    const { setRows, setRowModesModel } = props;
+
+    const handleClick = (id) => {
+      //const id = randomId();
+      setRows((oldRows) => [
+        ...oldRows,
+        { id, last_name: '', first_name: '', isNew: true },
+      ]);
+      setRowModesModel((oldModel) => ({
+        ...oldModel,
+        [id]: { mode: GridRowModes.Edit, fieldToFocus: 'last_name' },
+      }));
+    };
+
+    return (
+      <GridToolbarContainer>
+        <Button color='primary' startIcon={<AddIcon />} onClick={handleClick}>
+          Add record
+        </Button>
+      </GridToolbarContainer>
+    );
+  }
+
+  const [rows, setRows] = React.useState(data);
+  const [rowModesModel, setRowModesModel] = React.useState({});
+
+  const handleRowEditStop = (params, event) => {
+    if (params.reason === GridRowEditStopReasons.rowFocusOut) {
+      event.defaultMuiPrevented = true;
+    }
+  };
+
+  const handleEditClick = (id) => () => {
+    setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
+  };
+
+  const handleSaveClick = (id) => () => {
+    setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
+    console.log('save', id);
+  };
+
+  const handleDeleteClick = (id) => () => {
+    setRows(rows.filter((row) => row.id !== id));
+    console.log('delete', id);
+  };
+
+  const handleCancelClick = (id) => () => {
+    setRowModesModel({
+      ...rowModesModel,
+      [id]: { mode: GridRowModes.View, ignoreModifications: true },
+    });
+
+    const editedRow = rows.find((row) => row.id === id);
+    if (editedRow.isNew) {
+      setRows(rows.filter((row) => row.id !== id));
+    }
+  };
+
+  const processRowUpdate = (newRow) => {
+    const updatedRow = { ...newRow, isNew: false };
+    setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
+    return updatedRow;
+  };
+
+  const handleRowModesModelChange = (newRowModesModel) => {
+    setRowModesModel(newRowModesModel);
+  };
+
   const columns = [
-    { field: 'id', headerName: 'ID' },
+    { field: 'id', headerName: 'ID', width: 50 },
     {
-      field: 'full_name',
+      field: 'fullName',
       headerName: 'Name',
-      flex: 1,
-      cellClassName: 'name-column--cell',
+      valueGetter: (params) => {
+        return `${params.row.first_name || ''} ${params.row.last_name || ''}`;
+      },
+    },
+    {
+      field: 'country',
+      editable: true,
+      type: 'singleSelect',
+      valueOptions: ['United Kingdom', 'Spain', 'Brazil'],
     },
     {
       field: 'last_name',
+      editable: true,
       headerName: 'Last Name',
       flex: 1,
     },
     {
       field: 'first_name',
+      editable: true,
       headerName: 'First Name',
       flex: 1,
     },
@@ -75,34 +219,60 @@ const Team = () => {
       flex: 1,
     },
     {
-      field: 'accessLevel',
-      headerName: 'Access Level',
+      field: 'status',
+      headerName: 'Status',
       flex: 1,
-      renderCell: ({ row: { access } }) => {
-        return (
-          <Box
-            width='60%'
-            m='0 auto'
-            p='15px'
-            display='flex'
-            justifyContent='center'
-            backgroundColor={
-              access === 'admin'
-                ? colors.greenAccent[600]
-                : access === 'manager'
-                ? colors.greenAccent[700]
-                : colors.greenAccent[700]
-            }
-            borderRadius='4px'
-          >
-            {access === 'admin' && <AdminPanelSettingsOutlinedIcon />}
-            {access === 'manager' && <SecurityOutlinedIcon />}
-            {access === 'user' && <LockOpenOutlinedIcon />}
-            <Typography color={colors.grey[100]} sx={{ ml: '5px' }}>
-              {access}
-            </Typography>
-          </Box>
-        );
+    },
+    {
+      field: 'role',
+      headerName: 'Role',
+      editable: true,
+      type: 'singleSelect',
+      valueOptions: ['admin', 'manager', 'user'],
+    },
+    {
+      field: 'actions',
+      type: 'actions',
+      headerName: 'Actions',
+      width: 100,
+      cellClassName: 'actions',
+      getActions: ({ id }) => {
+        const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
+
+        if (isInEditMode) {
+          return [
+            <GridActionsCellItem
+              icon={<SaveIcon />}
+              label='Save'
+              sx={{
+                color: 'primary.main',
+              }}
+              onClick={handleSaveClick(id)}
+            />,
+            <GridActionsCellItem
+              icon={<CancelIcon />}
+              label='Cancel'
+              className='textPrimary'
+              onClick={handleCancelClick(id)}
+              color='inherit'
+            />,
+          ];
+        }
+        return [
+          <GridActionsCellItem
+            icon={<EditIcon />}
+            label='Edit'
+            className='textPrimary'
+            onClick={handleEditClick(id)}
+            color='inherit'
+          />,
+          <GridActionsCellItem
+            icon={<DeleteIcon />}
+            label='Delete'
+            onClick={handleDeleteClick(id)}
+            color='inherit'
+          />,
+        ];
       },
     },
   ];
@@ -112,9 +282,9 @@ const Team = () => {
       {/* Render the modal when modalOpen is true */}
       {modalOpen && (
         <ErrorModal
-          errorType={error.errorType}
-          errorDescription={error.errorDescription}
-          errorMessage={error.errorMessage}
+          errorType={errorType}
+          errorDescription={errorDescription}
+          errorMessage={errorMessage}
           onClose={closeModal}
         />
       )}
@@ -149,7 +319,25 @@ const Team = () => {
             },
           }}
         >
-          <DataGrid checkboxSelection rows={data} columns={columns} />
+          <DataGridPremium
+            checkboxSelection
+            rows={data}
+            columns={columns}
+            //slots={{
+            //  toolbar: GridToolbar,
+            //}}
+            editMode='row'
+            rowModesModel={rowModesModel}
+            onRowModesModelChange={handleRowModesModelChange}
+            onRowEditStop={handleRowEditStop}
+            processRowUpdate={processRowUpdate}
+            slots={{
+              toolbar: EditToolbar,
+            }}
+            slotProps={{
+              toolbar: { setRows, setRowModesModel },
+            }}
+          />
         </Box>
       </Box>
     </div>

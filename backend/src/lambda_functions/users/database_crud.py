@@ -1,4 +1,3 @@
-
 import logging
 from database import (
     select_entity,
@@ -17,9 +16,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger()
 
-headers = {
-    'Access-Control-Allow-Origin': '*'
-}
+headers = {"Access-Control-Allow-Origin": "*"}
 
 
 def validate_request_body(request_body, required_fields, non_null_fields):
@@ -46,9 +43,13 @@ def validate_request_body(request_body, required_fields, non_null_fields):
 
 
 def create_error_response(error_message):
-    
+    error_description = "database_crud.py validation error"
     try:
-        body = {"errorType": "Bad Request", "errorMessage": error_message}
+        body = {
+            "errorType": "Bad Request",
+            "errorMessage": error_message,
+            "errorDescription": error_description,
+        }
         response = {"statusCode": 400, "headers": headers, "body": dumps(body)}
     except Exception as e:
         response = {"statusCode": 500, "headers": headers, "body": dumps(str(e))}
@@ -109,7 +110,7 @@ def select(event, entity_class, required_params, all_params):
             ]
 
             db_response.body["data"] = filtered_data
-        
+
         response = {
             "statusCode": db_response.response_code,
             "headers": headers,

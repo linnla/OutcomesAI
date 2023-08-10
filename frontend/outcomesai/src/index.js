@@ -5,8 +5,12 @@ import App from './App';
 import { Amplify } from 'aws-amplify';
 import { awsConfig } from './config/Config';
 import { BrowserRouter } from 'react-router-dom';
+import { LicenseInfo } from '@mui/x-license-pro';
 
 Amplify.configure(awsConfig);
+LicenseInfo.setLicenseKey(
+  '30967ef1cc2c7223ef730b9ce25d9c1bTz03MjU2NixFPTE3MjMzOTY2OTUwMDAsUz1wcmVtaXVtLExNPXN1YnNjcmlwdGlvbixLVj0y'
+);
 
 // 1) Get a reference to the div with ID root
 const el = document.getElementById('root');
