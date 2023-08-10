@@ -78,10 +78,13 @@ function Login() {
         const last_name = userData.data.data[0].last_name;
         const first_name = userData.data.data[0].first_name;
         const cognito_id = userData.data.data[0].cognito_id;
+        const email = userData.data.data[0].email;
 
         sessionStorage.setItem('user_id', user_id);
         sessionStorage.setItem('first_name', first_name);
+        sessionStorage.setItem('last_name', last_name);
         sessionStorage.setItem('cognito_id', cognito_id);
+        sessionStorage.setItem('email', email);
         sessionStorage.setItem('practice_id', 100101);
       }
     } catch (error) {

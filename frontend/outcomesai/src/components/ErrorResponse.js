@@ -1,13 +1,16 @@
 import Authenticate from '../components/Authenticate';
 
-const handleErrorResponse = async (error, openModal, navigate) => {
-  console.log('handleErrorResponse');
-  console.log('error', error);
-  console.log('code', error.code);
-  console.log('message', error.message);
-  console.log('errorType', error.response.data.errorType);
-  console.log('errorMessage', error.response.data.errorMessage);
+function isJSON(str) {
+  try {
+    JSON.parse(str);
+    return true;
+  } catch (error) {
+    return false;
+  }
+}
 
+const ErrorResponse = async (error, openModal, navigate) => {
+  console.log('ErrorResponse Start');
   let errorType = error.code;
   let errorDescription = error.request.responseURL;
   let errorMessage = error.message;
@@ -21,10 +24,10 @@ const handleErrorResponse = async (error, openModal, navigate) => {
   }
 
   let errorObject = {};
-  try {
+  if (isJSON(error.response.data)) {
     errorObject = JSON.parse(error.response.data);
-  } catch (parseError) {
-    openModal(error.code, parseError, error.message);
+  } else {
+    errorObject = error.response.data;
   }
 
   if ('errorType' in errorObject) {
@@ -39,15 +42,8 @@ const handleErrorResponse = async (error, openModal, navigate) => {
     errorMessage = errorObject.errorMessage;
   }
 
-  console.log(errorType);
-  console.log(errorDescription);
-  console.log(errorMessage);
-
-  openModal(
-    errorObject.errorType,
-    errorObject.errorDescription,
-    errorObject.errorMessage
-  );
+  console.log('ErrorResponse:', errorType, errorDescription, errorMessage);
+  openModal(errorType, errorDescription, errorMessage);
 };
 
-export default handleErrorResponse;
+export default ErrorResponse;

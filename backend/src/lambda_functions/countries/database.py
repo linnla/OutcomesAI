@@ -36,7 +36,7 @@ def exception_handling(exception):
             "errorMessage": error_message,
         }
         logger.critical(body)
-        return DBResponse(response_code=503, body=json.dumps(body))
+        return DBResponse(response_code=503, body=body)
 
     if isinstance(exception, NoResultFound):
         body = {
@@ -44,7 +44,7 @@ def exception_handling(exception):
             "errorDescription": "A database result was required but none was found",
             "errorMessage": error_message,
         }
-        response = DBResponse(response_code=404, body=json.dumps(body))
+        response = DBResponse(response_code=404, body=body)
 
     elif isinstance(exception, IntegrityError):
         if "duplicate key" in error_message.lower():
@@ -53,28 +53,28 @@ def exception_handling(exception):
                 "errorDescription": "Unique Constraint Error or Duplicate Key Violation. The record being inserted or updated already exists.",
                 "errorMessage": error_message,
             }
-            response = DBResponse(response_code=409, body=json.dumps(body))
+            response = DBResponse(response_code=409, body=body)
         elif "foreign key" in error_message.lower():
             body = {
                 "errorType": "ForeignKeyError",
                 "errorDescription": "Foreign key integrity constraint was violated. The record being inserted or updated has a foreign key that does not exist in the referenced table's primary key column, or trying to delete a reference table record while records in other tables reference it",
                 "errorMessage": error_message,
             }
-            response = DBResponse(response_code=409, body=json.dumps(body))
+            response = DBResponse(response_code=409, body=body)
         elif "checkviolation" in error_message.lower():
             body = {
                 "errorType": "CheckViolation",
                 "errorDescription": "Check constraint was violated. A Value being inserted or updated violates a specified condition",
                 "errorMessage": error_message,
             }
-            response = DBResponse(response_code=409, body=json.dumps(body))
+            response = DBResponse(response_code=409, body=body)
         else:
             body = {
                 "errorType": "IntegrityError",
                 "errorDescription": "TBD",
                 "errorMessage": error_message,
             }
-            response = DBResponse(response_code=409, body=json.dumps(body))
+            response = DBResponse(response_code=409, body=body)
 
     elif isinstance(exception, DataError):
         body = {
@@ -82,7 +82,7 @@ def exception_handling(exception):
             "errorDescription": "Problem with the data being processed, invalid values or data type mismatch.",
             "errorMessage": error_message,
         }
-        response = DBResponse(response_code=400, body=json.dumps(body))
+        response = DBResponse(response_code=400, body=body)
 
     elif isinstance(exception, ProgrammingError):
         body = {
@@ -90,7 +90,7 @@ def exception_handling(exception):
             "errorDescription": "Generic programming error related to the database operation, an incorrect method call or parameter usage",
             "errorMessage": error_message,
         }
-        response = DBResponse(response_code=400, body=json.dumps(body))
+        response = DBResponse(response_code=400, body=body)
 
     elif isinstance(exception, StatementError):
         body = {
@@ -98,7 +98,7 @@ def exception_handling(exception):
             "errorDescription": "Error in the SQL statement, syntax error or an invalid SQL query.",
             "errorMessage": error_message,
         }
-        response = DBResponse(response_code=400, body=json.dumps(body))
+        response = DBResponse(response_code=400, body=body)
 
     else:
         body = {
@@ -106,7 +106,7 @@ def exception_handling(exception):
             "errorDescription": "Unknown",
             "errorMessage": error_message,
         }
-        response = DBResponse(response_code=500, body=json.dumps(body))
+        response = DBResponse(response_code=500, body=body)
 
     logger.error(response)
     return response
@@ -186,7 +186,7 @@ def create_entity(entity_class, data):
                 body[key] = value
 
             body["created"] = True
-            return DBResponse(response_code=201, body=json.dumps(body))
+            return DBResponse(response_code=201, body=body)
 
     except (
         Exception,
@@ -232,7 +232,7 @@ def update_entity(entity_instance, updated_data):
                 body[key] = value
 
             body["updated"] = True
-            return DBResponse(response_code=200, body=json.dumps(body))
+            return DBResponse(response_code=200, body=body)
 
     except (
         Exception,
@@ -276,7 +276,7 @@ def delete_entity(entity_instance):
                 body[key] = value
 
             body["deleted"] = True
-            return DBResponse(response_code=200, body=json.dumps(body))
+            return DBResponse(response_code=200, body=body)
 
     except (
         Exception,

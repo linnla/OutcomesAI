@@ -50,10 +50,16 @@ def create_error_response(error_message):
             "errorMessage": error_message,
             "errorDescription": error_description,
         }
-        response = {"statusCode": 400, "headers": headers, "body": dumps(body)}
-    except Exception as e:
-        response = {"statusCode": 500, "headers": headers, "body": dumps(str(e))}
 
+    except Exception as e:
+        error_description = str(e)
+        body = {
+            "errorType": "create_error_response",
+            "errorMessage": "database_crud.py",
+            "errorDescription": error_description,
+        }
+
+    response = {"statusCode": 400, "headers": headers, "body": dumps(body)}
     logger.error(response)
     return response
 
@@ -66,7 +72,13 @@ def select_reference_table(event, entity_class):
             "body": dumps(db_response.body),
         }
     except Exception as e:
-        response = {"statusCode": 500, "body": dumps(str(e))}
+        error_description = str(e)
+        body = {
+            "errorType": "select_reference_table exception",
+            "errorMessage": "database_crud.py",
+            "errorDescription": error_description,
+        }
+        response = {"statusCode": 500, "headers": headers, "body": dumps(body)}
 
     return response
 
@@ -118,7 +130,13 @@ def select(event, entity_class, required_params, all_params):
         }
 
     except Exception as e:
-        response = {"statusCode": 500, "headers": headers, "body": dumps(str(e))}
+        error_description = str(e)
+        body = {
+            "errorType": "select exception",
+            "errorMessage": "database_crud.py",
+            "errorDescription": error_description,
+        }
+        response = {"statusCode": 500, "headers": headers, "body": dumps(body)}
 
     return response
 
@@ -153,7 +171,13 @@ def create(event, entity_class, required_fields, allowed_fields):
             "body": dumps(db_response.body),
         }
     except Exception as e:
-        response = {"statusCode": 500, "headers": headers, "body": dumps(str(e))}
+        error_description = str(e)
+        body = {
+            "errorType": "create exception",
+            "errorMessage": "database_crud.py",
+            "errorDescription": error_description,
+        }
+        response = {"statusCode": 500, "headers": headers, "body": dumps(body)}
 
     return response
 
@@ -194,7 +218,13 @@ def update(event, entity_class, required_fields, allowed_fields, non_null_fields
             "body": dumps(db_response.body),
         }
     except Exception as e:
-        response = {"statusCode": 500, "headers": headers, "body": dumps(str(e))}
+        error_description = str(e)
+        body = {
+            "errorType": "update exception",
+            "errorMessage": "database_crud.py",
+            "errorDescription": error_description,
+        }
+        response = {"statusCode": 500, "headers": headers, "body": dumps(body)}
 
     return response
 
@@ -230,7 +260,13 @@ def delete(event, entity_class, required_fields):
             "body": dumps(db_response.body),
         }
     except Exception as e:
-        response = {"statusCode": 500, "headers": headers, "body": dumps(str(e))}
+        error_description = str(e)
+        body = {
+            "errorType": "delete exception",
+            "errorMessage": "database_crud.py",
+            "errorDescription": error_description,
+        }
+        response = {"statusCode": 500, "headers": headers, "body": dumps(body)}
 
     return response
 

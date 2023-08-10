@@ -21,50 +21,9 @@ import Header from '../components/Header';
 import React, { useEffect, useState } from 'react';
 import { queryTable } from '../api/Api';
 import ErrorModal from '../components/ErrorModal';
-//import handleErrorResponse from '../components/ErrorResponse';
+import ErrorResponse from '../components/ErrorResponse';
 import Authenticate from '../components/Authenticate';
-
-const createErrorResponse = async (error, openModal, navigate) => {
-  //console.log('createErrorResponse error:', error);
-  let errorType = error.code;
-  let errorDescription = error.request.responseURL;
-  let errorMessage = error.message;
-
-  if (error.response.data.message === 'The incoming token has expired') {
-    const sessionValid = await Authenticate(); // Adjust as needed
-    if (!sessionValid) {
-      navigate('/login');
-      return;
-    }
-  }
-
-  let errorObject = {};
-  try {
-    errorObject = JSON.parse(error.response.data);
-  } catch (parseError) {
-    console.log('createErrorMessage JSON parse:', parseError);
-    errorObject = error.response.data;
-  }
-
-  console.log('errorObject:', errorObject);
-  if ('errorType' in errorObject) {
-    errorType = errorObject.errorType;
-    //console.log(errorType);
-  }
-
-  if ('errorDescription' in errorObject) {
-    errorDescription = errorObject.errorDescription;
-    //console.log(errorDescription);
-  }
-
-  if ('errorMessage' in errorObject) {
-    errorMessage = errorObject.errorMessage;
-    //console.log(errorMessage);
-  }
-
-  //console.log('createErrorResponse', errorType, errorDescription, errorMessage);
-  openModal(errorType, errorDescription, errorMessage);
-};
+import { useNavigate } from 'react-router-dom';
 
 const Team = () => {
   const theme = useTheme();
@@ -74,12 +33,16 @@ const Team = () => {
   const [errorMessage, setErrorMessage] = useState(null);
   const [errorDescription, setErrorDescription] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
+  const navigate = useNavigate();
 
   const openModal = (errorType, errorDescription, errorMessage) => {
     setErrorType(errorType);
     setErrorMessage(errorMessage);
     setErrorDescription(errorDescription);
     setModalOpen(true);
+    console.log('openModal errorType:', errorType);
+    console.log('openModal errorDescription:', errorDescription);
+    console.log('openModal errorMessage:', errorMessage);
   };
 
   const closeModal = () => {
@@ -94,11 +57,13 @@ const Team = () => {
       const sessionValid = await Authenticate();
       if (sessionValid) {
         fetchData();
+      } else {
+        navigate('/login');
       }
     };
 
     checkAndNavigate();
-  }, []);
+  }, [navigate]);
 
   const fetchData = async () => {
     const practice_id = sessionStorage.getItem('practice_id');
@@ -108,12 +73,8 @@ const Team = () => {
       });
       setData(response.data.data);
     } catch (error) {
-      //console.log('error', error);
-      //console.log('code', error.code);
-      //console.log('message', error.message);
-      //console.log('errorType', error.response.data.errorType);
-      //console.log('errorMessage', error.response.data.errorMessage);
-      createErrorResponse(error, openModal);
+      ErrorResponse(error, openModal, navigate);
+      console.log('errorMessage:', errorMessage);
     }
   };
 
@@ -121,7 +82,6 @@ const Team = () => {
     const { setRows, setRowModesModel } = props;
 
     const handleClick = (id) => {
-      //const id = randomId();
       setRows((oldRows) => [
         ...oldRows,
         { id, last_name: '', first_name: '', isNew: true },
