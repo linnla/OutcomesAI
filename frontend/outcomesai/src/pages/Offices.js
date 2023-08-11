@@ -73,6 +73,14 @@ const Offices = () => {
     }
   };
 
+  const newRow = {
+    name: '',
+    virtual: false,
+    postal_code: ' ',
+    status: 'Active',
+    isNew: true,
+  };
+
   const columns = [
     { field: 'id', headerName: 'ID', flex: 0.5 },
     {
@@ -115,12 +123,20 @@ const Offices = () => {
   ];
 
   return (
-    <CustomDataGrid
-      data={data}
-      columns={columns}
-      title='Offices'
-      subtitle='Manage Offices'
-    />
+    <>
+      {console.log('Calling CustomDataGrid', data)} {/* Add this line */}
+      {data.length > 0 ? (
+        <CustomDataGrid
+          rowData={data}
+          columns={columns}
+          title='Offices'
+          subtitle='Manage Offices'
+          newRow={newRow}
+        />
+      ) : (
+        <p>Loading data...</p>
+      )}
+    </>
   );
 };
 

@@ -19,35 +19,38 @@ import {
 } from '@mui/x-data-grid-premium';
 import React, { useEffect, useState } from 'react';
 
-const CustomDataGrid = ({ data, columns, title, subtitle }) => {
+const CustomDataGrid = ({ rowData, columns, title, subtitle, newRow }) => {
+  //console.log('rowData', rowData);
+
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
-  //const [data, setData] = useState([]);
-  const [rows, setRows] = React.useState([]);
-  const [rowModesModel, setRowModesModel] = React.useState({});
+  const [rows, setRows] = useState([]);
+  const [rowModesModel, setRowModesModel] = useState({});
   const [originalRowValues, setOriginalRowValues] = useState({});
 
   useEffect(() => {
-    setRows(data);
-  }, [data]);
+    setRows(rowData); // Update rows when rowData changes
+    setOriginalRowValues(rowData);
+  }, [rowData]); // Use rowData as a dependency
 
   function EditToolbar(props) {
     console.log('EditToolBar');
-    return;
 
     const { setRows, setRowModesModel } = props;
 
     const handleClick = () => {
-      const newId = Math.max(...data.map((row) => row.id)) + 1; // Generate a new unique ID
-      const newRow = { id: newId, last_name: '', first_name: '', isNew: true };
+      console.log('handleClick');
 
-      //setData((prevData) => [...prevData, newRow]);
-      //setRows((prevRows) => [...prevRows, newRow]);
+      const newId = Math.max(...rows.map((row) => row.id)) + 1; // Generate a new unique ID
+      console.log('newId:', newId);
+      const addNewRow = { ...newRow, id: newId };
+
+      setRows((prevRows) => [...prevRows, addNewRow]);
 
       setRowModesModel((oldModel) => ({
         ...oldModel,
-        [newId]: { mode: GridRowModes.Edit, fieldToFocus: 'last_name' },
+        [newId]: { mode: GridRowModes.Edit, fieldToFocus: 'name' },
       }));
     };
 
@@ -62,8 +65,6 @@ const CustomDataGrid = ({ data, columns, title, subtitle }) => {
 
   const handleRowEditStop = (params, event) => {
     console.log('handleRowEditStop');
-    return;
-
     if (params.reason === GridRowEditStopReasons.rowFocusOut) {
       event.defaultMuiPrevented = true;
     }
@@ -71,62 +72,21 @@ const CustomDataGrid = ({ data, columns, title, subtitle }) => {
 
   const handleEditClick = (id) => () => {
     console.log('handleEditClick');
-    return;
-
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
-    const originalValues = { ...rows.find((row) => row.id === id) };
-    setOriginalRowValues((prevValues) => ({
-      ...prevValues,
-      [id]: originalValues,
-    }));
   };
 
-  // This function is called when the "Save" button is clicked
-  const handleSaveClick = (id) => async () => {
+  const handleSaveClick = (id) => () => {
     console.log('handleSaveClick');
-    return;
-
-    const updatedRow = rows.find((row) => row.id === id);
-    const originalRow = originalRowValues[id];
-    if (updatedRow != originalRow) {
-      console.log('Changes Made');
-      // Compare original values with new values to determine changes
-      const changedFields = {};
-      for (const field in updatedRow) {
-        if (updatedRow[field] !== originalRow[field]) {
-          changedFields[field] = updatedRow[field];
-        }
-      }
-      console.log('changedFields:', changedFields);
-    }
-
-    try {
-      // Perform API call to update the row in the database
-      //await updateDBRow(updatedRow);
-
-      // Update the rowModesModel to switch the mode back to view
-      setRowModesModel({
-        ...rowModesModel,
-        [id]: { mode: GridRowModes.View },
-      });
-    } catch (error) {
-      console.error('Error saving row:', error);
-      // Handle error (e.g., show an error message)
-    }
+    setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
   };
 
   const handleDeleteClick = (id) => () => {
     console.log('handleDeleteClick');
-    return;
-
     setRows(rows.filter((row) => row.id !== id));
-    console.log('delete', id);
   };
 
   const handleCancelClick = (id) => () => {
     console.log('handleCancelClick');
-    return;
-
     setRowModesModel({
       ...rowModesModel,
       [id]: { mode: GridRowModes.View, ignoreModifications: true },
@@ -139,30 +99,14 @@ const CustomDataGrid = ({ data, columns, title, subtitle }) => {
   };
 
   const processRowUpdate = (newRow) => {
-    console.log('processRowUpdate newRow:', newRow);
-    return;
-
+    console.log('processRowUpdate');
     const updatedRow = { ...newRow, isNew: false };
-    const originalRow = originalRowValues[newRow.id];
-    if (updatedRow != originalRow) {
-      console.log('Changes Made');
-      // Compare original values with new values to determine changes
-      const changedFields = {};
-      for (const field in updatedRow) {
-        if (updatedRow[field] !== originalRow[field]) {
-          changedFields[field] = updatedRow[field];
-        }
-      }
-      console.log('changedFields:', changedFields);
-    }
-
     setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
     return updatedRow;
   };
 
   const handleRowModesModelChange = (newRowModesModel) => {
-    console.log('handleRowModeModelChange');
-    return;
+    console.log('handleRowModesModelChange');
     setRowModesModel(newRowModesModel);
   };
 
@@ -206,7 +150,6 @@ const CustomDataGrid = ({ data, columns, title, subtitle }) => {
           columns={columns}
           editMode='row'
           rowModesModel={rowModesModel}
-          checkboxSelection
           slots={{
             toolbar: EditToolbar,
           }}
@@ -214,11 +157,18 @@ const CustomDataGrid = ({ data, columns, title, subtitle }) => {
             toolbar: { setRows, setRowModesModel },
           }}
           onRowModesModelChange={handleRowModesModelChange}
+          onRowModesModelChangeError={(error) => {
+            console.error('onRowModesModelChange Error:', error);
+            // You can show an error message to the user or take other appropriate actions
+          }}
           onRowEditStop={handleRowEditStop}
+          onRowEditStopError={(error) => {
+            console.error('onRowEditStop Error:', error);
+            // You can show an error message to the user or take other appropriate actions
+          }}
           processRowUpdate={processRowUpdate}
           onProcessRowUpdateError={(error) => {
-            // Handle the error here, for example:
-            console.error('Error updating row:', error);
+            console.error('processRowUpdate Error:', error);
             // You can show an error message to the user or take other appropriate actions
           }}
         />
