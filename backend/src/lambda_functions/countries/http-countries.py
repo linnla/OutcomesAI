@@ -16,6 +16,7 @@ entity_class = Country
 
 def lambda_handler(event, context):
     print(event)
+
     if event["httpMethod"] == "GET":
         query_params = event.get("queryStringParameters", {})
         if query_params:

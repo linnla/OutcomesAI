@@ -10,7 +10,7 @@ from json import JSONDecodeError, dumps, loads
 
 # Setup Logging
 logging.basicConfig(
-    level=logging.DEBUG,
+    level=logging.INFO,
     format="%(asctime)s.%(msecs)03d %(levelname)s %(module)s - %(funcName)s: %(message)s",
     datefmt="%Y-%m-%d %H:%M:%S",
 )
@@ -60,7 +60,7 @@ def create_error_response(error_message):
         }
 
     response = {"statusCode": 400, "headers": headers, "body": dumps(body)}
-    logger.error(response)
+    print(response)
     return response
 
 
@@ -69,6 +69,7 @@ def select_reference_table(event, entity_class):
         db_response = select_reference_entity(entity_class)
         response = {
             "statusCode": db_response.response_code,
+            "headers": headers,
             "body": dumps(db_response.body),
         }
     except Exception as e:
@@ -80,6 +81,7 @@ def select_reference_table(event, entity_class):
         }
         response = {"statusCode": 500, "headers": headers, "body": dumps(body)}
 
+    print(response)
     return response
 
 
@@ -138,6 +140,7 @@ def select(event, entity_class, required_params, all_params):
         }
         response = {"statusCode": 500, "headers": headers, "body": dumps(body)}
 
+    print(response)
     return response
 
 
@@ -179,6 +182,7 @@ def create(event, entity_class, required_fields, allowed_fields):
         }
         response = {"statusCode": 500, "headers": headers, "body": dumps(body)}
 
+    print(response)
     return response
 
 
@@ -226,6 +230,7 @@ def update(event, entity_class, required_fields, allowed_fields, non_null_fields
         }
         response = {"statusCode": 500, "headers": headers, "body": dumps(body)}
 
+    print(response)
     return response
 
 
@@ -268,6 +273,7 @@ def delete(event, entity_class, required_fields):
         }
         response = {"statusCode": 500, "headers": headers, "body": dumps(body)}
 
+    print(response)
     return response
 
 

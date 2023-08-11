@@ -16,6 +16,7 @@ entity_class = PostalCode
 
 def lambda_handler(event, context):
     print(event)
+
     if event["httpMethod"] == "GET":
         return select(
             event,

@@ -15,7 +15,7 @@ entity_class = PracticePractitioner
 
 
 def lambda_handler(event, context):
-    logger.info(event)
+    print(event)
 
     if event["httpMethod"] == "GET":
         return select(

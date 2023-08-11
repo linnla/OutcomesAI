@@ -24,25 +24,25 @@ import ErrorModal from '../components/ErrorModal';
 import ErrorResponse from '../components/ErrorResponse';
 import Authenticate from '../components/Authenticate';
 import { useNavigate } from 'react-router-dom';
+import { updateRecord } from '../api/Api';
 
 const Team = () => {
+  const navigate = useNavigate();
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+
   const [data, setData] = useState([]);
+  const [roles, setRoles] = useState([]);
   const [errorType, setErrorType] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
   const [errorDescription, setErrorDescription] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
-  const navigate = useNavigate();
 
   const openModal = (errorType, errorDescription, errorMessage) => {
     setErrorType(errorType);
     setErrorMessage(errorMessage);
     setErrorDescription(errorDescription);
     setModalOpen(true);
-    console.log('openModal errorType:', errorType);
-    console.log('openModal errorDescription:', errorDescription);
-    console.log('openModal errorMessage:', errorMessage);
   };
 
   const closeModal = () => {
@@ -57,6 +57,7 @@ const Team = () => {
       const sessionValid = await Authenticate();
       if (sessionValid) {
         fetchData();
+        fetchRoles();
       } else {
         navigate('/login');
       }
@@ -64,6 +65,10 @@ const Team = () => {
 
     checkAndNavigate();
   }, [navigate]);
+
+  useEffect(() => {
+    setRows(data);
+  }, [data]);
 
   const fetchData = async () => {
     const practice_id = sessionStorage.getItem('practice_id');
@@ -78,53 +83,135 @@ const Team = () => {
     }
   };
 
+  const fetchRoles = async () => {
+    try {
+      const response = await queryTable('roles');
+      setRoles(response.data.data);
+      console.log(response.data.data);
+    } catch (error) {
+      ErrorResponse(error, openModal, navigate);
+      console.log('errorMessage:', errorMessage);
+    }
+  };
+
+  const [rows, setRows] = React.useState([]);
+  const [rowModesModel, setRowModesModel] = React.useState({});
+  const [originalRowValues, setOriginalRowValues] = useState({});
+
+  const capitalizeWords = (str) => {
+    return str
+      .toLowerCase()
+      .split(' ')
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
+  };
+
   function EditToolbar(props) {
+    console.log('EditToolBar');
     const { setRows, setRowModesModel } = props;
 
-    const handleClick = (id) => {
-      setRows((oldRows) => [
-        ...oldRows,
-        { id, last_name: '', first_name: '', isNew: true },
-      ]);
+    const handleClick = () => {
+      const newId = Math.max(...data.map((row) => row.id)) + 1; // Generate a new unique ID
+      const newRow = { id: newId, last_name: '', first_name: '', isNew: true };
+
+      setData((prevData) => [...prevData, newRow]);
+      setRows((prevRows) => [...prevRows, newRow]);
+
       setRowModesModel((oldModel) => ({
         ...oldModel,
-        [id]: { mode: GridRowModes.Edit, fieldToFocus: 'last_name' },
+        [newId]: { mode: GridRowModes.Edit, fieldToFocus: 'last_name' },
       }));
     };
 
     return (
       <GridToolbarContainer>
-        <Button color='primary' startIcon={<AddIcon />} onClick={handleClick}>
+        <Button color='secondary' startIcon={<AddIcon />} onClick={handleClick}>
           Add record
         </Button>
       </GridToolbarContainer>
     );
   }
 
-  const [rows, setRows] = React.useState(data);
-  const [rowModesModel, setRowModesModel] = React.useState({});
-
   const handleRowEditStop = (params, event) => {
+    console.log('handleRowEditStop');
     if (params.reason === GridRowEditStopReasons.rowFocusOut) {
       event.defaultMuiPrevented = true;
     }
   };
 
   const handleEditClick = (id) => () => {
+    console.log('handleEditClick');
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
+    const originalValues = { ...rows.find((row) => row.id === id) };
+    setOriginalRowValues((prevValues) => ({
+      ...prevValues,
+      [id]: originalValues,
+    }));
   };
 
-  const handleSaveClick = (id) => () => {
-    setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
-    console.log('save', id);
+  const updateDBRow = async (updatedRow) => {
+    console.log('updateDBRow:', updatedRow);
+    return;
+
+    try {
+      const newUser = {
+        last_name: 'Linn',
+        first_name: 'Laure',
+      };
+
+      const response = await updateRecord('users', newUser);
+      if (response.status !== 200) {
+        return false;
+      } else {
+        return true;
+      }
+    } catch (error) {
+      console.log('Error creating user:', error);
+      return false;
+    }
+  };
+
+  // This function is called when the "Save" button is clicked
+  const handleSaveClick = (id) => async () => {
+    console.log('handleSaveClick');
+
+    const updatedRow = rows.find((row) => row.id === id);
+    const originalRow = originalRowValues[id];
+    if (updatedRow != originalRow) {
+      console.log('Changes Made');
+      // Compare original values with new values to determine changes
+      const changedFields = {};
+      for (const field in updatedRow) {
+        if (updatedRow[field] !== originalRow[field]) {
+          changedFields[field] = updatedRow[field];
+        }
+      }
+      console.log('changedFields:', changedFields);
+    }
+
+    try {
+      // Perform API call to update the row in the database
+      //await updateDBRow(updatedRow);
+
+      // Update the rowModesModel to switch the mode back to view
+      setRowModesModel({
+        ...rowModesModel,
+        [id]: { mode: GridRowModes.View },
+      });
+    } catch (error) {
+      console.error('Error saving row:', error);
+      // Handle error (e.g., show an error message)
+    }
   };
 
   const handleDeleteClick = (id) => () => {
+    console.log('handleDeleteClick');
     setRows(rows.filter((row) => row.id !== id));
     console.log('delete', id);
   };
 
   const handleCancelClick = (id) => () => {
+    console.log('handleCancelClick');
     setRowModesModel({
       ...rowModesModel,
       [id]: { mode: GridRowModes.View, ignoreModifications: true },
@@ -137,40 +224,45 @@ const Team = () => {
   };
 
   const processRowUpdate = (newRow) => {
+    console.log('processRowUpdate newRow:', newRow);
+
     const updatedRow = { ...newRow, isNew: false };
+    const originalRow = originalRowValues[newRow.id];
+    if (updatedRow != originalRow) {
+      console.log('Changes Made');
+      // Compare original values with new values to determine changes
+      const changedFields = {};
+      for (const field in updatedRow) {
+        if (updatedRow[field] !== originalRow[field]) {
+          changedFields[field] = updatedRow[field];
+        }
+      }
+      console.log('changedFields:', changedFields);
+    }
+
     setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
     return updatedRow;
   };
 
   const handleRowModesModelChange = (newRowModesModel) => {
+    console.log('handleRowModeModelChange');
     setRowModesModel(newRowModesModel);
   };
 
   const columns = [
     { field: 'id', headerName: 'ID', width: 50 },
     {
-      field: 'fullName',
-      headerName: 'Name',
-      valueGetter: (params) => {
-        return `${params.row.first_name || ''} ${params.row.last_name || ''}`;
-      },
-    },
-    {
-      field: 'country',
-      editable: true,
-      type: 'singleSelect',
-      valueOptions: ['United Kingdom', 'Spain', 'Brazil'],
-    },
-    {
       field: 'last_name',
       editable: true,
       headerName: 'Last Name',
       flex: 1,
+      valueParser: (value) => value.toUpperCase(),
     },
     {
       field: 'first_name',
       editable: true,
       headerName: 'First Name',
+      valueSetter: (value) => capitalizeWords(value),
       flex: 1,
     },
     {
@@ -179,16 +271,29 @@ const Team = () => {
       flex: 1,
     },
     {
-      field: 'status',
-      headerName: 'Status',
-      flex: 1,
-    },
-    {
       field: 'role',
       headerName: 'Role',
       editable: true,
       type: 'singleSelect',
-      valueOptions: ['admin', 'manager', 'user'],
+      valueOptions: roles.map((role) => role.name),
+    },
+    {
+      field: 'status',
+      headerName: 'Status',
+      editable: true,
+      type: 'singleSelect',
+      valueOptions: ['Active', 'Inactive'],
+      flex: 1,
+    },
+    {
+      field: 'created',
+      headerName: 'Created',
+      flex: 1,
+    },
+    {
+      field: 'updated',
+      headerName: 'Last Updated',
+      flex: 1,
     },
     {
       field: 'actions',
@@ -280,6 +385,11 @@ const Team = () => {
           }}
         >
           <DataGridPremium
+            onProcessRowUpdateError={(error) => {
+              // Handle the error here, for example:
+              console.error('Error updating row:', error);
+              // You can show an error message to the user or take other appropriate actions
+            }}
             checkboxSelection
             rows={data}
             columns={columns}

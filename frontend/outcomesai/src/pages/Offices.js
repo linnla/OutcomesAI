@@ -1,58 +1,97 @@
-import { Box } from '@mui/material';
-import { DataGrid, GridToolbar } from '@mui/x-data-grid';
-import { tokens } from '../theme';
-import { mockDataOffices } from '../data/mockData';
-import Header from '../components/Header';
-import { useTheme } from '@mui/material';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Auth } from 'aws-amplify';
+import { tokens } from '../theme';
+import { useTheme } from '@mui/material';
+import CustomDataGrid from '../components/CustomDataGrid';
+import { queryTable } from '../api/Api';
+import ErrorModal from '../components/ErrorModal';
+import ErrorResponse from '../components/ErrorResponse';
+import Authenticate from '../components/Authenticate';
 
 const Offices = () => {
   const navigate = useNavigate();
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
+
+  const [data, setData] = useState([]);
+  const [roles, setRoles] = useState([]);
+  const [errorType, setErrorType] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [errorDescription, setErrorDescription] = useState(null);
+  const [modalOpen, setModalOpen] = useState(false);
+
+  const openModal = (errorType, errorDescription, errorMessage) => {
+    setErrorType(errorType);
+    setErrorMessage(errorMessage);
+    setErrorDescription(errorDescription);
+    setModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setErrorType(null);
+    setErrorMessage(null);
+    setErrorDescription(null);
+    setModalOpen(false);
+  };
 
   useEffect(() => {
     const checkAndNavigate = async () => {
-      const sessionValid = await verifySession();
-      if (!sessionValid) {
-        navigate('/login'); // Redirect to login page
+      const sessionValid = await Authenticate();
+      if (sessionValid) {
+        fetchData();
+        //fetchRoles();
+      } else {
+        navigate('/login');
       }
     };
 
     checkAndNavigate();
   }, [navigate]);
 
-  const verifySession = async () => {
+  const fetchData = async () => {
+    const practice_id = sessionStorage.getItem('practice_id');
     try {
-      await Auth.currentAuthenticatedUser();
-      console.log('User is authenticated');
-      return true;
+      const response = await queryTable('offices', {
+        practice_id: practice_id,
+      });
+      setData(response.data.data);
+      console.log(data);
     } catch (error) {
-      console.log(error);
-      return false;
+      ErrorResponse(error, openModal, navigate);
+      console.log('errorMessage:', errorMessage);
     }
   };
 
-  verifySession();
-  const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
+  const fetchRoles = async () => {
+    try {
+      const response = await queryTable('roles');
+      setRoles(response.data.data);
+      console.log(response.data.data);
+    } catch (error) {
+      ErrorResponse(error, openModal, navigate);
+      console.log('errorMessage:', errorMessage);
+    }
+  };
 
   const columns = [
     { field: 'id', headerName: 'ID', flex: 0.5 },
     {
       field: 'name',
       headerName: 'Name',
+      editable: true,
       flex: 1,
       cellClassName: 'name-column--cell',
     },
     {
       field: 'virtual',
       headerName: 'Telehealth',
-      flex: 1,
+      editable: true,
+      type: 'boolean',
     },
     {
-      field: 'zip_code',
+      field: 'postal_code',
       headerName: 'Zip Code',
+      editable: true,
       flex: 1,
     },
     {
@@ -68,52 +107,20 @@ const Offices = () => {
     {
       field: 'status',
       headerName: 'Status',
+      editable: true,
+      type: 'singleSelect',
+      valueOptions: ['Active', 'Inactive'],
       flex: 1,
     },
   ];
 
   return (
-    <Box m='20px'>
-      <Header title='Offices' subtitle='Manage Offices' />
-      <Box
-        m='40px 0 0 0'
-        height='75vh'
-        sx={{
-          '& .MuiDataGrid-root': {
-            border: 'none',
-          },
-          '& .MuiDataGrid-cell': {
-            borderBottom: 'none',
-          },
-          '& .name-column--cell': {
-            color: colors.greenAccent[300],
-          },
-          '& .MuiDataGrid-columnHeaders': {
-            backgroundColor: colors.blueAccent[700],
-            borderBottom: 'none',
-          },
-          '& .MuiDataGrid-virtualScroller': {
-            backgroundColor: colors.primary[400],
-          },
-          '& .MuiDataGrid-footerContainer': {
-            borderTop: 'none',
-            backgroundColor: colors.blueAccent[700],
-          },
-          '& .MuiCheckbox-root': {
-            color: `${colors.greenAccent[200]} !important`,
-          },
-          '& .MuiDataGrid-toolbarContainer .MuiButton-text': {
-            color: `${colors.grey[100]} !important`,
-          },
-        }}
-      >
-        <DataGrid
-          rows={mockDataOffices}
-          columns={columns}
-          components={{ Toolbar: GridToolbar }}
-        />
-      </Box>
-    </Box>
+    <CustomDataGrid
+      data={data}
+      columns={columns}
+      title='Offices'
+      subtitle='Manage Offices'
+    />
   );
 };
 

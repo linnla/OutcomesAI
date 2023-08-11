@@ -3,6 +3,7 @@ from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import mapped_column
 from sqlalchemy.orm import DeclarativeBase
+from datetime import datetime
 
 
 class Base(DeclarativeBase):
@@ -29,6 +30,9 @@ class Patient(Base):
     updated_at = mapped_column(DateTime(timezone=True), nullable=False)
 
     def to_dict(self):
+        created = self.created_at.strftime("%Y-%m-%d")
+        updated = self.updated_at.strftime("%Y-%m-%d")
+
         return {
             "id": self.id,
             "user_id": self.user_id,
@@ -43,6 +47,8 @@ class Patient(Base):
             "country_code": self.country_code,
             "birthdate": str(self.birthdate),
             "gender": self.gender,
+            "created": created,
+            "updated": updated,
         }
 
     all_params_select = True

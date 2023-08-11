@@ -13,6 +13,7 @@ from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import mapped_column
 from sqlalchemy.orm import DeclarativeBase
+from datetime import datetime
 
 
 class Base(DeclarativeBase):
@@ -38,6 +39,8 @@ class PracticePractitioner(Base):
         practice = self.practice.to_dict()
         practitioner = self.practitioner.to_dict()
         full_name = f"{practitioner['prefix']} {practitioner['first_name']} {practitioner['last_name']} {practitioner['suffix']}"
+        created = self.created_at.strftime("%Y-%m-%d")
+        updated = self.updated_at.strftime("%Y-%m-%d")
 
         return {
             "practice_id": self.practice_id,
@@ -50,6 +53,8 @@ class PracticePractitioner(Base):
             "prefix": practitioner["prefix"],
             "suffix": practitioner["suffix"],
             "email": practitioner["email"],
+            "created": created,
+            "updated": updated,
         }
 
     all_params_select = True

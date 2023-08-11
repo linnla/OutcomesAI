@@ -16,7 +16,7 @@ entity_class = Role
 
 
 def lambda_handler(event, context):
-    logger.info(event)
+    print(event)
 
     if event["httpMethod"] == "GET":
         return select_reference_table(event, entity_class)
