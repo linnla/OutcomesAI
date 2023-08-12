@@ -29,6 +29,7 @@ const DataGridEditable = ({
   subtitle,
   newRow,
   handleSubmit,
+  dataValidation,
 }) => {
   //console.log('rowData', rowData);
   //console.log('columnData', columnData);
@@ -169,27 +170,40 @@ const DataGridEditable = ({
   const processRowUpdate = (newRow) => {
     console.log('CustomDataGrid processRowUpdate:', newRow);
 
-    handleSubmit(newRow)
+    dataValidation(newRow)
       .then(() => {
-        const updatedRow = { ...newRow, isNew: false };
-        setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
-        setSnackbar({
-          children: 'User successfully saved',
-          severity: 'success',
-        });
+        console.log('data passed validation');
+        handleSubmit(newRow)
+          .then(() => {
+            const updatedRow = { ...newRow, isNew: false };
+            setRows(
+              rows.map((row) => (row.id === newRow.id ? updatedRow : row))
+            );
+            setSnackbar({
+              children: 'User successfully saved',
+              severity: 'success',
+            });
+            return updatedRow;
+          })
+          .catch((error) => {
+            console.log('catch error:', error);
+
+            const errorType = error.response.data.errorType;
+            const errorMessage = error.response.data.errorMessage;
+            const errorDescription = error.response.data.errorDescription;
+
+            const message = `${errorType}\n${errorMessage}\n${errorDescription}`;
+            console.log('message:', message);
+
+            setSnackbar({
+              children: message,
+              severity: 'error',
+            });
+          });
       })
       .catch((error) => {
-        console.log('catch error:', error);
-
-        const errorType = error.response.data.errorType;
-        const errorMessage = error.response.data.errorMessage;
-        const errorDescription = error.response.data.errorDescription;
-
-        const message = `${errorType}\n${errorMessage}\n${errorDescription}`;
-        console.log('message:', message);
-
         setSnackbar({
-          children: message,
+          children: 'data failed validation',
           severity: 'error',
         });
       });

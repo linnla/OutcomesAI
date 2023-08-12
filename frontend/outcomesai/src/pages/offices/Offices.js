@@ -14,6 +14,19 @@ function simulateAsyncFailure(saveRow) {
   return result;
 }
 
+function validateData(newRow) {
+  console.log('validateData newRow:', newRow);
+
+  const result = validatePostalCode(newRow.postal_code);
+  return result;
+}
+
+function validatePostalCode(postal_code) {
+  return queryTable('postal_codes', {
+    postal_code: postal_code,
+  });
+}
+
 export const Offices = () => {
   const navigate = useNavigate();
 
@@ -130,6 +143,7 @@ export const Offices = () => {
           subtitle='Manage Offices'
           newRow={newRow}
           handleSubmit={simulateAsyncFailure}
+          dataValidation={validateData}
         />
       ) : (
         <p>Loading data...</p>
