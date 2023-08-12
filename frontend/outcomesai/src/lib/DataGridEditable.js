@@ -19,7 +19,14 @@ import {
 } from '@mui/x-data-grid-premium';
 import React, { useEffect, useState } from 'react';
 
-const CustomDataGrid = ({ rowData, columnData, title, subtitle, newRow }) => {
+const DataGridEditable = ({
+  rowData,
+  columnData,
+  title,
+  subtitle,
+  newRow,
+  handleSubmit,
+}) => {
   //console.log('rowData', rowData);
   //console.log('columnData', columnData);
 
@@ -27,71 +34,64 @@ const CustomDataGrid = ({ rowData, columnData, title, subtitle, newRow }) => {
   const colors = tokens(theme.palette.mode);
 
   const [rows, setRows] = useState([rowData]);
-  const [columns, setColumns] = useState([columnData]);
 
   const [rowId, setRowId] = useState(null);
   const [rowModesModel, setRowModesModel] = useState({});
   const [pageSize, setPageSize] = useState(25);
 
-  const actionFields = {
-    field: 'actions',
-    type: 'actions',
-    headerName: 'Actions',
-    width: 100,
-    cellClassName: 'actions',
-    getActions: ({ id }) => {
-      const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
-
-      if (isInEditMode) {
-        return [
-          <GridActionsCellItem
-            icon={<SaveIcon />}
-            label='Save'
-            sx={{
-              color: 'primary.main',
-            }}
-            onClick={handleSaveClick(id)}
-          />,
-          <GridActionsCellItem
-            icon={<CancelIcon />}
-            label='Cancel'
-            className='textPrimary'
-            onClick={handleCancelClick(id)}
-            color='inherit'
-          />,
-        ];
-      }
-      return [
-        <GridActionsCellItem
-          icon={<EditIcon />}
-          label='Edit'
-          className='textPrimary'
-          onClick={handleEditClick(id)}
-          color='inherit'
-        />,
-        <GridActionsCellItem
-          icon={<DeleteIcon />}
-          label='Delete'
-          onClick={handleDeleteClick(id)}
-          color='inherit'
-        />,
-      ];
-    },
-  };
-
   useEffect(() => {
     setRows(rowData);
   }, [rowData]);
 
-  useEffect(() => {
-    setColumns(columnData);
-    columns.push(actionFields);
-    console.log('useEffect columns:', columns);
-    console.log('useEffect columnData:', columnData);
-  }, [columnData, actionFields]);
+  const appendedColumns = [
+    ...columnData,
+    {
+      field: 'actions',
+      type: 'actions',
+      headerName: 'Actions',
+      width: 100,
+      cellClassName: 'actions',
+      getActions: ({ id }) => {
+        const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
+
+        if (isInEditMode) {
+          return [
+            <GridActionsCellItem
+              icon={<SaveIcon />}
+              label='Save'
+              onClick={handleSaveClick(id)}
+            />,
+            <GridActionsCellItem
+              icon={<CancelIcon />}
+              label='Cancel'
+              className='textPrimary'
+              onClick={handleCancelClick(id)}
+              color='inherit'
+            />,
+          ];
+        }
+
+        return [
+          <GridActionsCellItem
+            icon={<EditIcon />}
+            label='Edit'
+            className='textPrimary'
+            onClick={handleEditClick(id)}
+            color='inherit'
+          />,
+          <GridActionsCellItem
+            icon={<DeleteIcon />}
+            label='Delete'
+            onClick={handleDeleteClick(id)}
+            color='inherit'
+          />,
+        ];
+      },
+    },
+  ];
 
   function EditToolbar(props) {
-    console.log('CustomDataGrid EditToolBar props:', props);
+    //console.log('CustomDataGrid EditToolBar props:', props);
 
     const { setRows, setRowModesModel } = props;
 
@@ -157,7 +157,7 @@ const CustomDataGrid = ({ rowData, columnData, title, subtitle, newRow }) => {
   const processRowUpdate = (newRow) => {
     console.log('CustomDataGrid processRowUpdate');
 
-    //handleSubmit();
+    handleSubmit(newRow);
 
     const updatedRow = { ...newRow, isNew: false };
     console.log('updatedRow:', updatedRow);
@@ -205,11 +205,9 @@ const CustomDataGrid = ({ rowData, columnData, title, subtitle, newRow }) => {
           },
         }}
       >
-        {/*console.log('Calling DataGridPremium with rowData', rowData)*/}
-        {/*console.log('Calling DataGridPremium with columnData', columnData)*/}
         <DataGridPremium
           rows={rowData}
-          columns={columnData}
+          columns={appendedColumns}
           editMode='row'
           rowModesModel={rowModesModel}
           rowsPerPageOptions={[5, 10, 25]}
@@ -243,4 +241,4 @@ const CustomDataGrid = ({ rowData, columnData, title, subtitle, newRow }) => {
   );
 };
 
-export default CustomDataGrid;
+export default DataGridEditable;

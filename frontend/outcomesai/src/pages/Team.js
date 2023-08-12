@@ -98,14 +98,6 @@ const Team = () => {
   const [rowModesModel, setRowModesModel] = React.useState({});
   const [originalRowValues, setOriginalRowValues] = useState({});
 
-  const capitalizeWords = (str) => {
-    return str
-      .toLowerCase()
-      .split(' ')
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(' ');
-  };
-
   function EditToolbar(props) {
     console.log('EditToolBar');
     const { setRows, setRowModesModel } = props;
@@ -256,13 +248,11 @@ const Team = () => {
       editable: true,
       headerName: 'Last Name',
       flex: 1,
-      valueParser: (value) => value.toUpperCase(),
     },
     {
       field: 'first_name',
       editable: true,
       headerName: 'First Name',
-      valueSetter: (value) => capitalizeWords(value),
       flex: 1,
     },
     {

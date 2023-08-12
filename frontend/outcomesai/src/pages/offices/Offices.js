@@ -1,30 +1,27 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { tokens } from '../../theme';
-import { useTheme } from '@mui/material';
-import CustomDataGrid from '../../components/CustomDataGrid';
+import DataGridEditable from '../../lib/DataGridEditable';
 import { queryTable } from '../../api/Api';
 import ErrorModal from '../../components/ErrorModal';
 import ErrorResponse from '../../components/ErrorResponse';
 import Authenticate from '../../components/Authenticate';
-//import { OfficeActions } from './OfficeActions';
 
-const Offices = () => {
+export const updateStatus = (id) => {
+  console.log('Offices updateStatus:', id);
+};
+
+export const Offices = () => {
   const navigate = useNavigate();
-  const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
 
   const [data, setData] = useState([]);
-  const [roles, setRoles] = useState([]);
   const [errorType, setErrorType] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
   const [errorDescription, setErrorDescription] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
-
   const [rowId, setRowId] = useState(null);
 
-  const handleSubmit_old = async (rowId) => {
-    console.log('handleSubmit in Offices.js', rowId);
+  const handleSubmit = async (saveRow) => {
+    console.log('handleSubmit in Offices.js', saveRow);
     // Your logic for handling the submission goes here
   };
 
@@ -121,14 +118,14 @@ const Offices = () => {
 
   return (
     <>
-      {console.log('Calling CustomDataGrid', data)} {/* Add this line */}
       {data.length > 0 ? (
-        <CustomDataGrid
+        <DataGridEditable
           rowData={data}
           columnData={columns}
           title='Offices'
           subtitle='Manage Offices'
           newRow={newRow}
+          handleSubmit={handleSubmit}
         />
       ) : (
         <p>Loading data...</p>
@@ -136,5 +133,3 @@ const Offices = () => {
     </>
   );
 };
-
-export default Offices;
