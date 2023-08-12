@@ -7,8 +7,11 @@ import ErrorResponse from '../../components/ErrorResponse';
 import Authenticate from '../../components/Authenticate';
 
 function simulateAsyncFailure(saveRow) {
-  console.log('saveRow:', saveRow);
-  return Promise.reject(new Error('Something went wrong'));
+  console.log('simulateAsyncFailure saveRow:', saveRow);
+
+  const result = updateRecord('offices', saveRow);
+  console.log('updateRecord result:', result);
+  return result;
 }
 
 export const Offices = () => {

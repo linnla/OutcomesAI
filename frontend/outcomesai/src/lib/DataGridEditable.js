@@ -179,10 +179,17 @@ const DataGridEditable = ({
         });
       })
       .catch((error) => {
-        console.log('catch');
-        console.error('Error:', error.message);
+        console.log('catch error:', error);
+
+        const errorType = error.response.data.errorType;
+        const errorMessage = error.response.data.errorMessage;
+        const errorDescription = error.response.data.errorDescription;
+
+        const message = `${errorType}\n${errorMessage}\n${errorDescription}`;
+        console.log('message:', message);
+
         setSnackbar({
-          children: error.message,
+          children: message,
           severity: 'error',
         });
       });
