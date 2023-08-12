@@ -228,7 +228,7 @@ const Team = () => {
 
     const updatedRow = { ...newRow, isNew: false };
     const originalRow = originalRowValues[newRow.id];
-    if (updatedRow != originalRow) {
+    if (updatedRow !== originalRow) {
       console.log('Changes Made');
       // Compare original values with new values to determine changes
       const changedFields = {};

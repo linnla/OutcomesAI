@@ -20,9 +20,9 @@ const root = ReactDOM.createRoot(el);
 
 // 3) Show the component on the screen
 root.render(
-  <React.StrictMode>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
-  </React.StrictMode>
+  //<React.StrictMode>
+  <BrowserRouter>
+    <App />
+  </BrowserRouter>
+  //</React.StrictMode>
 );

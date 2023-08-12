@@ -1,6 +1,5 @@
 import { Box } from '@mui/material';
 import { tokens } from '../theme';
-import { mockDataOffices } from '../data/mockData';
 import Header from '../components/Header';
 import { useTheme } from '@mui/material';
 import Button from '@mui/material/Button';
@@ -16,31 +15,88 @@ import {
   GridToolbarContainer,
   GridActionsCellItem,
   GridRowEditStopReasons,
+  gridClasses,
 } from '@mui/x-data-grid-premium';
 import React, { useEffect, useState } from 'react';
 
-const CustomDataGrid = ({ rowData, columns, title, subtitle, newRow }) => {
+const CustomDataGrid = ({ rowData, columnData, title, subtitle, newRow }) => {
   //console.log('rowData', rowData);
+  //console.log('columnData', columnData);
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
-  const [rows, setRows] = useState([]);
+  const [rows, setRows] = useState([rowData]);
+  const [columns, setColumns] = useState([columnData]);
+
+  const [rowId, setRowId] = useState(null);
   const [rowModesModel, setRowModesModel] = useState({});
-  const [originalRowValues, setOriginalRowValues] = useState({});
+  const [pageSize, setPageSize] = useState(25);
+
+  const actionFields = {
+    field: 'actions',
+    type: 'actions',
+    headerName: 'Actions',
+    width: 100,
+    cellClassName: 'actions',
+    getActions: ({ id }) => {
+      const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
+
+      if (isInEditMode) {
+        return [
+          <GridActionsCellItem
+            icon={<SaveIcon />}
+            label='Save'
+            sx={{
+              color: 'primary.main',
+            }}
+            onClick={handleSaveClick(id)}
+          />,
+          <GridActionsCellItem
+            icon={<CancelIcon />}
+            label='Cancel'
+            className='textPrimary'
+            onClick={handleCancelClick(id)}
+            color='inherit'
+          />,
+        ];
+      }
+      return [
+        <GridActionsCellItem
+          icon={<EditIcon />}
+          label='Edit'
+          className='textPrimary'
+          onClick={handleEditClick(id)}
+          color='inherit'
+        />,
+        <GridActionsCellItem
+          icon={<DeleteIcon />}
+          label='Delete'
+          onClick={handleDeleteClick(id)}
+          color='inherit'
+        />,
+      ];
+    },
+  };
 
   useEffect(() => {
-    setRows(rowData); // Update rows when rowData changes
-    setOriginalRowValues(rowData);
-  }, [rowData]); // Use rowData as a dependency
+    setRows(rowData);
+  }, [rowData]);
+
+  useEffect(() => {
+    setColumns(columnData);
+    columns.push(actionFields);
+    console.log('useEffect columns:', columns);
+    console.log('useEffect columnData:', columnData);
+  }, [columnData, actionFields]);
 
   function EditToolbar(props) {
-    console.log('EditToolBar');
+    console.log('CustomDataGrid EditToolBar props:', props);
 
     const { setRows, setRowModesModel } = props;
 
     const handleClick = () => {
-      console.log('handleClick');
+      console.log('CustomDataGrid handleClick');
 
       const newId = Math.max(...rows.map((row) => row.id)) + 1; // Generate a new unique ID
       console.log('newId:', newId);
@@ -64,29 +120,29 @@ const CustomDataGrid = ({ rowData, columns, title, subtitle, newRow }) => {
   }
 
   const handleRowEditStop = (params, event) => {
-    console.log('handleRowEditStop');
+    console.log('CustomDataGrid handleRowEditStop');
     if (params.reason === GridRowEditStopReasons.rowFocusOut) {
       event.defaultMuiPrevented = true;
     }
   };
 
   const handleEditClick = (id) => () => {
-    console.log('handleEditClick');
+    console.log('CustomDataGrid handleEditClick');
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
   };
 
   const handleSaveClick = (id) => () => {
-    console.log('handleSaveClick');
+    console.log('CustomDataGrid handleSaveClick');
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
   };
 
   const handleDeleteClick = (id) => () => {
-    console.log('handleDeleteClick');
+    console.log('CustomDataGrid handleDeleteClick');
     setRows(rows.filter((row) => row.id !== id));
   };
 
   const handleCancelClick = (id) => () => {
-    console.log('handleCancelClick');
+    console.log('CustomDataGrid handleCancelClick');
     setRowModesModel({
       ...rowModesModel,
       [id]: { mode: GridRowModes.View, ignoreModifications: true },
@@ -99,8 +155,12 @@ const CustomDataGrid = ({ rowData, columns, title, subtitle, newRow }) => {
   };
 
   const processRowUpdate = (newRow) => {
-    console.log('processRowUpdate');
+    console.log('CustomDataGrid processRowUpdate');
+
+    //handleSubmit();
+
     const updatedRow = { ...newRow, isNew: false };
+    console.log('updatedRow:', updatedRow);
     setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
     return updatedRow;
   };
@@ -145,11 +205,17 @@ const CustomDataGrid = ({ rowData, columns, title, subtitle, newRow }) => {
           },
         }}
       >
+        {/*console.log('Calling DataGridPremium with rowData', rowData)*/}
+        {/*console.log('Calling DataGridPremium with columnData', columnData)*/}
         <DataGridPremium
-          rows={rows}
-          columns={columns}
+          rows={rowData}
+          columns={columnData}
           editMode='row'
           rowModesModel={rowModesModel}
+          rowsPerPageOptions={[5, 10, 25]}
+          pageSize={pageSize}
+          onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+          onCellEditCommit={(params) => setRowId(params.id)}
           slots={{
             toolbar: EditToolbar,
           }}

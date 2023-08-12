@@ -6,7 +6,7 @@ import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Team from './pages/Team';
 import Invoices from './pages/Invoices';
-import Offices from './pages/Offices';
+import Offices from './pages/offices/Offices';
 import Practitioners from './pages/Practitioners';
 import Patients from './pages/Patients';
 import Bar from './pages/Bar';

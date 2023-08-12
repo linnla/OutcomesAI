@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { tokens } from '../theme';
+import { tokens } from '../../theme';
 import { useTheme } from '@mui/material';
-import CustomDataGrid from '../components/CustomDataGrid';
-import { queryTable } from '../api/Api';
-import ErrorModal from '../components/ErrorModal';
-import ErrorResponse from '../components/ErrorResponse';
-import Authenticate from '../components/Authenticate';
+import CustomDataGrid from '../../components/CustomDataGrid';
+import { queryTable } from '../../api/Api';
+import ErrorModal from '../../components/ErrorModal';
+import ErrorResponse from '../../components/ErrorResponse';
+import Authenticate from '../../components/Authenticate';
+//import { OfficeActions } from './OfficeActions';
 
 const Offices = () => {
   const navigate = useNavigate();
@@ -19,6 +20,13 @@ const Offices = () => {
   const [errorMessage, setErrorMessage] = useState(null);
   const [errorDescription, setErrorDescription] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
+
+  const [rowId, setRowId] = useState(null);
+
+  const handleSubmit_old = async (rowId) => {
+    console.log('handleSubmit in Offices.js', rowId);
+    // Your logic for handling the submission goes here
+  };
 
   const openModal = (errorType, errorDescription, errorMessage) => {
     setErrorType(errorType);
@@ -55,18 +63,7 @@ const Offices = () => {
         practice_id: practice_id,
       });
       setData(response.data.data);
-      console.log(data);
-    } catch (error) {
-      ErrorResponse(error, openModal, navigate);
-      console.log('errorMessage:', errorMessage);
-    }
-  };
-
-  const fetchRoles = async () => {
-    try {
-      const response = await queryTable('roles');
-      setRoles(response.data.data);
-      console.log(response.data.data);
+      console.log('Offices fetchData:', data);
     } catch (error) {
       ErrorResponse(error, openModal, navigate);
       console.log('errorMessage:', errorMessage);
@@ -128,7 +125,7 @@ const Offices = () => {
       {data.length > 0 ? (
         <CustomDataGrid
           rowData={data}
-          columns={columns}
+          columnData={columns}
           title='Offices'
           subtitle='Manage Offices'
           newRow={newRow}
