@@ -15,9 +15,12 @@ import {
   GridToolbarContainer,
   GridActionsCellItem,
   GridRowEditStopReasons,
+  GridCellParams,
   gridClasses,
 } from '@mui/x-data-grid-premium';
 import React, { useEffect, useState } from 'react';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
 
 const DataGridEditable = ({
   rowData,
@@ -38,6 +41,10 @@ const DataGridEditable = ({
   const [rowId, setRowId] = useState(null);
   const [rowModesModel, setRowModesModel] = useState({});
   const [pageSize, setPageSize] = useState(25);
+
+  const [snackbar, setSnackbar] = React.useState(null);
+
+  const handleCloseSnackbar = () => setSnackbar(null);
 
   useEffect(() => {
     setRows(rowData);
@@ -96,7 +103,7 @@ const DataGridEditable = ({
     const { setRows, setRowModesModel } = props;
 
     const handleClick = () => {
-      console.log('CustomDataGrid handleClick');
+      //console.log('CustomDataGrid handleClick');
 
       const newId = Math.max(...rows.map((row) => row.id)) + 1; // Generate a new unique ID
       console.log('newId:', newId);
@@ -154,21 +161,37 @@ const DataGridEditable = ({
     }
   };
 
-  const processRowUpdate = (newRow) => {
-    console.log('CustomDataGrid processRowUpdate');
-
-    handleSubmit(newRow);
-
-    const updatedRow = { ...newRow, isNew: false };
-    console.log('updatedRow:', updatedRow);
-    setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
-    return updatedRow;
-  };
-
   const handleRowModesModelChange = (newRowModesModel) => {
     console.log('handleRowModesModelChange');
     setRowModesModel(newRowModesModel);
   };
+
+  const processRowUpdate = (newRow) => {
+    console.log('CustomDataGrid processRowUpdate:', newRow);
+
+    handleSubmit(newRow)
+      .then(() => {
+        const updatedRow = { ...newRow, isNew: false };
+        setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
+        setSnackbar({
+          children: 'User successfully saved',
+          severity: 'success',
+        });
+      })
+      .catch((error) => {
+        console.log('catch');
+        console.error('Error:', error.message);
+        setSnackbar({
+          children: error.message,
+          severity: 'error',
+        });
+      });
+  };
+
+  const handleProcessRowUpdateError = React.useCallback((error) => {
+    console.log('CustomDataGrid handleProcessRowUpdateError:');
+    //setSnackbar({ children: error.message, severity: 'error' });
+  }, []);
 
   return (
     <Box m='20px'>
@@ -230,12 +253,21 @@ const DataGridEditable = ({
             console.error('onRowEditStop Error:', error);
             // You can show an error message to the user or take other appropriate actions
           }}
-          processRowUpdate={processRowUpdate}
-          onProcessRowUpdateError={(error) => {
-            console.error('processRowUpdate Error:', error);
-            // You can show an error message to the user or take other appropriate actions
-          }}
+          processRowUpdate={(updatedRow, originalRow) =>
+            processRowUpdate(updatedRow)
+          }
+          onProcessRowUpdateError={handleProcessRowUpdateError}
         />
+        {!!snackbar && (
+          <Snackbar
+            open
+            anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+            onClose={handleCloseSnackbar}
+            autoHideDuration={6000}
+          >
+            <Alert {...snackbar} onClose={handleCloseSnackbar} />
+          </Snackbar>
+        )}
       </Box>
     </Box>
   );

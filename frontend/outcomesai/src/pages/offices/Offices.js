@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DataGridEditable from '../../lib/DataGridEditable';
-import { queryTable } from '../../api/Api';
+import { queryTable, updateRecord } from '../../api/Api';
 import ErrorModal from '../../components/ErrorModal';
 import ErrorResponse from '../../components/ErrorResponse';
 import Authenticate from '../../components/Authenticate';
 
-export const updateStatus = (id) => {
-  console.log('Offices updateStatus:', id);
-};
+function simulateAsyncFailure(saveRow) {
+  console.log('saveRow:', saveRow);
+  return Promise.reject(new Error('Something went wrong'));
+}
 
 export const Offices = () => {
   const navigate = useNavigate();
@@ -21,8 +22,7 @@ export const Offices = () => {
   const [rowId, setRowId] = useState(null);
 
   const handleSubmit = async (saveRow) => {
-    console.log('handleSubmit in Offices.js', saveRow);
-    // Your logic for handling the submission goes here
+    console.log('handleSubmit');
   };
 
   const openModal = (errorType, errorDescription, errorMessage) => {
@@ -59,8 +59,9 @@ export const Offices = () => {
       const response = await queryTable('offices', {
         practice_id: practice_id,
       });
+      console.log('http Offices:', response);
       setData(response.data.data);
-      console.log('Offices fetchData:', data);
+      //console.log('Offices fetchData:', data);
     } catch (error) {
       ErrorResponse(error, openModal, navigate);
       console.log('errorMessage:', errorMessage);
@@ -125,7 +126,7 @@ export const Offices = () => {
           title='Offices'
           subtitle='Manage Offices'
           newRow={newRow}
-          handleSubmit={handleSubmit}
+          handleSubmit={simulateAsyncFailure}
         />
       ) : (
         <p>Loading data...</p>

@@ -36,6 +36,7 @@ export const createRecord = async (table, body) => {
     return response;
   } catch (error) {
     console.log('Error creating record:', error);
+    return Promise.reject(error);
   }
 };
 
@@ -52,6 +53,7 @@ export const updateRecord = async (table, body) => {
     return response;
   } catch (error) {
     console.log('Error creating record:', error);
+    return Promise.reject(error);
   }
 };
 
@@ -69,5 +71,6 @@ export const deleteRecord = async (table, body) => {
     return response;
   } catch (error) {
     console.log('Error deleting record:', error);
+    return Promise.reject(error);
   }
 };
