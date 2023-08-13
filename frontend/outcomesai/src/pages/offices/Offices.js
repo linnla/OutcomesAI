@@ -6,25 +6,26 @@ import ErrorModal from '../../components/ErrorModal';
 import ErrorResponse from '../../components/ErrorResponse';
 import Authenticate from '../../components/Authenticate';
 
-function simulateAsyncFailure(saveRow) {
-  console.log('simulateAsyncFailure saveRow:', saveRow);
-
+async function saveData(saveRow) {
+  console.log('saveData:', saveRow);
   const result = updateRecord('offices', saveRow);
-  console.log('updateRecord result:', result);
   return result;
 }
 
-function validateData(newRow) {
-  console.log('validateData newRow:', newRow);
-
-  const result = validatePostalCode(newRow.postal_code);
-  return result;
+async function validateData(newRow) {
+  return await validatePostalCode(newRow.postal_code);
 }
 
-function validatePostalCode(postal_code) {
-  return queryTable('postal_codes', {
+async function validatePostalCode(postal_code) {
+  await queryTable('postal_codes', {
     postal_code: postal_code,
-  });
+  })
+    .then((response) => {
+      return Promise.resolve(`postal code ${postal_code} is valid`);
+    })
+    .catch((error) => {
+      return Promise.reject(`Invalid postal code ${postal_code}`);
+    });
 }
 
 export const Offices = () => {
@@ -142,7 +143,7 @@ export const Offices = () => {
           title='Offices'
           subtitle='Manage Offices'
           newRow={newRow}
-          handleSubmit={simulateAsyncFailure}
+          handleSubmit={saveData}
           dataValidation={validateData}
         />
       ) : (

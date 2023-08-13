@@ -10,13 +10,11 @@ import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Close';
 import {
   DataGridPremium,
-  GridToolbar,
   GridRowModes,
   GridToolbarContainer,
-  GridActionsCellItem,
   GridRowEditStopReasons,
-  GridCellParams,
-  gridClasses,
+  GridActionsCellItem,
+  useGridApiRef,
 } from '@mui/x-data-grid-premium';
 import React, { useEffect, useState } from 'react';
 import Snackbar from '@mui/material/Snackbar';
@@ -40,12 +38,15 @@ const DataGridEditable = ({
   const [rows, setRows] = useState([rowData]);
 
   const [rowId, setRowId] = useState(null);
+
   const [rowModesModel, setRowModesModel] = useState({});
   const [pageSize, setPageSize] = useState(25);
 
   const [snackbar, setSnackbar] = React.useState(null);
 
   const handleCloseSnackbar = () => setSnackbar(null);
+
+  const apiRef = useGridApiRef();
 
   useEffect(() => {
     setRows(rowData);
@@ -128,29 +129,24 @@ const DataGridEditable = ({
   }
 
   const handleRowEditStop = (params, event) => {
-    console.log('CustomDataGrid handleRowEditStop');
     if (params.reason === GridRowEditStopReasons.rowFocusOut) {
       event.defaultMuiPrevented = true;
     }
   };
 
   const handleEditClick = (id) => () => {
-    console.log('CustomDataGrid handleEditClick');
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
   };
 
   const handleSaveClick = (id) => () => {
-    console.log('CustomDataGrid handleSaveClick');
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
   };
 
   const handleDeleteClick = (id) => () => {
-    console.log('CustomDataGrid handleDeleteClick');
     setRows(rows.filter((row) => row.id !== id));
   };
 
   const handleCancelClick = (id) => () => {
-    console.log('CustomDataGrid handleCancelClick');
     setRowModesModel({
       ...rowModesModel,
       [id]: { mode: GridRowModes.View, ignoreModifications: true },
@@ -163,38 +159,29 @@ const DataGridEditable = ({
   };
 
   const handleRowModesModelChange = (newRowModesModel) => {
-    console.log('handleRowModesModelChange');
     setRowModesModel(newRowModesModel);
   };
 
-  const processRowUpdate = (newRow) => {
-    console.log('CustomDataGrid processRowUpdate:', newRow);
-
-    dataValidation(newRow)
+  const processRowUpdate = async (newRow, oldRow) => {
+    //async function processRowUpdate(newRow) {
+    console.log('processRowUpdate:', newRow, oldRow);
+    const updatedRow = { ...newRow, isNew: false };
+    await dataValidation(newRow)
       .then(() => {
         console.log('data passed validation');
         handleSubmit(newRow)
           .then(() => {
-            const updatedRow = { ...newRow, isNew: false };
+            setSnackbar({
+              children: 'Data saved',
+              severity: 'success',
+            });
             setRows(
               rows.map((row) => (row.id === newRow.id ? updatedRow : row))
             );
-            setSnackbar({
-              children: 'User successfully saved',
-              severity: 'success',
-            });
-            return updatedRow;
           })
           .catch((error) => {
-            console.log('catch error:', error);
-
-            const errorType = error.response.data.errorType;
-            const errorMessage = error.response.data.errorMessage;
-            const errorDescription = error.response.data.errorDescription;
-
-            const message = `${errorType}\n${errorMessage}\n${errorDescription}`;
-            console.log('message:', message);
-
+            const errorData = error.response.data;
+            const message = `${errorData.errorType}\n${errorData.errorMessage}\n${errorData.errorDescription}`;
             setSnackbar({
               children: message,
               severity: 'error',
@@ -203,15 +190,15 @@ const DataGridEditable = ({
       })
       .catch((error) => {
         setSnackbar({
-          children: 'data failed validation',
+          children: error,
           severity: 'error',
         });
       });
+    return updatedRow;
   };
 
   const handleProcessRowUpdateError = React.useCallback((error) => {
-    console.log('CustomDataGrid handleProcessRowUpdateError:');
-    //setSnackbar({ children: error.message, severity: 'error' });
+    console.log('handleProcessRowUpdateError:', error);
   }, []);
 
   return (
@@ -250,34 +237,24 @@ const DataGridEditable = ({
         }}
       >
         <DataGridPremium
+          apiRef={apiRef}
           rows={rowData}
           columns={appendedColumns}
           editMode='row'
           rowModesModel={rowModesModel}
-          rowsPerPageOptions={[5, 10, 25]}
-          pageSize={pageSize}
-          onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-          onCellEditCommit={(params) => setRowId(params.id)}
+          onRowModesModelChange={handleRowModesModelChange}
+          onRowEditStop={handleRowEditStop}
+          onProcessRowUpdateError={handleProcessRowUpdateError}
+          processRowUpdate={processRowUpdate}
           slots={{
             toolbar: EditToolbar,
           }}
           slotProps={{
             toolbar: { setRows, setRowModesModel },
           }}
-          onRowModesModelChange={handleRowModesModelChange}
-          onRowModesModelChangeError={(error) => {
-            console.error('onRowModesModelChange Error:', error);
-            // You can show an error message to the user or take other appropriate actions
-          }}
-          onRowEditStop={handleRowEditStop}
-          onRowEditStopError={(error) => {
-            console.error('onRowEditStop Error:', error);
-            // You can show an error message to the user or take other appropriate actions
-          }}
-          processRowUpdate={(updatedRow, originalRow) =>
-            processRowUpdate(updatedRow)
-          }
-          onProcessRowUpdateError={handleProcessRowUpdateError}
+          rowsPerPageOptions={[5, 10, 25]}
+          pageSize={pageSize}
+          onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
         />
         {!!snackbar && (
           <Snackbar
