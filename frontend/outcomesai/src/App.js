@@ -6,7 +6,7 @@ import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Team from './pages/Team';
 import Invoices from './pages/Invoices';
-import { Offices } from './pages/offices/Offices';
+import OfficeManageGrid, { Offices } from './pages/offices/OfficeManageGrid';
 import Practitioners from './pages/Practitioners';
 import Patients from './pages/Patients';
 import Bar from './pages/Bar';
@@ -34,7 +34,7 @@ function App() {
             <Routes>
               <Route path='/' element={<Dashboard />} />
               <Route path='/login' element={<Login />} />
-              <Route path='/offices' element={<Offices />} />
+              <Route path='/offices' element={<OfficeManageGrid />} />
               <Route path='/practitioners' element={<Practitioners />} />
               <Route path='/team' element={<Team />} />
               <Route path='/patients' element={<Patients />} />

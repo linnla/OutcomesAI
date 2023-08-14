@@ -1,5 +1,3 @@
-import Authenticate from '../components/Authenticate';
-
 function isJSON(str) {
   try {
     JSON.parse(str);
@@ -16,11 +14,7 @@ const ErrorResponse = async (error, openModal, navigate) => {
   let errorMessage = error.message;
 
   if (error.response.data.message === 'The incoming token has expired') {
-    const sessionValid = await Authenticate(); // Adjust as needed
-    if (!sessionValid) {
-      navigate('/login');
-      return;
-    }
+    console.log('Token expired');
   }
 
   let errorObject = {};

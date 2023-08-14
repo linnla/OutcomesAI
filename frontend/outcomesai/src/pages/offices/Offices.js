@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import DataGridEditable from '../../lib/DataGridEditable';
-import { queryTable, updateRecord } from '../../api/Api';
+import DataGridEditable from '../../components/datagrid/DataGridEditable';
+import { queryTable, updateRecord } from '../../api/ApiCallWithToken';
 import ErrorModal from '../../components/ErrorModal';
 import ErrorResponse from '../../components/ErrorResponse';
 import Authenticate from '../../components/Authenticate';
@@ -55,20 +55,6 @@ export const Offices = () => {
     setErrorDescription(null);
     setModalOpen(false);
   };
-
-  useEffect(() => {
-    const checkAndNavigate = async () => {
-      const sessionValid = await Authenticate();
-      if (sessionValid) {
-        fetchData();
-        //fetchRoles();
-      } else {
-        navigate('/login');
-      }
-    };
-
-    checkAndNavigate();
-  }, [navigate]);
 
   const fetchData = async () => {
     const practice_id = sessionStorage.getItem('practice_id');

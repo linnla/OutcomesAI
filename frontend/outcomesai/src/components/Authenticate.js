@@ -1,75 +1,90 @@
 import { Auth } from 'aws-amplify';
-import { queryTable } from '../api/Api';
+import ApiCallWithToken from '../api/ApiCallWithToken';
 
-const checkUserExists = async (user) => {
+export const getToken = async () => {
   try {
-    const userData = await queryTable('users', {
-      email: user.attributes.email,
+    const session = await Auth.currentSession();
+    const idToken = session.getIdToken().getJwtToken();
+    return idToken;
+  } catch (error) {
+    console.log('Error getting token:', error);
+    throw error; // Re-throw the error to be caught by the caller
+  }
+};
+
+export const getCognitoUser = () => {
+  return new Promise((resolve, reject) => {
+    Auth.currentAuthenticatedUser()
+      .then((currentUser) => {
+        resolve(currentUser); // Resolve with the user object
+      })
+      .catch((error) => {
+        console.log('Error getting Cognito user:', error);
+        reject(error); // Reject with the error
+      });
+  });
+};
+
+const getUserEmail = async () => {
+  try {
+    const cognitoUser = await getCognitoUser();
+    const userEmail = cognitoUser.attributes.email;
+    return userEmail;
+  } catch (error) {
+    console.error('Error getting user email:', error);
+    throw error; // Re-throw the error to be caught by the caller
+  }
+};
+
+export const getUserData = async () => {
+  try {
+    const userEmail = await getUserEmail();
+    const response = await ApiCallWithToken('GET', 'users', {
+      email: userEmail,
     });
-    return userData;
+    return response;
   } catch (error) {
-    console.log('Error checking if user exists:', error);
-    return false;
+    console.error('Error getting user data or its a new user:', error);
+    throw error; // Propagate the error up for proper handling
   }
 };
 
-const logSessionData = async () => {
-  for (let i = 0; i < sessionStorage.length; i++) {
-    const key = sessionStorage.key(i);
-    const value = sessionStorage.getItem(key);
-    console.log(`Key: ${key}, Value: ${value}`);
-  }
-};
-
-const Authenticate = async () => {
-  //logSessionData();
-
+const setUserPractice = async () => {
   try {
-    const user = await Auth.currentAuthenticatedUser();
-    const currentIdToken = user.signInUserSession.idToken.jwtToken;
-    const savedIdToken = sessionStorage.getItem('idToken');
-    if (currentIdToken !== savedIdToken) {
-      console.log('Saving id token');
-      sessionStorage.setItem('idToken', currentIdToken);
-    }
-    //console.log('User is authenticated');
-
-    //console.log('user:', user);
-    const currentCognito_id = user.username;
-    const savedCognito_id = sessionStorage.getItem('cognito_id');
-
-    //console.log('currentCognito_id:', currentCognito_id);
-    //console.log('savedCognito_id:', savedCognito_id);
-
-    if (currentCognito_id !== savedCognito_id) {
-      console.log('Saving session data');
-      const userData = await checkUserExists(user);
-      //console.log('userData:', userData);
-      if (!userData) {
-        return false;
-      } else {
-        const user_id = userData.data.data[0].id;
-        const last_name = userData.data.data[0].last_name;
-        const first_name = userData.data.data[0].first_name;
-        const cognito_id = userData.data.data[0].cognito_id;
-        const email = userData.data.data[0].email;
-        const practice_id = 100101;
-
-        sessionStorage.setItem('user_id', user_id);
-        sessionStorage.setItem('first_name', first_name);
-        sessionStorage.setItem('last_name', last_name);
-        sessionStorage.setItem('cognito_id', cognito_id);
-        sessionStorage.setItem('email', email);
-        sessionStorage.setItem('practice_id', 100101);
-      }
-    } else {
-      console.log('Session data is accurate');
-    }
-    return true;
+    const practice_id = 100101;
+    sessionStorage.setItem('practice_id', practice_id.toString()); // Convert to string before storing
   } catch (error) {
-    console.log(error);
-    return false;
+    console.error('Error saving practice_id:', error);
+    throw error; // Propagate the error up for proper handling
   }
 };
 
-export default Authenticate;
+const getUserPractice = async () => {
+  try {
+    const practice_id = sessionStorage.getItem('practice_id');
+    return practice_id ? parseInt(practice_id) : null; // Parse to integer
+  } catch (error) {
+    console.error('Error getting practice_id:', error);
+    await setUserPractice(); // Await the setUserPractice function
+    throw error; // Propagate the error up for proper handling
+  }
+};
+
+const MAX_RETRIES = 3; // Maximum number of retries
+let retryCount = 0;
+
+export const getUserPracticeWithRetry = async () => {
+  try {
+    const practice_id = await getUserPractice();
+    return practice_id;
+  } catch (error) {
+    if (retryCount < MAX_RETRIES) {
+      console.error('Error getting practice_id. Retrying...');
+      retryCount++;
+      return getUserPracticeWithRetry(); // Retry the function
+    } else {
+      console.error('Max retries reached. Unable to get practice_id:', error);
+      throw error; // Propagate the error up for proper handling
+    }
+  }
+};

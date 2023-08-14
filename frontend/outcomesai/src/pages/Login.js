@@ -1,97 +1,65 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Authenticator } from '@aws-amplify/ui-react';
-import { Auth } from 'aws-amplify';
 import '@aws-amplify/ui-react/styles.css';
-import { queryTable } from '../api/Api';
-import { createRecord } from '../api/Api';
-
-async function handleSignOut() {
-  try {
-    await Auth.signOut();
-    const idToken = 'idToken';
-    sessionStorage.setItem('idToken', idToken);
-  } catch (error) {
-    console.log('Error signing out:', error);
-  }
-}
+import ApiCallWithToken from '../api/ApiCallWithToken';
+import {
+  getUserData,
+  getCognitoUser,
+  getUserPracticeWithRetry,
+} from '../components/Authenticate';
 
 function Login() {
   const navigate = useNavigate();
 
-  const fetchJwtToken = async () => {
+  const createNewUser = async () => {
     try {
-      const session = await Auth.currentSession();
-      const idToken = session.getIdToken().getJwtToken();
-      sessionStorage.setItem('idToken', idToken);
-      return true;
-    } catch (error) {
-      console.log('Error fetching JWT token:', error);
-      return false;
-    }
-  };
+      // Get the authenticated user
+      const cognitoUser = await getCognitoUser();
+      console.log('Cognito User:', cognitoUser);
 
-  const checkUserExists = async (user) => {
-    try {
-      const userData = await queryTable('users', {
-        email: user.attributes.email,
-      });
-      return userData;
-    } catch (error) {
-      console.log('Error checking if user exists:', error);
-      return false;
-    }
-  };
-
-  const createUser = async (user) => {
-    try {
       const newUser = {
-        cognito_id: user.username,
-        last_name: user.attributes.family_name,
-        first_name: user.attributes.given_name,
-        email: user.attributes.email,
+        cognito_id: cognitoUser.username,
+        last_name: cognitoUser.attributes.family_name,
+        first_name: cognitoUser.attributes.given_name,
+        email: cognitoUser.attributes.email,
       };
 
-      const response = await createRecord('users', newUser);
-      if (response.status !== 200) {
-        return false;
-      } else {
-        return true;
-      }
+      const response = await ApiCallWithToken('POST', 'users', { newUser });
+      console.log('User record created successfully:', response.data);
+      // Do something with the response, if needed
     } catch (error) {
-      console.log('Error creating user:', error);
-      return false;
+      console.error('Error creating user record:', error);
+      // Handle the error, such as displaying an error message to the user
     }
   };
 
-  const handleSignIn = async (user) => {
+  const handleLogin = async () => {
     try {
-      const jwtToken = await fetchJwtToken();
-      const userData = await checkUserExists(user);
-      if (!userData) {
-        const result = await createUser(user);
-        if (!result) {
-          return;
-        }
-      } else {
-        const user_id = userData.data.data[0].id;
-        const last_name = userData.data.data[0].last_name;
-        const first_name = userData.data.data[0].first_name;
-        const cognito_id = userData.data.data[0].cognito_id;
-        const email = userData.data.data[0].email;
-
-        sessionStorage.setItem('user_id', user_id);
-        sessionStorage.setItem('first_name', first_name);
-        sessionStorage.setItem('last_name', last_name);
-        sessionStorage.setItem('cognito_id', cognito_id);
-        sessionStorage.setItem('email', email);
-        sessionStorage.setItem('practice_id', 100101);
+      // Get user data
+      let userData;
+      try {
+        userData = await getUserData();
+        console.log('User Data:', userData);
+      } catch (getUserDataError) {
+        // CHECK FOR DATA NOT FOUND ERROR vs ANY OTHER ERROR
+        // ONLY CREATENEWUSER() IF USER (DATA OR RESULT) NOT FOUND ERROR
+        console.log('User data not found. Creating user...');
+        // Logic to create the user
+        userData = await createNewUser();
       }
+
+      // Get practice ID with retry
+      const practice_id = await getUserPracticeWithRetry();
+      if (practice_id !== null) {
+        console.log('Practice ID:', practice_id);
+      } else {
+        console.log('Practice ID not set');
+      }
+      navigate('/');
     } catch (error) {
-      console.log('Error creating user:', error);
-      return;
+      console.error('Login error:', error);
     }
-    navigate('/');
   };
 
   return (
@@ -101,7 +69,7 @@ function Login() {
     >
       {({ user }) => {
         if (user) {
-          handleSignIn(user);
+          handleLogin();
         }
       }}
     </Authenticator>

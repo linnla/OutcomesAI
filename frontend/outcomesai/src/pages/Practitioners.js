@@ -3,38 +3,10 @@ import { tokens } from '../theme';
 import { mockDataPractitioners } from '../data/mockData';
 import Header from '../components/Header';
 import { useTheme } from '@mui/material';
-import React, { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Auth } from 'aws-amplify';
+import React from 'react';
 import { DataGridPremium, GridToolbar } from '@mui/x-data-grid-premium';
 
 const Practitioners = () => {
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    const checkAndNavigate = async () => {
-      const sessionValid = await verifySession();
-      if (!sessionValid) {
-        navigate('/login'); // Redirect to login page
-      }
-    };
-
-    checkAndNavigate();
-  }, [navigate]);
-
-  const verifySession = async () => {
-    try {
-      await Auth.currentAuthenticatedUser();
-      console.log('User is authenticated');
-      return true;
-    } catch (error) {
-      console.log(error);
-      return false;
-    }
-  };
-
-  verifySession();
-
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
