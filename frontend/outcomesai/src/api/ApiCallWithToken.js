@@ -1,19 +1,19 @@
 import axios from 'axios';
 import { config } from '../config/Config';
 import { getToken } from '../components/Authenticate';
-import { HandleTokenError } from './HandleTokenError';
+import HandleTokenError from './HandleTokenError';
 
 const ApiCallWithToken = async (method, table, body, query_params) => {
-  const handleTokenError = HandleTokenError();
   const url = `${config.baseUrl}${config.stage}/${table}`;
+
+  console.log(method, table, body, query_params, url);
 
   try {
     const token = await getToken();
 
     // Check for token error and handle
     if (token instanceof Error) {
-      handleTokenError(token);
-      return null; // Return null to indicate no data due to token error
+      return <HandleTokenError error={token} />;
     }
 
     let response;

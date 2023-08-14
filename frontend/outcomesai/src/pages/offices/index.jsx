@@ -19,14 +19,20 @@ export default function OfficeManageGrid() {
 
   useEffect(() => {
     setLoading(true);
-    officeController
-      .getAll()
-      .then((res) => {
-        setRows(res.data);
-      })
-      .finally(() => {
+    const fetchData = async () => {
+      try {
+        const response = await officeController.getAll();
+        console.log('Response from getAll():', response);
+        setRows(response.data);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        setRows([]); // Set rows to an empty array if there's an error
+      } finally {
         setLoading(false);
-      });
+      }
+    };
+
+    fetchData();
   }, []);
 
   const onSaveRow = (id, updatedRow, oldRow, oldRows) => {

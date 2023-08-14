@@ -13,10 +13,13 @@ import BarChart from '../components/BarChart';
 import StatBox from '../components/StatBox';
 import ProgressCircle from '../components/ProgressCircle';
 import React from 'react';
+import { getUserPracticeWithRetry } from '../components/Authenticate';
 
 const Dashboard = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+
+  getUserPracticeWithRetry();
 
   return (
     <Box m='20px'>

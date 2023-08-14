@@ -5,6 +5,8 @@ and use real axios parts alternatively.
 */
 
 // import axios from "controllers/axios"
+import ApiCallWithToken from '../../api/ApiCallWithToken';
+import { getUserPracticeWithRetry } from '../../components/Authenticate';
 
 let rows = [
   {
@@ -63,15 +65,33 @@ let rows = [
   },
 ];
 
-const getAll = () => {
-  //real axios
-  // return axios.get('/seller', {});
+const getAll = async () => {
+  let practice_id;
 
-  //virtual axios
-  return new Promise((resolve, reject) => {
-    const res = { data: rows };
-    resolve(res);
-  });
+  try {
+    console.log('OC getting user practice with retry');
+    practice_id = await getUserPracticeWithRetry();
+    if (practice_id !== null) {
+      console.log('Practice ID:', practice_id);
+    } else {
+      throw 'practice_id is not set';
+    }
+  } catch (error) {
+    throw error;
+  }
+
+  const method = 'GET';
+  const table = 'offices';
+  const query_params = {
+    practice_id: practice_id,
+  };
+
+  try {
+    const response = await ApiCallWithToken(method, table, null, query_params);
+    return response.data;
+  } catch (error) {
+    console.error('Error getting offices:', error);
+  }
 };
 
 const saveRow = (row) => {

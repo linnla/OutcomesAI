@@ -18,19 +18,28 @@ function Login() {
       const cognitoUser = await getCognitoUser();
       console.log('Cognito User:', cognitoUser);
 
-      const newUser = {
+      const method = 'POST';
+      const table = 'offices';
+      const body = {
         cognito_id: cognitoUser.username,
         last_name: cognitoUser.attributes.family_name,
         first_name: cognitoUser.attributes.given_name,
         email: cognitoUser.attributes.email,
       };
 
-      const response = await ApiCallWithToken('POST', 'users', { newUser });
-      console.log('User record created successfully:', response.data);
-      // Do something with the response, if needed
+      try {
+        const response = await ApiCallWithToken(method, table, body, null);
+        console.log('User record created successfully:', response.data);
+        return response.data;
+      } catch (error) {
+        console.error('Error creating user record:', error);
+        // Handle the error, such as displaying an error message to the user
+        throw error; // Re-throw the error to propagate it further if needed
+      }
     } catch (error) {
-      console.error('Error creating user record:', error);
+      console.error('Error creating user:', error);
       // Handle the error, such as displaying an error message to the user
+      throw error; // Re-throw the error to propagate it further if needed
     }
   };
 
