@@ -10,7 +10,7 @@ import {
   GridToolbarFilterButton,
   GridToolbarQuickFilter,
 } from '@mui/x-data-grid';
-import GridExcelExportMenuItem from './GridExcelExportMenuItem';
+import GridExcelExportMenuItem from '../GridExcelExportMenuItem';
 import Button from '@mui/material/Button';
 import AddIcon from '@mui/icons-material/Add';
 

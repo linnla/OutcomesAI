@@ -1,4 +1,4 @@
-import { tokens } from '../theme';
+import { tokens } from '../../theme';
 import { Box, Typography, useTheme } from '@mui/material';
 import '../styles/ErrorModal.css';
 

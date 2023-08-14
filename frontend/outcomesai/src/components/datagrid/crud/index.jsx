@@ -1,8 +1,8 @@
 // translate to javascript and custom it by Blueberry 03/02/2023
 import * as React from 'react';
 import { Box } from '@mui/material';
-import { tokens } from '../../theme';
-import Header from '../Header';
+import { tokens } from '../../../theme';
+import Header from '../../Header';
 import { useTheme } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';

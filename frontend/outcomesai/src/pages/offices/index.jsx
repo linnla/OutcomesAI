@@ -6,7 +6,7 @@ to integrate with a communication with backend.
 
 import * as React from 'react';
 import { useEffect, useState } from 'react';
-import FullEditDataGrid from '../../components/datagrid/FullFeaturedCrudGrid';
+import FullEditDataGrid from '../../components/datagrid/crud';
 import officeController from './OfficeController';
 
 export default function OfficeManageGrid() {
