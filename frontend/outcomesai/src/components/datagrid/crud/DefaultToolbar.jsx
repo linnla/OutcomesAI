@@ -9,13 +9,13 @@ import {
   // GridPrintExportMenuItem,
   GridToolbarFilterButton,
   GridToolbarQuickFilter,
-} from '@mui/x-data-grid';
+} from '@mui/x-data-grid-premium';
 import GridExcelExportMenuItem from '../GridExcelExportMenuItem';
 import Button from '@mui/material/Button';
 import AddIcon from '@mui/icons-material/Add';
 
 function DefaultToolbar(props) {
-  console.log(props);
+  //console.log(props);
 
   const { rows, setRows, setRowModesModel, columns, createRowData } = props;
 

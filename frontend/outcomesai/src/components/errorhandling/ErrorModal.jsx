@@ -1,6 +1,6 @@
 import { tokens } from '../../theme';
 import { Box, Typography, useTheme } from '@mui/material';
-import '../styles/ErrorModal.css';
+import '../../styles/ErrorModal.css';
 
 function ErrorModal(props) {
   const { errorType, errorDescription, errorMessage, onClose } = props;
@@ -25,15 +25,9 @@ function ErrorModal(props) {
             fontWeight='bold'
             sx={{ m: '0 0 5px 0' }}
           >
-            Error
-          </Typography>
-          <Typography variant='h5' color={colors.grey[100]}>
             {errorType}
           </Typography>
-          <Typography variant='h5' color={colors.grey[100]}>
-            {errorDescription}
-          </Typography>
-          <Typography variant='h5' color={colors.grey[100]}>
+          <Typography variant='h3' color={colors.grey[100]}>
             {errorMessage}
           </Typography>
         </Box>

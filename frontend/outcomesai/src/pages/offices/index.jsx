@@ -8,10 +8,16 @@ import * as React from 'react';
 import { useEffect, useState } from 'react';
 import FullEditDataGrid from '../../components/datagrid/crud';
 import officeController from './OfficeController';
+import ErrorModal from '../../components/errorhandling/ErrorModal';
 
 export default function OfficeManageGrid() {
   const [rows, setRawRows] = useState([]);
   const [loading, setLoading] = useState(false);
+
+  const [showErrorModal, setShowErrorModal] = useState(false);
+  const [errorType, setErrorType] = useState('');
+  const [errorDescription, setErrorDescription] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
 
   const setRows = (rows) => {
     return setRawRows([...rows.map((r, i) => ({ ...r, no: i + 1 }))]);
@@ -35,18 +41,36 @@ export default function OfficeManageGrid() {
     fetchData();
   }, []);
 
-  const onSaveRow = (id, updatedRow, oldRow, oldRows) => {
-    console.log(updatedRow);
-
+  const onValidateRow = (updatedRow) => {
     officeController
-      .saveRow(updatedRow)
+      .validateRow(updatedRow)
       .then((res) => {
-        const dbRow = res.data;
+        return true;
+      })
+      .catch((err) => {
+        console.log('Data validation failed!', err);
+        setErrorType('Data Error');
+        setErrorDescription('An error occurred while validating office data');
+        setErrorMessage(err.message || 'Unknown error');
+        setShowErrorModal(true);
+      });
+  };
+
+  const onSaveRow = (id, updatedRow, oldRow, oldRows) => {
+    const saveRow = delete updatedRow.id;
+    officeController
+      .saveRow(saveRow)
+      .then((res) => {
+        const dbRow = res;
         setRows(
           oldRows.map((r) => (r.id === updatedRow.id ? { ...dbRow } : r))
         );
       })
       .catch((err) => {
+        setErrorType('Save Error');
+        setErrorDescription('An error occurred while saving office data');
+        setErrorMessage(err.message || 'Unknown error');
+        setShowErrorModal(true);
         setRows(oldRows);
       });
   };
@@ -66,22 +90,32 @@ export default function OfficeManageGrid() {
   const createRowData = (rows) => {
     console.log(rows);
 
-    const newId = Math.max(...rows.map((r) => (r.id ? r.id : 0) * 1)) + 1;
-    const newNo = Math.max(...rows.map((r) => (r.no ? r.no : 0) * 1)) + 1;
-    return { id: newId, no: newNo };
+    const newId = Math.floor(100000 + Math.random() * 900000);
+    return { id: newId, name: '', status: 'Active', virtual: false };
   };
 
   return (
-    <FullEditDataGrid
-      title='Offices'
-      subtitle='Manage Offices'
-      columns={columns}
-      rows={rows}
-      onSaveRow={onSaveRow}
-      onDeleteRow={onDeleteRow}
-      createRowData={createRowData}
-      loading={loading}
-    />
+    <div>
+      <FullEditDataGrid
+        title='Offices'
+        subtitle='Manage Offices'
+        columns={columns}
+        rows={rows}
+        onValidateRow={onValidateRow}
+        onSaveRow={onSaveRow}
+        onDeleteRow={onDeleteRow}
+        createRowData={createRowData}
+        loading={loading}
+      />
+      {showErrorModal && (
+        <ErrorModal
+          errorType={errorType}
+          errorDescription={errorDescription}
+          errorMessage={errorMessage}
+          onClose={() => setShowErrorModal(false)}
+        />
+      )}
+    </div>
   );
 }
 
@@ -111,6 +145,15 @@ const columns = [
   {
     field: 'city',
     headerName: 'City',
+    headerAlign: 'center',
+    align: 'center',
+    flex: 1,
+  },
+  {
+    field: 'county',
+    headerName: 'County',
+    headerAlign: 'center',
+    align: 'center',
     flex: 1,
   },
   {
@@ -124,8 +167,11 @@ const columns = [
     field: 'status',
     headerName: 'Status',
     editable: true,
+    headerAlign: 'center',
+    align: 'center',
     type: 'singleSelect',
     valueOptions: ['Active', 'Inactive'],
+    defaultValueGetter: () => 'Active',
     flex: 1,
   },
 ];

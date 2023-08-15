@@ -8,73 +8,13 @@ and use real axios parts alternatively.
 import ApiCallWithToken from '../../api/ApiCallWithToken';
 import { getUserPracticeWithRetry } from '../../components/Authenticate';
 
-let rows = [
-  {
-    id: 1,
-    name: 'Manhattan Beach',
-    virtual: 'No',
-    postal_code: '90266',
-    city: 'Manhattan Beach',
-    state: 'CA',
-    status: 'Active',
-  },
-  {
-    id: 2,
-    name: 'South Torrance',
-    virtual: 'No',
-    postal_code: '90505',
-    city: 'Torrance',
-    state: 'CA',
-    status: 'Active',
-  },
-  {
-    id: 3,
-    name: 'North Torrance',
-    virtual: 'No',
-    postal_code: '90504',
-    city: 'Torrance',
-    state: 'CA',
-    status: 'Active',
-  },
-  {
-    id: 4,
-    name: 'Santa Monica',
-    virtual: 'No',
-    postal_code: '90405',
-    city: 'Santa Monica',
-    state: 'CA',
-    status: 'Active',
-  },
-  {
-    id: 5,
-    name: 'Beverly Hills',
-    virtual: 'No',
-    postal_code: '90211',
-    city: 'Beverly Hills',
-    state: 'CA',
-    status: 'Active',
-  },
-  {
-    id: 6,
-    name: 'Westlake Village',
-    virtual: 'No',
-    postal_code: '91362',
-    city: 'Westlake Village',
-    state: 'CA',
-    status: 'Active',
-  },
-];
-
 const getAll = async () => {
   let practice_id;
 
   try {
-    console.log('OC getting user practice with retry');
     practice_id = await getUserPracticeWithRetry();
-    if (practice_id !== null) {
-      console.log('Practice ID:', practice_id);
-    } else {
-      throw 'practice_id is not set';
+    if (practice_id === null) {
+      throw new Error('practice_id is not set');
     }
   } catch (error) {
     throw error;
@@ -90,22 +30,136 @@ const getAll = async () => {
     const response = await ApiCallWithToken(method, table, null, query_params);
     return response.data;
   } catch (error) {
-    console.error('Error getting offices:', error);
+    throw error;
   }
 };
 
-const saveRow = (row) => {
-  console.log(row);
+const getDBRow = async (id) => {
+  const method = 'GET';
+  const table = 'offices';
+  const query_params = {
+    id: id,
+  };
 
-  //real axios
-  // return axios.patch('/seller', row);
+  try {
+    const response = await ApiCallWithToken(method, table, null, query_params);
+    return response.data.data;
+  } catch (error) {
+    throw error;
+  }
+};
 
-  //virtual axios
-  return new Promise((resolve, reject) => {
-    if (row.isNew) rows.push(row);
-    else rows = rows.map((r) => (r.id === row.id ? row : r));
-    resolve({ data: row });
-  });
+const validateRow = async (row) => {
+  console.log('validateRow row:', row);
+  if (row.postal_code === undefined || row.postal_code === null) {
+    throw new Error('Postal code is a required field');
+  }
+
+  if (row.name === '' || row.name === null) {
+    throw new Error('Name is a required field');
+  }
+
+  if (
+    row.virtual === '' ||
+    row.virtual === null ||
+    (row.virtual !== true && row.virtual !== false)
+  ) {
+    throw new Error('Virtual is a required value');
+  }
+
+  if (
+    row.status === '' ||
+    row.status === null ||
+    (row.status !== 'Active' && row.status !== 'Inactive')
+  ) {
+    throw new Error('Status is a required value');
+  }
+
+  const method = 'GET';
+  const table = 'postal_codes';
+  const query_params = {
+    postal_code: row.postal_code,
+  };
+
+  try {
+    if (row.postal_code !== null) {
+      await ApiCallWithToken(method, table, null, query_params);
+    }
+  } catch (error) {
+    if (
+      error.response &&
+      error.response.data &&
+      error.response.data.errorType === 'NoResultFound'
+    ) {
+      throw new Error(`Postal code ${row.postal_code} not found`);
+    } else {
+      throw error;
+    }
+  }
+};
+
+const saveRow = async (row) => {
+  try {
+    const practice_id = await getUserPracticeWithRetry();
+    if (practice_id === null) {
+      throw new Error('Error getting practice_id');
+    }
+    console.log('Practice ID:', practice_id);
+
+    let postalCodeData = {};
+    try {
+      const method = 'GET';
+      const table = 'postal_codes';
+      const query_params = {
+        postal_code: row.postal_code,
+      };
+
+      const response = await ApiCallWithToken(
+        method,
+        table,
+        null,
+        query_params
+      );
+
+      postalCodeData = response.data.data[0];
+    } catch (error) {
+      throw new Error(
+        `Error fetching postal code data postal code ${row.postal_code}`
+      );
+    }
+
+    const city = postalCodeData.city;
+    const county = postalCodeData.county;
+    const state = postalCodeData.state;
+    const state_code = postalCodeData.state_code;
+    const country_code = postalCodeData.country_code;
+
+    const body = {
+      ...row,
+      practice_id: practice_id,
+      city: city,
+      county: county,
+      state: state,
+      state_code: state_code,
+      country_code: country_code,
+    };
+
+    try {
+      const responseFromApi = await ApiCallWithToken(
+        'POST',
+        'offices',
+        body,
+        null
+      );
+      const id = responseFromApi.data.id;
+      const newRow = getDBRow(id);
+      return newRow[0];
+    } catch (error) {
+      throw new Error(error);
+    }
+  } catch (error) {
+    throw error;
+  }
 };
 
 const deleteRow = (rowId) => {
@@ -114,15 +168,16 @@ const deleteRow = (rowId) => {
   // return axios.delete(`/seller/${rowId}`);
 
   //virtual axios
-  return new Promise((resolve, reject) => {
-    const deletedRow = rows.find((r) => r.id === rowId);
-    rows = rows.filter((r) => r.id !== rowId);
-    resolve({ data: deletedRow });
-  });
+  //return new Promise((resolve, reject) => {
+  //  const deletedRow = rows.find((r) => r.id === rowId);
+  //  rows = rows.filter((r) => r.id !== rowId);
+  //  resolve({ data: deletedRow });
+  //});
 };
 
 const OfficeController = {
   getAll,
+  validateRow,
   saveRow,
   deleteRow,
 };
