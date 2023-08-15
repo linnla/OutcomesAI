@@ -28,8 +28,8 @@ class Office(Base):
     updated_at = mapped_column(DateTime(timezone=True), nullable=False)
 
     def to_dict(self):
-        created = self.created_at.strftime("%Y-%m-%d")
-        updated = self.updated_at.strftime("%Y-%m-%d")
+        created = self.created_at.strftime("%Y-%m-%d %H:%M:%S")
+        updated = self.updated_at.strftime("%Y-%m-%d %H:%M:%S")
 
         return {
             "id": self.id,

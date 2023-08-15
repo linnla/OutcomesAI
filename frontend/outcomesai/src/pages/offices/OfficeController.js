@@ -35,6 +35,7 @@ const getAll = async () => {
 };
 
 const getDBRow = async (id) => {
+  console.log('getDBRow:', id);
   const method = 'GET';
   const table = 'offices';
   const query_params = {
@@ -99,12 +100,12 @@ const validateRow = async (row) => {
 };
 
 const saveRow = async (row) => {
+  console.log('saveRow:', row);
   try {
     const practice_id = await getUserPracticeWithRetry();
     if (practice_id === null) {
       throw new Error('Error getting practice_id');
     }
-    console.log('Practice ID:', practice_id);
 
     let postalCodeData = {};
     try {
@@ -152,7 +153,8 @@ const saveRow = async (row) => {
         null
       );
       const id = responseFromApi.data.id;
-      const newRow = getDBRow(id);
+      const newRow = await getDBRow(id);
+      console.log('saveRow newRow:', newRow[0]);
       return newRow[0];
     } catch (error) {
       throw new Error(error);

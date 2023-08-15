@@ -96,7 +96,7 @@ export const getUserPracticeWithRetry = async () => {
 
   while (retryCount < MAX_RETRIES) {
     try {
-      console.log('getUserPracticeWithRetry count:', retryCount);
+      //console.log('getUserPracticeWithRetry count:', retryCount);
       const practice_id = await getUserPractice();
       console.log(
         'Returning from getUserPracticeWithRetry with practice_id:',
@@ -111,6 +111,6 @@ export const getUserPracticeWithRetry = async () => {
     }
   }
 
-  console.error('Max retries reached. Unable to get practice_id');
+  //console.error('Max retries reached. Unable to get practice_id');
   return null; // You can return null or handle this case as needed
 };

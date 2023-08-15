@@ -57,11 +57,20 @@ export default function OfficeManageGrid() {
   };
 
   const onSaveRow = (id, updatedRow, oldRow, oldRows) => {
-    const saveRow = delete updatedRow.id;
+    console.log('onSaveRow id:', id);
+    console.log('onSaveRow updatedRow:', updatedRow);
+    console.log('onSaveRow oldRow:', oldRow);
+    console.log('onSaveRow oldRows:', oldRows);
+
+    const saveRow = { ...updatedRow };
+    delete saveRow.id;
+
+    console.log('onSaveRow 1st saveRow:', saveRow);
     officeController
       .saveRow(saveRow)
       .then((res) => {
         const dbRow = res;
+        console.log('index.jsx saveRow res:', res);
         setRows(
           oldRows.map((r) => (r.id === updatedRow.id ? { ...dbRow } : r))
         );
@@ -133,6 +142,7 @@ const columns = [
     headerName: 'Telehealth',
     editable: true,
     type: 'boolean',
+    defaultValueGetter: () => false,
   },
   {
     field: 'postal_code',
@@ -150,15 +160,15 @@ const columns = [
     flex: 1,
   },
   {
-    field: 'county',
-    headerName: 'County',
+    field: 'state',
+    headerName: 'State',
     headerAlign: 'center',
     align: 'center',
     flex: 1,
   },
   {
-    field: 'state',
-    headerName: 'State',
+    field: 'created',
+    headerName: 'Created',
     headerAlign: 'center',
     align: 'center',
     flex: 1,

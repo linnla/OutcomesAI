@@ -52,6 +52,7 @@ const ApiCallWithToken = async (method, table, body, query_params) => {
         throw new Error(`Unsupported method: ${method}`);
     }
 
+    console.log(response);
     return response;
   } catch (error) {
     console.error(`Error on ${method} request:`, error);

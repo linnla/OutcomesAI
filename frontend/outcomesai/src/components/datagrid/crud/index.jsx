@@ -13,6 +13,7 @@ import {
   DataGridPremium,
   GridRowModes,
   GridActionsCellItem,
+  useGridApiRef,
 } from '@mui/x-data-grid-premium';
 
 import DefaultToolbar from './DefaultToolbar';
@@ -34,6 +35,7 @@ function FullFeaturedCrudGrid({
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
+  const apiRef = useGridApiRef();
   const [internalRows, setInternalRows] = React.useState(rows);
   const [rowModesModel, setRowModesModel] = React.useState({});
 
@@ -79,13 +81,16 @@ function FullFeaturedCrudGrid({
   };
 
   const processRowUpdate = async (newRow) => {
+    console.log('processRowUpdate newRow:', newRow);
     const updatedRow = { ...newRow };
     if (!updatedRow.isNew) updatedRow.isNew = false;
+    console.log('updatedRow.isNew:', updatedRow.isNew);
     const oldRow = internalRows.find((r) => r.id === updatedRow.id);
     setInternalRows(
       internalRows.map((row) => (row.id === newRow.id ? updatedRow : row))
     );
 
+    let savedRow = {};
     try {
       try {
         await onValidateRow(updatedRow);
@@ -95,7 +100,13 @@ function FullFeaturedCrudGrid({
       }
 
       try {
-        await onSaveRow(updatedRow.id, updatedRow, oldRow, internalRows);
+        const savedRow = await onSaveRow(
+          updatedRow.id,
+          updatedRow,
+          oldRow,
+          internalRows
+        );
+        console.log('processRowUpdate savedRow:', savedRow);
       } catch (error) {
         console.error('Error saving row:', error);
         throw error;
@@ -103,6 +114,7 @@ function FullFeaturedCrudGrid({
     } catch (error) {
       throw error;
     }
+    apiRef.current.updateRows([{ id: newRow.id, ...savedRow }]);
     return updatedRow;
   };
 
@@ -195,6 +207,7 @@ function FullFeaturedCrudGrid({
           rows={internalRows}
           columns={appendedColumns}
           editMode='row'
+          apiRef={apiRef}
           rowModesModel={rowModesModel}
           onRowModesModelChange={(newModel) => setRowModesModel(newModel)}
           onRowEditStart={handleRowEditStart}
