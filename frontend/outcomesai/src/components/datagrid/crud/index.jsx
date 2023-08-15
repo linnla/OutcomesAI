@@ -8,7 +8,6 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Close';
-//import { GridRowModes, DataGrid, GridActionsCellItem } from '@mui/x-data-grid';
 import {
   DataGridPremium,
   GridRowModes,
@@ -17,7 +16,7 @@ import {
 } from '@mui/x-data-grid-premium';
 
 import DefaultToolbar from './DefaultToolbar';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 function FullFeaturedCrudGrid({
   title,
@@ -29,7 +28,6 @@ function FullFeaturedCrudGrid({
   onSaveRow,
   onDeleteRow,
   createRowData,
-  onProcessRowUpdateError,
   ...props
 }) {
   const theme = useTheme();
@@ -80,6 +78,10 @@ function FullFeaturedCrudGrid({
     }
   };
 
+  const onProcessRowUpdateError = (error) => {
+    console.error('onProcessRowUpdateError:', error);
+  };
+
   const processRowUpdate = async (newRow) => {
     console.log('processRowUpdate newRow:', newRow);
     const updatedRow = { ...newRow };
@@ -92,29 +94,20 @@ function FullFeaturedCrudGrid({
 
     let savedRow = {};
     try {
-      try {
-        await onValidateRow(updatedRow);
-      } catch (error) {
-        console.error('Error validating row:', error);
-        throw error;
-      }
-
-      try {
-        const savedRow = await onSaveRow(
-          updatedRow.id,
-          updatedRow,
-          oldRow,
-          internalRows
-        );
-        console.log('processRowUpdate savedRow:', savedRow);
-      } catch (error) {
-        console.error('Error saving row:', error);
-        throw error;
-      }
+      await onValidateRow(updatedRow);
+      savedRow = await onSaveRow(
+        updatedRow.id,
+        updatedRow,
+        oldRow,
+        internalRows,
+        updatedRow.isNew
+      );
+      apiRef.current.updateRows([{ id: newRow.id, ...savedRow }]);
     } catch (error) {
-      throw error;
+      console.error('processRowUpdate', error.message);
     }
-    apiRef.current.updateRows([{ id: newRow.id, ...savedRow }]);
+
+    //apiRef.current.updateRows([{ id: newRow.id, ...savedRow }]);
     return updatedRow;
   };
 
@@ -246,9 +239,9 @@ FullFeaturedCrudGrid.defaultProps = {
   //  console.log('delete row', oldRow);
   //},
 
-  onProcessRowUpdateError: (error) => {
-    console.error(error);
-  },
+  //onProcessRowUpdateError: (error) => {
+  //  console.error('onProcessRowUpdateError:', error);
+  //},
 
   initialState: {
     columns: {

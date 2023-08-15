@@ -1,14 +1,8 @@
-/*
-This file is
-to customize the ui of the grid and
-to integrate with a communication with backend.
- */
-
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import FullEditDataGrid from '../../components/datagrid/crud';
 import officeController from './OfficeController';
-import ErrorModal from '../../components/errorhandling/ErrorModal';
+import ErrorModal from '../../utils/ErrorModal';
 
 export default function OfficeManageGrid() {
   const [rows, setRawRows] = useState([]);
@@ -27,9 +21,9 @@ export default function OfficeManageGrid() {
     setLoading(true);
     const fetchData = async () => {
       try {
-        const response = await officeController.getAll();
+        const response = await officeController.getAll(false);
         console.log('Response from getAll():', response);
-        setRows(response.data);
+        setRows(response);
       } catch (error) {
         console.error('Error fetching data:', error);
         setRows([]); // Set rows to an empty array if there's an error
@@ -47,27 +41,23 @@ export default function OfficeManageGrid() {
       .then((res) => {
         return true;
       })
-      .catch((err) => {
-        console.log('Data validation failed!', err);
+      .catch((error) => {
+        console.log('onValidateRow error', error);
         setErrorType('Data Error');
         setErrorDescription('An error occurred while validating office data');
-        setErrorMessage(err.message || 'Unknown error');
+        setErrorMessage(error.message || 'Unknown error');
         setShowErrorModal(true);
       });
   };
 
-  const onSaveRow = (id, updatedRow, oldRow, oldRows) => {
-    console.log('onSaveRow id:', id);
-    console.log('onSaveRow updatedRow:', updatedRow);
-    console.log('onSaveRow oldRow:', oldRow);
-    console.log('onSaveRow oldRows:', oldRows);
-
+  const onSaveRow = (id, updatedRow, oldRow, oldRows, isNew) => {
     const saveRow = { ...updatedRow };
-    delete saveRow.id;
+    if (isNew) {
+      delete saveRow.id;
+    }
 
-    console.log('onSaveRow 1st saveRow:', saveRow);
     officeController
-      .saveRow(saveRow)
+      .saveRow(saveRow, oldRow, isNew)
       .then((res) => {
         const dbRow = res;
         console.log('index.jsx saveRow res:', res);
@@ -75,18 +65,29 @@ export default function OfficeManageGrid() {
           oldRows.map((r) => (r.id === updatedRow.id ? { ...dbRow } : r))
         );
       })
-      .catch((err) => {
-        setErrorType('Save Error');
-        setErrorDescription('An error occurred while saving office data');
-        setErrorMessage(err.message || 'Unknown error');
-        setShowErrorModal(true);
+      .catch((error) => {
+        console.log('onSaveRow error', error);
+
+        if (
+          error.message ===
+          'DatabaseError: Unique Constraint Error or Duplicate Key Violation. The record being inserted or updated already exists.'
+        ) {
+          setErrorType('Data Error');
+          setErrorMessage('An office with this name already exists');
+          setShowErrorModal(true);
+        } else {
+          setErrorType('Save Error');
+          setErrorDescription('An error occurred while saving office data');
+          setErrorMessage(error.message || 'Unknown error');
+          setShowErrorModal(true);
+        }
         setRows(oldRows);
       });
   };
 
   const onDeleteRow = (id, oldRow, oldRows) => {
     officeController
-      .deleteRow(id)
+      .deleteRow(id, oldRows)
       .then((res) => {
         const dbRowId = res.data.id;
         setRows(oldRows.filter((r) => r.id !== dbRowId));
@@ -138,19 +139,19 @@ const columns = [
     cellClassName: 'name-column--cell',
   },
   {
-    field: 'virtual',
-    headerName: 'Telehealth',
-    editable: true,
-    type: 'boolean',
-    defaultValueGetter: () => false,
-  },
-  {
     field: 'postal_code',
     headerName: 'Zip Code',
     headerAlign: 'center',
     align: 'center',
     editable: true,
     flex: 1,
+  },
+  {
+    field: 'virtual',
+    headerName: 'Telehealth',
+    editable: true,
+    type: 'boolean',
+    defaultValueGetter: () => false,
   },
   {
     field: 'city',

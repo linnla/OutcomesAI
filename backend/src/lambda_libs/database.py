@@ -32,8 +32,8 @@ def exception_handling(exception):
     if isinstance(exception, OperationalError):
         body = {
             "errorType": "OperationalError",
-            "errorDescription": "Connection issues, transaction failures, or database server error",
-            "errorMessage": error_message,
+            "errorMessage": "Connection issues, transaction failures, or database server error",
+            "errorDescription": error_message,
         }
         logger.critical(body)
         return DBResponse(response_code=503, body=body)
@@ -41,8 +41,8 @@ def exception_handling(exception):
     if isinstance(exception, NoResultFound):
         body = {
             "errorType": "NoResultFound",
-            "errorDescription": "A database result was required but none was found",
-            "errorMessage": error_message,
+            "errorMessage": "A database result was required but none was found",
+            "errorDescription": error_message,
         }
         response = DBResponse(response_code=404, body=body)
 
@@ -50,61 +50,61 @@ def exception_handling(exception):
         if "duplicate key" in error_message.lower():
             body = {
                 "errorType": "DuplicateKeyError",
-                "errorDescription": "Unique Constraint Error or Duplicate Key Violation. The record being inserted or updated already exists.",
-                "errorMessage": error_message,
+                "errorMessage": "Unique Constraint Error or Duplicate Key Violation. The record being inserted or updated already exists.",
+                "errorDescription": error_message,
             }
             response = DBResponse(response_code=409, body=body)
         elif "foreign key" in error_message.lower():
             body = {
                 "errorType": "ForeignKeyError",
-                "errorDescription": "Foreign key integrity constraint was violated. The record being inserted or updated has a foreign key that does not exist in the referenced table's primary key column, or trying to delete a reference table record while records in other tables reference it",
-                "errorMessage": error_message,
+                "errorMessage": "Foreign key integrity constraint was violated. The record being inserted or updated has a foreign key that does not exist in the referenced table's primary key column, or trying to delete a reference table record while records in other tables reference it",
+                "errorDescription": error_message,
             }
             response = DBResponse(response_code=409, body=body)
         elif "checkviolation" in error_message.lower():
             body = {
                 "errorType": "CheckViolation",
-                "errorDescription": "Check constraint was violated. A Value being inserted or updated violates a specified condition",
-                "errorMessage": error_message,
+                "errorMessage": "Check constraint was violated. A Value being inserted or updated violates a specified condition",
+                "errorDescription": error_message,
             }
             response = DBResponse(response_code=409, body=body)
         else:
             body = {
                 "errorType": "IntegrityError",
-                "errorDescription": "TBD",
-                "errorMessage": error_message,
+                "errorMessage": "TBD",
+                "errorDescription": error_message,
             }
             response = DBResponse(response_code=409, body=body)
 
     elif isinstance(exception, DataError):
         body = {
             "errorType": "DataError",
-            "errorDescription": "Problem with the data being processed, invalid values or data type mismatch.",
-            "errorMessage": error_message,
+            "errorMessage": "Problem with the data being processed, invalid values or data type mismatch.",
+            "errorDescription": error_message,
         }
         response = DBResponse(response_code=400, body=body)
 
     elif isinstance(exception, ProgrammingError):
         body = {
             "errorType": "ProgrammingError",
-            "errorDescription": "Generic programming error related to the database operation, an incorrect method call or parameter usage",
-            "errorMessage": error_message,
+            "errorMessage": "Generic programming error related to the database operation, an incorrect method call or parameter usage",
+            "errorDescription": error_message,
         }
         response = DBResponse(response_code=400, body=body)
 
     elif isinstance(exception, StatementError):
         body = {
             "errorType": "StatementError",
-            "errorDescription": "Error in the SQL statement, syntax error or an invalid SQL query.",
-            "errorMessage": error_message,
+            "errorMessage": "Error in the SQL statement, syntax error or an invalid SQL query.",
+            "errorDescription": error_message,
         }
         response = DBResponse(response_code=400, body=body)
 
     else:
         body = {
             "errorType": "Known",
-            "errorDescription": "Unknown",
-            "errorMessage": error_message,
+            "errorMessage": "Unknown",
+            "errorDescription": error_message,
         }
         response = DBResponse(response_code=500, body=body)
 

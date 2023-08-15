@@ -2,12 +2,12 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Authenticator } from '@aws-amplify/ui-react';
 import '@aws-amplify/ui-react/styles.css';
-import ApiCallWithToken from '../api/ApiCallWithToken';
+import CallApi from '../api/CallApi';
 import {
   getUserData,
   getCognitoUser,
   getUserPracticeWithRetry,
-} from '../components/Authenticate';
+} from '../utils/Authenticate';
 
 function Login() {
   const navigate = useNavigate();
@@ -28,7 +28,7 @@ function Login() {
       };
 
       try {
-        const response = await ApiCallWithToken(method, table, body, null);
+        const response = await CallApi(method, table, body, null);
         console.log('User record created successfully:', response.data);
         return response.data;
       } catch (error) {

@@ -1,6 +1,8 @@
-import { tokens } from '../../theme';
+import React from 'react';
+import ReactHtmlParser from 'react-html-parser';
+import { tokens } from '../theme';
 import { Box, Typography, useTheme } from '@mui/material';
-import '../../styles/ErrorModal.css';
+import '../styles/ErrorModal.css';
 
 function ErrorModal(props) {
   const { errorType, errorDescription, errorMessage, onClose } = props;
@@ -28,7 +30,21 @@ function ErrorModal(props) {
             {errorType}
           </Typography>
           <Typography variant='h3' color={colors.grey[100]}>
-            {errorMessage}
+            {errorMessage
+              .split(/([.:])/)
+              .reduce((acc, part, index) => {
+                if (index % 2 === 0) {
+                  return acc.concat(part);
+                } else {
+                  const lastPart = acc.pop();
+                  return acc.concat(lastPart + part + '<br />');
+                }
+              }, [])
+              .map((part, index) => (
+                <React.Fragment key={index}>
+                  {ReactHtmlParser(part)}
+                </React.Fragment>
+              ))}
           </Typography>
         </Box>
         <button onClick={onClose}>Close</button>

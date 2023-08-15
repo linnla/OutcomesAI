@@ -1,9 +1,17 @@
 import axios from 'axios';
 import { config } from '../config/Config';
-import { getToken } from '../components/Authenticate';
+import { getToken } from '../utils/Authenticate';
 import HandleTokenError from './HandleTokenError';
 
-const ApiCallWithToken = async (method, table, body, query_params) => {
+class DatabaseError extends Error {
+  constructor(message, type) {
+    super(message);
+    this.name = 'DatabaseError';
+    this.type = type;
+  }
+}
+
+const CallApi = async (method, table, body, query_params) => {
   const url = `${config.baseUrl}${config.stage}/${table}`;
 
   console.log(method, table, body, query_params, url);
@@ -56,8 +64,14 @@ const ApiCallWithToken = async (method, table, body, query_params) => {
     return response;
   } catch (error) {
     console.error(`Error on ${method} request:`, error);
-    throw error; // Propagate the error up for proper handling
+
+    const errorObject = new DatabaseError(
+      error.response.data.errorMessage,
+      error.response.data.errorType
+    );
+
+    throw errorObject;
   }
 };
 
-export default ApiCallWithToken;
+export default CallApi;

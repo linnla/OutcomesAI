@@ -1,5 +1,5 @@
 import { Auth } from 'aws-amplify';
-import ApiCallWithToken from '../api/ApiCallWithToken';
+import CallApi from '../api/CallApi';
 
 export const getToken = async () => {
   try {
@@ -47,12 +47,7 @@ export const getUserData = async () => {
     };
 
     try {
-      const response = await ApiCallWithToken(
-        method,
-        table,
-        null,
-        query_params
-      );
+      const response = await CallApi(method, table, null, query_params);
       return response.data;
     } catch (error) {
       console.error('Error getting user:', error);
