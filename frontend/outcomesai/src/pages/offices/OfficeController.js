@@ -151,8 +151,6 @@ const saveRow = async (row, oldRow, isNew) => {
 
 const deleteRow = async (rowId, rows) => {
   console.log(rowId);
-  //real axios
-  // return axios.delete(`/seller/${rowId}`);
 
   try {
     const responseFromApi = await CallApi(
