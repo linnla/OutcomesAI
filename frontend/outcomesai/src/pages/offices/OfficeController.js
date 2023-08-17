@@ -1,5 +1,5 @@
 import CallApi from '../../api/CallApi';
-import { getUserPracticeWithRetry } from '../../utils/Authenticate';
+import { getUserPracticeWithRetry } from '../../utils/AuthService';
 import {
   validatePostalCode,
   validateRequiredAttributes,

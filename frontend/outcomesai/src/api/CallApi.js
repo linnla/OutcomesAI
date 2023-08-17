@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { config } from '../config/Config';
-import { getToken } from '../utils/Authenticate';
+import { getToken } from '../utils/AuthService';
 import HandleTokenError from './HandleTokenError';
 
 class DatabaseError extends Error {

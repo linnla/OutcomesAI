@@ -37,25 +37,21 @@ const getUserEmail = async () => {
 };
 
 export const getUserData = async () => {
+  console.log('getUserData start');
   try {
-    const userEmail = await getUserEmail();
-
     const method = 'GET';
-    const table = 'users';
+    const table = 'practice_users';
+    const email = await getUserEmail();
     const query_params = {
-      email: userEmail,
+      email: email,
     };
 
-    try {
-      const response = await CallApi(method, table, null, query_params);
-      return response.data;
-    } catch (error) {
-      console.error('Error getting user:', error);
-      throw error; // Re-throw the error to propagate it further if needed
-    }
+    const response = await CallApi(method, table, null, query_params);
+    console.log('getUserData response:', response.data.data[0]);
+    return response.data.data[0];
   } catch (error) {
-    console.error('Error getting user data:', error);
-    throw error; // Re-throw the error to propagate it further if needed
+    console.log('getUserData error:', error);
+    throw error;
   }
 };
 

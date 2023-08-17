@@ -1,16 +1,24 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Authenticator } from '@aws-amplify/ui-react';
+import React, { useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { Authenticator, useAuthenticator, View } from '@aws-amplify/ui-react';
 import '@aws-amplify/ui-react/styles.css';
 import CallApi from '../api/CallApi';
 import {
   getUserData,
   getCognitoUser,
   getUserPracticeWithRetry,
-} from '../utils/Authenticate';
+} from '../utils/AuthService';
 
 function Login() {
+  const { route } = useAuthenticator((context) => [context.route]);
+  const location = useLocation();
   const navigate = useNavigate();
+  let from = location.state?.from?.pathname || '/';
+  useEffect(() => {
+    if (route === 'authenticated') {
+      navigate(from, { replace: true });
+    }
+  }, [route, navigate, from]);
 
   const createNewUser = async () => {
     try {
@@ -65,7 +73,6 @@ function Login() {
       } else {
         console.log('Practice ID not set');
       }
-      navigate('/');
     } catch (error) {
       console.error('Login error:', error);
     }

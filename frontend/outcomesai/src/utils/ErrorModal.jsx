@@ -5,7 +5,7 @@ import { Box, Typography, useTheme } from '@mui/material';
 import '../styles/ErrorModal.css';
 
 function ErrorModal(props) {
-  const { errorType, errorDescription, errorMessage, onClose } = props;
+  const { errorType, errorMessage, errorDescription, onClose } = props;
 
   console.log('ErrorModal', errorMessage);
 

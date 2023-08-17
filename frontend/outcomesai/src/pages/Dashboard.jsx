@@ -13,7 +13,7 @@ import BarChart from '../components/BarChart';
 import StatBox from '../components/StatBox';
 import ProgressCircle from '../components/ProgressCircle';
 import React from 'react';
-import { getUserPracticeWithRetry } from '../utils/Authenticate';
+import { getUserPracticeWithRetry } from '../utils/AuthService';
 
 const Dashboard = () => {
   const theme = useTheme();

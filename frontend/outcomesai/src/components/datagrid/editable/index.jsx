@@ -18,7 +18,7 @@ import {
 import DefaultToolbar from './DefaultToolbar';
 import { useEffect, useState } from 'react';
 
-function FullFeaturedCrudGrid({
+function EditableDataGrid({
   title,
   subtitle,
   columns,
@@ -34,8 +34,8 @@ function FullFeaturedCrudGrid({
   const colors = tokens(theme.palette.mode);
 
   const apiRef = useGridApiRef();
-  const [internalRows, setInternalRows] = React.useState(rows);
-  const [rowModesModel, setRowModesModel] = React.useState({});
+  const [internalRows, setInternalRows] = useState(rows);
+  const [rowModesModel, setRowModesModel] = useState({});
 
   useEffect(() => {
     setInternalRows(rows);
@@ -78,9 +78,9 @@ function FullFeaturedCrudGrid({
     }
   };
 
-  const onProcessRowUpdateError = (error) => {
-    console.error('onProcessRowUpdateError:', error);
-  };
+  const handleProcessRowUpdateError = React.useCallback((error) => {
+    console.log('handleProcessRowUpdateError:', error);
+  }, []);
 
   const processRowUpdate = async (newRow) => {
     console.log('processRowUpdate newRow:', newRow);
@@ -107,7 +107,6 @@ function FullFeaturedCrudGrid({
       console.error('processRowUpdate', error.message);
     }
 
-    //apiRef.current.updateRows([{ id: newRow.id, ...savedRow }]);
     return updatedRow;
   };
 
@@ -159,7 +158,7 @@ function FullFeaturedCrudGrid({
   ];
 
   //pagination
-  const [pageSize, setPageSize] = React.useState(defaultPageSize);
+  const [pageSize, setPageSize] = useState(defaultPageSize);
 
   return (
     <Box m='20px'>
@@ -206,7 +205,7 @@ function FullFeaturedCrudGrid({
           onRowEditStart={handleRowEditStart}
           onRowEditStop={handleRowEditStop}
           processRowUpdate={processRowUpdate}
-          onProcessRowUpdateError={onProcessRowUpdateError}
+          onProcessRowUpdateError={handleProcessRowUpdateError}
           slots={{
             toolbar: DefaultToolbar,
           }}
@@ -230,19 +229,7 @@ function FullFeaturedCrudGrid({
   );
 }
 
-FullFeaturedCrudGrid.defaultProps = {
-  //action
-  //onSaveRow: (id, updatedRow /*, oldRow, rows*/) => {
-  //  console.log('save row', updatedRow);
-  //},
-  //onDeleteRow: (id, oldRow /*, rows*/) => {
-  //  console.log('delete row', oldRow);
-  //},
-
-  //onProcessRowUpdateError: (error) => {
-  //  console.error('onProcessRowUpdateError:', error);
-  //},
-
+EditableDataGrid.defaultProps = {
   initialState: {
     columns: {
       columnVisibilityModel: {
@@ -258,4 +245,4 @@ FullFeaturedCrudGrid.defaultProps = {
   rowsPerPageOptions: [5, 10, 25, 50, 100],
 };
 
-export default FullFeaturedCrudGrid;
+export default EditableDataGrid;

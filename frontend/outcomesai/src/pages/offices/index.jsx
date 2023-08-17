@@ -1,38 +1,59 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
-import FullEditDataGrid from '../../components/datagrid/crud';
+import EditableDataGrid from '../../components/datagrid/editable';
+import ReadOnlyDataGrid from '../../components/datagrid/readonly';
 import officeController from './OfficeController';
 import ErrorModal from '../../utils/ErrorModal';
+import { useAuthenticator } from '@aws-amplify/ui-react';
+import { getUserData } from '../../utils/AuthService';
 
 export default function OfficeManageGrid() {
+  const { route } = useAuthenticator((context) => [context.route]);
   const [rows, setRawRows] = useState([]);
   const [loading, setLoading] = useState(false);
-
   const [showErrorModal, setShowErrorModal] = useState(false);
   const [errorType, setErrorType] = useState('');
   const [errorDescription, setErrorDescription] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
+  const title = 'Offices';
+  const subtitle = 'Manage Offices';
+
   const setRows = (rows) => {
     return setRawRows([...rows.map((r, i) => ({ ...r, no: i + 1 }))]);
   };
 
+  const [userData, setUserData] = useState({});
+
   useEffect(() => {
     setLoading(true);
-    const fetchData = async () => {
+
+    const fetchUserData = async () => {
+      try {
+        const user = await getUserData();
+        console.log('Office index.jsx userData response:', user);
+        setUserData(user);
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+        setUserData({});
+      }
+    };
+
+    const fetchRowData = async () => {
       try {
         const response = await officeController.getAll(false);
         console.log('Response from getAll():', response);
         setRows(response);
       } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error('Error fetching office data:', error);
         setRows([]); // Set rows to an empty array if there's an error
       } finally {
         setLoading(false);
       }
     };
 
-    fetchData();
+    fetchUserData();
+    fetchRowData();
   }, []);
 
   const onValidateRow = (updatedRow) => {
@@ -104,29 +125,44 @@ export default function OfficeManageGrid() {
     return { id: newId, name: '', status: 'Active', virtual: false };
   };
 
-  return (
-    <div>
-      <FullEditDataGrid
-        title='Offices'
-        subtitle='Manage Offices'
-        columns={columns}
-        rows={rows}
-        onValidateRow={onValidateRow}
-        onSaveRow={onSaveRow}
-        onDeleteRow={onDeleteRow}
-        createRowData={createRowData}
-        loading={loading}
-      />
-      {showErrorModal && (
-        <ErrorModal
-          errorType={errorType}
-          errorDescription={errorDescription}
-          errorMessage={errorMessage}
-          onClose={() => setShowErrorModal(false)}
+  if (userData.role === 'user') {
+    return (
+      <div>
+        <ReadOnlyDataGrid
+          title={title}
+          subtitle={subtitle}
+          columns={columns}
+          rows={rows}
         />
-      )}
-    </div>
-  );
+      </div>
+    );
+  }
+
+  if (userData.role === 'manager' || userData.role === 'admin') {
+    return (
+      <div>
+        <EditableDataGrid
+          title={title}
+          subtitle={subtitle}
+          columns={columns}
+          rows={rows}
+          onValidateRow={onValidateRow}
+          onSaveRow={onSaveRow}
+          onDeleteRow={onDeleteRow}
+          createRowData={createRowData}
+          loading={loading}
+        />
+        {showErrorModal && (
+          <ErrorModal
+            errorType={errorType}
+            errorDescription={errorDescription}
+            errorMessage={errorMessage}
+            onClose={() => setShowErrorModal(false)}
+          />
+        )}
+      </div>
+    );
+  }
 }
 
 const columns = [
