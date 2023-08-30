@@ -50,6 +50,7 @@ class PracticeUser(Base):
             "last_name": user["last_name"],
             "first_name": user["first_name"],
             "email": user["email"],
+            "practice_id": practice["id"],
             "role": role["name"],
             "status": self.status,
             "created": created,

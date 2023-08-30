@@ -19,22 +19,12 @@ import Geography from './pages/Geography';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import { ColorModeContext, useMode } from './theme';
 import Calendar from './pages/Calendar';
-import { getUserData } from './utils/AuthService';
 import { RequireAuth } from './utils/RequireAuth';
 import { Authenticator } from '@aws-amplify/ui-react';
-
-//const AuthContext = React.createContext(null);
 
 function App() {
   const [theme, colorMode] = useMode();
   const [isSidebar, setIsSidebar] = useState(true);
-  //const [userData, setUserData] = useState('admin');
-
-  //const getUserData = async () => {
-  //  const user = await getUserData();
-  //  console.log('user:', user);
-  //  setUserData(user);
-  //};
   const userData = {
     role: 'manager',
   };

@@ -1,18 +1,17 @@
 import React, { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Authenticator, useAuthenticator, View } from '@aws-amplify/ui-react';
+import { Authenticator, useAuthenticator } from '@aws-amplify/ui-react';
 import '@aws-amplify/ui-react/styles.css';
 import CallApi from '../api/CallApi';
-import {
-  getUserData,
-  getCognitoUser,
-  getUserPracticeWithRetry,
-} from '../utils/AuthService';
+import { getUser, getCognitoUser } from '../utils/AuthService';
+//import { useUser } from '../contexts/UserContext';
 
 function Login() {
   const { route } = useAuthenticator((context) => [context.route]);
   const location = useLocation();
   const navigate = useNavigate();
+  //const { setUser } = useUser();
+
   let from = location.state?.from?.pathname || '/';
   useEffect(() => {
     if (route === 'authenticated') {
@@ -27,7 +26,7 @@ function Login() {
       console.log('Cognito User:', cognitoUser);
 
       const method = 'POST';
-      const table = 'offices';
+      const table = 'users';
       const body = {
         cognito_id: cognitoUser.username,
         last_name: cognitoUser.attributes.family_name,
@@ -53,28 +52,13 @@ function Login() {
 
   const handleLogin = async () => {
     try {
-      // Get user data
-      let userData;
-      try {
-        userData = await getUserData();
-        console.log('User Data:', userData);
-      } catch (getUserDataError) {
-        // CHECK FOR DATA NOT FOUND ERROR vs ANY OTHER ERROR
-        // ONLY CREATENEWUSER() IF USER (DATA OR RESULT) NOT FOUND ERROR
-        console.log('User data not found. Creating user...');
-        // Logic to create the user
-        userData = await createNewUser();
-      }
-
-      // Get practice ID with retry
-      const practice_id = await getUserPracticeWithRetry();
-      if (practice_id !== null) {
-        console.log('Practice ID:', practice_id);
-      } else {
-        console.log('Practice ID not set');
-      }
+      const user = await getUser();
+      console.log('login handleLogin user:', user);
     } catch (error) {
-      console.error('Login error:', error);
+      // CHECK FOR DATA NOT FOUND ERROR vs ANY OTHER ERROR
+      // ONLY CREATENEWUSER() IF USER (DATA OR RESULT) NOT FOUND ERROR
+      console.log('User data not found. Creating user...', error);
+      //await createNewUser();
     }
   };
 

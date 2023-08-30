@@ -21,7 +21,6 @@ function ReadOnlyDataGrid({
   const colors = tokens(theme.palette.mode);
 
   const [internalRows, setInternalRows] = useState(rows);
-  const [rowModesModel, setRowModesModel] = useState({});
 
   useEffect(() => {
     setInternalRows(rows);
@@ -68,7 +67,6 @@ function ReadOnlyDataGrid({
         <DataGridPremium
           rows={internalRows}
           columns={columns}
-          rowModesModel={rowModesModel}
           slots={{
             toolbar: DefaultToolbar,
           }}

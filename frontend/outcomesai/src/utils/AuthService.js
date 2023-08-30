@@ -36,6 +36,46 @@ const getUserEmail = async () => {
   }
 };
 
+export const getUser = async () => {
+  console.log('getUser start');
+  try {
+    const method = 'GET';
+    const table = 'practice_users';
+    const email = await getUserEmail();
+    const query_params = {
+      email: email,
+    };
+
+    const response = await CallApi(method, table, null, query_params);
+    console.log('getUser response:', response.data.data[0]);
+    sessionStorage.setItem('practice_id', response.data.data.practice_id);
+    sessionStorage.setItem('role', response.data.data.role);
+    return response.data.data[0];
+  } catch (error) {
+    console.log('getUser error:', error);
+    throw error;
+  }
+};
+
+//export const setUserPractice = async (practice_id) => {
+//  sessionStorage.setItem('practice_id', practice_id);
+//};
+
+export const getUserPractice = async () => {
+  const practiceId = sessionStorage.getItem('practice_id');
+  console.log('AuthService getUserPractice:', practiceId);
+};
+
+//export const setUserRole = async (role) => {
+//  sessionStorage.setItem('role', role);
+//};
+
+export const getUserRole = async () => {
+  const role = sessionStorage.getItem('role');
+  console.log('AuthService getUserRole:', role);
+};
+
+// DELETE AFTER RESOLVING BUG
 export const getUserData = async () => {
   console.log('getUserData start');
   try {
@@ -53,55 +93,4 @@ export const getUserData = async () => {
     console.log('getUserData error:', error);
     throw error;
   }
-};
-
-const MAX_RETRIES = 3; // Maximum number of retries
-
-const setUserPractice = async () => {
-  try {
-    const practice_id = 100101;
-    sessionStorage.setItem('practice_id', practice_id.toString());
-    console.log('Saved practice_id to session storage');
-  } catch (error) {
-    console.error('Error saving practice_id to session storage:', error);
-    throw error;
-  }
-};
-
-const getUserPractice = async () => {
-  try {
-    const practice_id = sessionStorage.getItem('practice_id');
-    if (practice_id === null) {
-      await setUserPractice();
-      throw new Error('practice_id is not set');
-    }
-    return parseInt(practice_id);
-  } catch (error) {
-    console.error('Error getting practice_id:', error);
-    throw error;
-  }
-};
-
-export const getUserPracticeWithRetry = async () => {
-  let retryCount = 0;
-
-  while (retryCount < MAX_RETRIES) {
-    try {
-      //console.log('getUserPracticeWithRetry count:', retryCount);
-      const practice_id = await getUserPractice();
-      console.log(
-        'Returning from getUserPracticeWithRetry with practice_id:',
-        practice_id
-      );
-      return practice_id;
-    } catch (error) {
-      console.error('Error getting practice_id. Retrying...', error);
-      retryCount++;
-    } finally {
-      console.log(`Retry attempt: ${retryCount}`);
-    }
-  }
-
-  //console.error('Max retries reached. Unable to get practice_id');
-  return null; // You can return null or handle this case as needed
 };

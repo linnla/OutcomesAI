@@ -1,12 +1,18 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
+//import { useNavigate } from 'react-router-dom';
 import EditableDataGrid from '../../components/datagrid/editable';
 import ReadOnlyDataGrid from '../../components/datagrid/readonly';
 import officeController from './OfficeController';
 import ErrorModal from '../../utils/ErrorModal';
-import { validateRow } from './OfficeController';
+import { useAuthenticator } from '@aws-amplify/ui-react';
+import { getUserPractice, getUserRole } from '../../utils/AuthService';
 
-export default function OfficeManageGrid() {
+export default async function OfficeManageGrid() {
+  console.log('START OfficeManageGrid');
+  //const navigate = useNavigate();
+
+  const { route } = useAuthenticator((context) => [context.route]);
   const [rows, setRawRows] = useState([]);
   const [loading, setLoading] = useState(false);
   const [showErrorModal, setShowErrorModal] = useState(false);
@@ -16,53 +22,80 @@ export default function OfficeManageGrid() {
 
   const title = 'Offices';
   const subtitle = 'Manage Offices';
-  const role = 'manager';
+
+  const [role, setRole] = useState('user');
+  const [practiceId, setPracticeId] = useState(null);
 
   const setRows = (rows) => {
     return setRawRows([...rows.map((r, i) => ({ ...r, no: i + 1 }))]);
   };
 
+  /*
   useEffect(() => {
-    setLoading(true);
-
-    const fetchRowData = async () => {
+    async function fetchRole() {
       try {
-        const response = await officeController.getAll(false);
-        console.log('Response from getAll():', response);
+        const role = await getUserRole();
+        console.log('useEffect role:', role);
+        setRole('admin');
+      } catch (error) {
+        console.log('useEffect role error');
+      }
+    }
+
+    fetchRole();
+  }, []);
+
+  useEffect(() => {
+    console.log('useEffect 1');
+    async function fetchPractice() {
+      try {
+        const practiceId = await getUserPractice();
+        console.log('useEffect practiceId:', practiceId);
+        setPracticeId(100101);
+      } catch (error) {
+        console.log('useEffect practiceId error');
+      }
+    }
+
+    fetchPractice();
+  }, []);
+
+  useEffect(() => {
+    console.log('useEffect 2');
+    setLoading(true);
+    const fetchRows = async () => {
+      try {
+        console.log('practice id', practiceId);
+        const response = await officeController.getRows(practiceId);
+        console.log('useEffect rows:', response);
         setRows(response);
       } catch (error) {
-        console.error('Error fetching office data:', error);
-        setRows([]); // Set rows to an empty array if there's an error
+        console.error('Error fetching row data:', error);
+        setRows([]);
       } finally {
         setLoading(false);
       }
     };
+    fetchRows();
+  }, [practiceId]);
+  */
 
-    fetchRowData();
-  }, []);
-
-  const onValidateRow = (newRow, oldRow, isNew) => {
-    console.log('onValidateRow:', newRow);
-
-    return new Promise((resolve, reject) => {
-      validateRow(newRow)
-        .then((result) => {
-          console.log('Valid row:', result);
-          resolve(result); // Resolve with the updatedRow
-        })
-        .catch((error) => {
-          console.error('onValidateRow error:', error);
-          setErrorType('Data Error');
-          setErrorDescription('An error occurred while validating office data');
-          setErrorMessage(error || 'Unknown error');
-          setShowErrorModal(true);
-          reject(error); // Reject with the validation error
-        });
-    });
+  const onValidateRow = (updatedRow) => {
+    officeController
+      .validateRow(updatedRow)
+      .then((res) => {
+        return true;
+      })
+      .catch((error) => {
+        console.log('onValidateRow error', error);
+        setErrorType('Data Error');
+        setErrorDescription('An error occurred while validating office data');
+        setErrorMessage(error.message || 'Unknown error');
+        setShowErrorModal(true);
+      });
   };
 
   const onSaveRow = (id, updatedRow, oldRow, oldRows, isNew) => {
-    console.log('onSaveRow');
     const saveRow = { ...updatedRow };
     if (isNew) {
       delete saveRow.id;
@@ -72,13 +105,13 @@ export default function OfficeManageGrid() {
       .saveRow(saveRow, oldRow, isNew)
       .then((res) => {
         const dbRow = res;
-        //console.log('index.jsx saveRow res:', res);
+        console.log('index.jsx saveRow res:', res);
         setRows(
           oldRows.map((r) => (r.id === updatedRow.id ? { ...dbRow } : r))
         );
       })
       .catch((error) => {
-        console.error('onSaveRow error', error);
+        console.log('onSaveRow error', error);
 
         if (
           error.message ===
@@ -87,20 +120,12 @@ export default function OfficeManageGrid() {
           setErrorType('Data Error');
           setErrorMessage('An office with this name already exists');
           setShowErrorModal(true);
-        } else if (
-          error.message ===
-          'DatabaseError: A database result was required but none was found'
-        ) {
-          setErrorType('Data Error');
-          setErrorMessage(error.message || 'Unknown error');
-          setShowErrorModal(true);
         } else {
           setErrorType('Save Error');
           setErrorDescription('An error occurred while saving office data');
           setErrorMessage(error.message || 'Unknown error');
           setShowErrorModal(true);
         }
-
         setRows(oldRows);
       });
   };
@@ -121,9 +146,16 @@ export default function OfficeManageGrid() {
     console.log(rows);
 
     const newId = Math.floor(100000 + Math.random() * 900000);
-    return { id: newId, name: '', status: 'Active', virtual: false };
+    return {
+      id: newId,
+      name: '',
+      status: 'Active',
+      virtual: false,
+      practice_id: practiceId,
+    };
   };
 
+  console.log('RETURN OfficeManageGrid for role, rows:', role, rows);
   if (role === 'user') {
     return (
       <div>

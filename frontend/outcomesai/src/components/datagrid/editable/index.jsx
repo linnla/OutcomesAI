@@ -88,23 +88,31 @@ function EditableDataGrid({
     if (!updatedRow.isNew) updatedRow.isNew = false;
     console.log('updatedRow.isNew:', updatedRow.isNew);
     const oldRow = internalRows.find((r) => r.id === updatedRow.id);
-    setInternalRows(
-      internalRows.map((row) => (row.id === newRow.id ? updatedRow : row))
-    );
+    console.log('processRowUpdate oldRow:', oldRow);
 
-    let savedRow = {};
     try {
-      await onValidateRow(updatedRow);
-      savedRow = await onSaveRow(
-        updatedRow.id,
-        updatedRow,
-        oldRow,
-        internalRows,
-        updatedRow.isNew
-      );
-      apiRef.current.updateRows([{ id: newRow.id, ...savedRow }]);
+      onValidateRow(updatedRow, oldRow, updatedRow.isNew)
+        .then(() => {
+          return onSaveRow(
+            updatedRow.id,
+            updatedRow,
+            oldRow,
+            internalRows,
+            updatedRow.isNew
+          );
+        })
+        .then((savedRow) => {
+          apiRef.current.updateRows([{ id: newRow.id, ...savedRow }]);
+        })
+        .catch((error) => {
+          console.log('processRowUpdate', error.message);
+          console.log(error);
+          apiRef.current.updateRows([{ id: newRow.id, ...oldRow }]);
+        });
     } catch (error) {
-      console.error('processRowUpdate', error.message);
+      console.log('processRowUpdate', error.message);
+      console.log(error);
+      apiRef.current.updateRows([{ id: newRow.id, ...oldRow }]);
     }
 
     return updatedRow;

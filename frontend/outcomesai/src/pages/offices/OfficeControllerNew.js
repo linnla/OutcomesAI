@@ -3,45 +3,42 @@ import {
   validatePostalCode,
   validateRequiredAttributes,
 } from '../../utils/ValidationUtils';
+import { mockDataOffices } from '../../data/mockData';
 
-class ValidationError extends Error {
+class DatabaseError extends Error {
   constructor(message, type) {
     super(message);
-    this.name = 'Zip Code Error';
+    this.name = 'DatabaseError';
     this.type = type;
   }
 }
 
-const getAll = async (showInactive) => {
-  let practice_id;
+const requiredAttributes = ['name', 'postal_code'];
+const attributeNames = ['Office name', 'Postal Code'];
+const table = 'offices';
+
+const getRows = async (practiceId) => {
+  console.log('Controller getRows start, practiceId:', practiceId);
 
   try {
-    practice_id = 100101;
-    if (practice_id === null) {
-      throw new Error('practice_id is not set');
-    }
-  } catch (error) {
-    throw error;
-  }
+    const method = 'GET';
+    const query_params = {
+      practice_id: practiceId,
+    };
 
-  const method = 'GET';
-  const table = 'offices';
-  const query_params = {
-    practice_id: practice_id,
-  };
-
-  try {
-    const response = await CallApi(method, table, null, query_params);
-    return response.data.data;
+    const response = await CallApi(method, 'offices', null, query_params);
+    console.log('Controller getRows response:', response);
+    return mockDataOffices;
+    //return response.data.data;
   } catch (error) {
-    throw error;
+    console.error('Error fetching row data:', error);
+    throw error; // Re-throw the error to be caught by the caller
   }
 };
 
 const getDBRow = async (id) => {
   console.log('getDBRow:', id);
   const method = 'GET';
-  const table = 'offices';
   const query_params = {
     id: id,
   };
@@ -54,42 +51,18 @@ const getDBRow = async (id) => {
   }
 };
 
-export const validateRow = (newRow, oldRow, isNew) => {
-  console.log('validateRow newRow:', newRow);
-  console.log('validateRow oldRow:', oldRow);
-  console.log('validateRow isNew:', isNew);
-
-  const requiredAttributes = ['name', 'postal_code'];
-  const attributeNames = ['Office name', 'Postal Code'];
-
-  return new Promise(async (resolve, reject) => {
-    try {
-      await validateRequiredAttributes(
-        requiredAttributes,
-        attributeNames,
-        newRow
-      );
-      await validatePostalCode(newRow.postal_code);
-      resolve(true); // Both validations passed
-    } catch (error) {
-      reject(error);
-    }
-  });
+const validateRow = async (row) => {
+  try {
+    await validateRequiredAttributes(requiredAttributes, attributeNames, row);
+    await validatePostalCode(row.postal_code);
+  } catch (error) {
+    console.log('validateRow error:', error);
+    throw error;
+  }
 };
 
 const saveRow = async (row, oldRow, isNew) => {
   console.log('saveRow:', row);
-
-  let practice_id;
-  try {
-    practice_id = 100101;
-    if (practice_id === null) {
-      throw new Error('Error getting practice_id');
-    }
-  } catch (error) {
-    console.log('saveRow practice_id error:', error);
-    throw error;
-  }
 
   let city;
   let county;
@@ -101,12 +74,16 @@ const saveRow = async (row, oldRow, isNew) => {
     let postalCodeData = {};
     try {
       const method = 'GET';
-      const table = 'postal_codes';
       const query_params = {
         postal_code: row.postal_code,
       };
 
-      const response = await CallApi(method, table, null, query_params);
+      const response = await CallApi(
+        method,
+        'postal_codes',
+        null,
+        query_params
+      );
 
       postalCodeData = response.data.data[0];
       city = postalCodeData.city;
@@ -116,8 +93,8 @@ const saveRow = async (row, oldRow, isNew) => {
       country_code = postalCodeData.country_code;
     } catch (error) {
       console.log('saveRow postalCodeData error:', error);
-      const errorObject = new ValidationError(
-        `Postal code ${row.postal_code} is not a valid postal code`,
+      const errorObject = new DatabaseError(
+        `Error fetching postal code data postal code ${row.postal_code}`,
         'error.response.data.errorType'
       );
       throw errorObject;
@@ -132,7 +109,6 @@ const saveRow = async (row, oldRow, isNew) => {
 
   const body = {
     ...row,
-    practice_id: practice_id,
     city: city,
     county: county,
     state: state,
@@ -148,7 +124,7 @@ const saveRow = async (row, oldRow, isNew) => {
   }
 
   try {
-    const responseFromApi = await CallApi(method, 'offices', body, null);
+    const responseFromApi = await CallApi(method, table, body, null);
     const id = responseFromApi.data.id;
     const newRow = await getDBRow(id);
     console.log('updateRow newRow:', newRow[0]);
@@ -163,12 +139,7 @@ const deleteRow = async (rowId, rows) => {
   console.log(rowId);
 
   try {
-    const responseFromApi = await CallApi(
-      'DELETE',
-      'offices',
-      { id: rowId },
-      null
-    );
+    const responseFromApi = await CallApi('DELETE', table, { id: rowId }, null);
     console.log('deleteRow response', responseFromApi);
     return new Promise((resolve, reject) => {
       const deletedRow = rows.find((r) => r.id === rowId);
@@ -182,7 +153,8 @@ const deleteRow = async (rowId, rows) => {
 };
 
 const OfficeController = {
-  getAll,
+  getRows,
+  validateRow,
   saveRow,
   deleteRow,
 };
