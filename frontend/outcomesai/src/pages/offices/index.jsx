@@ -2,7 +2,6 @@ import * as React from 'react';
 import { useEffect, useState } from 'react';
 import EditableDataGrid from '../../components/datagrid/editable';
 import ReadOnlyDataGrid from '../../components/datagrid/readonly';
-//import officeController from './OfficeController';
 import ErrorModal from '../../utils/ErrorModal';
 import { getAll, validateRow, saveRow, deleteRow } from './OfficeController';
 
@@ -17,6 +16,7 @@ export default function OfficeManageGrid() {
   const title = 'Offices';
   const subtitle = 'Manage Offices';
   const role = 'manager';
+  const table = 'Office'; /// used for error messages
 
   const setRows = (rows) => {
     return setRawRows([...rows.map((r, i) => ({ ...r, no: i + 1 }))]);
@@ -27,11 +27,10 @@ export default function OfficeManageGrid() {
 
     const fetchRowData = async () => {
       try {
-        const response = await getAll(false);
-        console.log('Response from getAll():', response);
+        const response = await getAll();
         setRows(response);
       } catch (error) {
-        console.error('Error fetching office data:', error);
+        console.error('Error fetching data:', error);
         setRows([]); // Set rows to an empty array if there's an error
       } finally {
         setLoading(false);
@@ -50,7 +49,9 @@ export default function OfficeManageGrid() {
         .catch((error) => {
           console.error('onValidateRow error:', error);
           setErrorType('Data Error');
-          setErrorDescription('An error occurred while validating office data');
+          setErrorDescription(
+            `An error occured while validating ${table} data`
+          );
           setErrorMessage(error || 'Unknown error');
           setShowErrorModal(true);
           reject(error); // Reject with the validation error
@@ -81,9 +82,10 @@ export default function OfficeManageGrid() {
             'DatabaseError: Unique Constraint Error or Duplicate Key Violation. The record being inserted or updated already exists.'
           ) {
             setErrorType('Data Error');
-            setErrorMessage('An office with this name already exists');
+            setErrorMessage(`An ${table} with this name already exists`);
             setShowErrorModal(true);
           } else if (
+            // Postal code lookup error's, postal code not found
             error.message ===
             'DatabaseError: A database result was required but none was found'
           ) {
@@ -92,7 +94,7 @@ export default function OfficeManageGrid() {
             setShowErrorModal(true);
           } else {
             setErrorType('Save Error');
-            setErrorDescription('An error occurred while saving office data');
+            setErrorDescription(`An error occured while saving ${table} data`);
             setErrorMessage(error.message || 'Unknown error');
             setShowErrorModal(true);
           }
@@ -109,7 +111,8 @@ export default function OfficeManageGrid() {
         const dbRowId = res.data.id;
         setRows(oldRows.filter((r) => r.id !== dbRowId));
       })
-      .catch((err) => {
+      .catch((error) => {
+        console.error(error);
         setRows(oldRows);
       });
   };

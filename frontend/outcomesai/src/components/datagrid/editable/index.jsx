@@ -83,14 +83,11 @@ function EditableDataGrid({
   }, []);
 
   const processRowUpdate = async (newRow) => {
-    console.log('processRowUpdate newRow:', newRow);
+    //console.log('processRowUpdate newRow:', newRow);
 
     const updatedRow = { ...newRow };
     if (!updatedRow.isNew) updatedRow.isNew = false;
-    console.log('updatedRow.isNew:', updatedRow.isNew);
-
     const oldRow = internalRows.find((r) => r.id === updatedRow.id);
-    console.log('processRowUpdate oldRow:', oldRow);
 
     try {
       const validatedRow = await onValidateRow(
@@ -98,7 +95,6 @@ function EditableDataGrid({
         oldRow,
         updatedRow.isNew
       );
-      //console.log('onSaveRow PRE:', validatedRow);
       const savedUpdatedRow = await onSaveRow(
         validatedRow.id,
         validatedRow,
@@ -116,45 +112,6 @@ function EditableDataGrid({
       throw error;
     }
   };
-
-  /*
-  const processRowUpdate = async (newRow) => {
-    console.log('processRowUpdate newRow:', newRow);
-    const updatedRow = { ...newRow };
-    if (!updatedRow.isNew) updatedRow.isNew = false;
-    console.log('updatedRow.isNew:', updatedRow.isNew);
-    const oldRow = internalRows.find((r) => r.id === updatedRow.id);
-    console.log('processRowUpdate oldRow:', oldRow);
-
-    try {
-      onValidateRow(updatedRow, oldRow, updatedRow.isNew)
-        .then(() => {
-          console.log('onSaveRow PRE:', updatedRow);
-          return onSaveRow(
-            updatedRow.id,
-            updatedRow,
-            oldRow,
-            internalRows,
-            updatedRow.isNew
-          );
-        })
-        .then((updatedRow) => {
-          apiRef.current.updateRows([{ id: newRow.id, ...updatedRow }]);
-        })
-        .catch((error) => {
-          console.log('processRowUpdate', error.message);
-          console.log(error);
-          apiRef.current.updateRows([{ id: newRow.id, ...oldRow }]);
-        });
-    } catch (error) {
-      console.log('processRowUpdate', error.message);
-      console.log(error);
-      apiRef.current.updateRows([{ id: newRow.id, ...oldRow }]);
-    }
-
-    return updatedRow;
-  };
-*/
 
   const appendedColumns = [
     ...columns,

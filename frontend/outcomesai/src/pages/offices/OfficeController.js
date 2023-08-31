@@ -4,7 +4,7 @@ import {
   validateRequiredAttributes,
 } from '../../utils/ValidationUtils';
 
-export const getAll = async (showInactive) => {
+export const getAll = async () => {
   let practice_id;
 
   try {
@@ -85,7 +85,6 @@ export const saveRow = (row, oldRow, isNew) => {
         throw new Error('Error getting practice_id');
       }
     } catch (error) {
-      console.log('saveRow practice_id error:', error);
       reject(error);
     }
 
@@ -106,7 +105,6 @@ export const saveRow = (row, oldRow, isNew) => {
       body.id = responseFromApi.data.id;
       resolve(body);
     } catch (error) {
-      console.log('saveRow API error:', error);
       reject(error);
     }
   });
@@ -123,7 +121,6 @@ export const deleteRow = (rowId, rows) => {
 
       resolve({ data: deletedRow });
     } catch (error) {
-      console.log('deleteRow API error:', error);
       reject(error);
     }
   });
