@@ -10,7 +10,6 @@ export default function OfficeManageGrid() {
   const [loading, setLoading] = useState(false);
   const [showErrorModal, setShowErrorModal] = useState(false);
   const [errorType, setErrorType] = useState('');
-  const [errorDescription, setErrorDescription] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
   const title = 'Offices';
@@ -49,9 +48,6 @@ export default function OfficeManageGrid() {
         .catch((error) => {
           console.error('onValidateRow error:', error);
           setErrorType('Data Error');
-          setErrorDescription(
-            `An error occured while validating ${table} data`
-          );
           setErrorMessage(error || 'Unknown error');
           setShowErrorModal(true);
           reject(error); // Reject with the validation error
@@ -94,7 +90,6 @@ export default function OfficeManageGrid() {
             setShowErrorModal(true);
           } else {
             setErrorType('Save Error');
-            setErrorDescription(`An error occured while saving ${table} data`);
             setErrorMessage(error.message || 'Unknown error');
             setShowErrorModal(true);
           }
@@ -154,7 +149,6 @@ export default function OfficeManageGrid() {
         {showErrorModal && (
           <ErrorModal
             errorType={errorType}
-            errorDescription={errorDescription}
             errorMessage={errorMessage}
             onClose={() => setShowErrorModal(false)}
           />

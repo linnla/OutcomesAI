@@ -3,11 +3,12 @@ import ReactHtmlParser from 'react-html-parser';
 import { tokens } from '../theme';
 import { Box, Typography, useTheme } from '@mui/material';
 import '../styles/ErrorModal.css';
+import { additionalProperties } from 'serverless/lib/config-schema';
 
 function ErrorModal(props) {
-  const { errorType, errorMessage, errorDescription, onClose } = props;
+  const { errorType, errorMessage, onClose } = props;
 
-  console.log('ErrorModal props', props, errorDescription);
+  console.log('ErrorModal props', additionalProperties);
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
