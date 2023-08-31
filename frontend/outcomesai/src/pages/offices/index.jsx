@@ -2,9 +2,9 @@ import * as React from 'react';
 import { useEffect, useState } from 'react';
 import EditableDataGrid from '../../components/datagrid/editable';
 import ReadOnlyDataGrid from '../../components/datagrid/readonly';
-import officeController from './OfficeController';
+//import officeController from './OfficeController';
 import ErrorModal from '../../utils/ErrorModal';
-import { validateRow } from './OfficeController';
+import { getAll, validateRow, saveRow, deleteRow } from './OfficeController';
 
 export default function OfficeManageGrid() {
   const [rows, setRawRows] = useState([]);
@@ -27,7 +27,7 @@ export default function OfficeManageGrid() {
 
     const fetchRowData = async () => {
       try {
-        const response = await officeController.getAll(false);
+        const response = await getAll(false);
         console.log('Response from getAll():', response);
         setRows(response);
       } catch (error) {
@@ -42,12 +42,9 @@ export default function OfficeManageGrid() {
   }, []);
 
   const onValidateRow = (newRow, oldRow, isNew) => {
-    console.log('onValidateRow:', newRow);
-
     return new Promise((resolve, reject) => {
-      validateRow(newRow)
+      validateRow(newRow, oldRow, isNew)
         .then((result) => {
-          console.log('Valid row:', result);
           resolve(result); // Resolve with the updatedRow
         })
         .catch((error) => {
@@ -62,52 +59,52 @@ export default function OfficeManageGrid() {
   };
 
   const onSaveRow = (id, updatedRow, oldRow, oldRows, isNew) => {
-    console.log('onSaveRow');
-    const saveRow = { ...updatedRow };
-    if (isNew) {
-      delete saveRow.id;
-    }
+    return new Promise((resolve, reject) => {
+      const newRow = { ...updatedRow };
+      if (isNew) {
+        delete newRow.id;
+      }
 
-    officeController
-      .saveRow(saveRow, oldRow, isNew)
-      .then((res) => {
-        const dbRow = res;
-        //console.log('index.jsx saveRow res:', res);
-        setRows(
-          oldRows.map((r) => (r.id === updatedRow.id ? { ...dbRow } : r))
-        );
-      })
-      .catch((error) => {
-        console.error('onSaveRow error', error);
+      saveRow(newRow, oldRow, isNew)
+        .then((res) => {
+          const dbRow = res;
+          setRows(
+            oldRows.map((r) => (r.id === updatedRow.id ? { ...dbRow } : r))
+          );
+          resolve(dbRow);
+        })
+        .catch((error) => {
+          console.error('onSaveRow error', error);
 
-        if (
-          error.message ===
-          'DatabaseError: Unique Constraint Error or Duplicate Key Violation. The record being inserted or updated already exists.'
-        ) {
-          setErrorType('Data Error');
-          setErrorMessage('An office with this name already exists');
-          setShowErrorModal(true);
-        } else if (
-          error.message ===
-          'DatabaseError: A database result was required but none was found'
-        ) {
-          setErrorType('Data Error');
-          setErrorMessage(error.message || 'Unknown error');
-          setShowErrorModal(true);
-        } else {
-          setErrorType('Save Error');
-          setErrorDescription('An error occurred while saving office data');
-          setErrorMessage(error.message || 'Unknown error');
-          setShowErrorModal(true);
-        }
+          if (
+            error.message ===
+            'DatabaseError: Unique Constraint Error or Duplicate Key Violation. The record being inserted or updated already exists.'
+          ) {
+            setErrorType('Data Error');
+            setErrorMessage('An office with this name already exists');
+            setShowErrorModal(true);
+          } else if (
+            error.message ===
+            'DatabaseError: A database result was required but none was found'
+          ) {
+            setErrorType('Data Error');
+            setErrorMessage(error.message || 'Unknown error');
+            setShowErrorModal(true);
+          } else {
+            setErrorType('Save Error');
+            setErrorDescription('An error occurred while saving office data');
+            setErrorMessage(error.message || 'Unknown error');
+            setShowErrorModal(true);
+          }
 
-        setRows(oldRows);
-      });
+          setRows(oldRows);
+          reject(error);
+        });
+    });
   };
 
   const onDeleteRow = (id, oldRow, oldRows) => {
-    officeController
-      .deleteRow(id, oldRows)
+    deleteRow(id, oldRows)
       .then((res) => {
         const dbRowId = res.data.id;
         setRows(oldRows.filter((r) => r.id !== dbRowId));

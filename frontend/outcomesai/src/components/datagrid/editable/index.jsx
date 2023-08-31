@@ -84,6 +84,42 @@ function EditableDataGrid({
 
   const processRowUpdate = async (newRow) => {
     console.log('processRowUpdate newRow:', newRow);
+
+    const updatedRow = { ...newRow };
+    if (!updatedRow.isNew) updatedRow.isNew = false;
+    console.log('updatedRow.isNew:', updatedRow.isNew);
+
+    const oldRow = internalRows.find((r) => r.id === updatedRow.id);
+    console.log('processRowUpdate oldRow:', oldRow);
+
+    try {
+      const validatedRow = await onValidateRow(
+        updatedRow,
+        oldRow,
+        updatedRow.isNew
+      );
+      //console.log('onSaveRow PRE:', validatedRow);
+      const savedUpdatedRow = await onSaveRow(
+        validatedRow.id,
+        validatedRow,
+        oldRow,
+        internalRows,
+        updatedRow.isNew
+      );
+      console.log('SAVEUPDATEDROW:', savedUpdatedRow);
+      apiRef.current.updateRows([{ id: newRow.id, ...savedUpdatedRow }]);
+      return savedUpdatedRow;
+    } catch (error) {
+      console.log('processRowUpdate', error.message);
+      console.log(error);
+      apiRef.current.updateRows([{ id: newRow.id, ...oldRow }]);
+      throw error;
+    }
+  };
+
+  /*
+  const processRowUpdate = async (newRow) => {
+    console.log('processRowUpdate newRow:', newRow);
     const updatedRow = { ...newRow };
     if (!updatedRow.isNew) updatedRow.isNew = false;
     console.log('updatedRow.isNew:', updatedRow.isNew);
@@ -93,6 +129,7 @@ function EditableDataGrid({
     try {
       onValidateRow(updatedRow, oldRow, updatedRow.isNew)
         .then(() => {
+          console.log('onSaveRow PRE:', updatedRow);
           return onSaveRow(
             updatedRow.id,
             updatedRow,
@@ -101,8 +138,8 @@ function EditableDataGrid({
             updatedRow.isNew
           );
         })
-        .then((savedRow) => {
-          apiRef.current.updateRows([{ id: newRow.id, ...savedRow }]);
+        .then((updatedRow) => {
+          apiRef.current.updateRows([{ id: newRow.id, ...updatedRow }]);
         })
         .catch((error) => {
           console.log('processRowUpdate', error.message);
@@ -117,6 +154,7 @@ function EditableDataGrid({
 
     return updatedRow;
   };
+*/
 
   const appendedColumns = [
     ...columns,

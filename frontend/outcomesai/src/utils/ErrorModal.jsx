@@ -7,7 +7,7 @@ import '../styles/ErrorModal.css';
 function ErrorModal(props) {
   const { errorType, errorMessage, errorDescription, onClose } = props;
 
-  console.log('ErrorModal', errorMessage);
+  console.log('ErrorModal props', props, errorDescription);
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
