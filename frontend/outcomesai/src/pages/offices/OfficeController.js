@@ -1,20 +1,11 @@
-import CallApi, { getRequest } from '../../api/CallApi';
+import CallApi, { getRequest, CallApiPromise } from '../../api/CallApi';
 import {
   validatePostalCode,
   validateRequiredAttributes,
 } from '../../utils/ValidationUtils';
 
 export const getAll = async () => {
-  let practice_id;
-
-  try {
-    practice_id = 100101;
-    if (practice_id === null) {
-      throw new Error('practice_id is not set');
-    }
-  } catch (error) {
-    throw error;
-  }
+  const practice_id = 100101;
 
   const method = 'GET';
   const table = 'offices';
@@ -101,9 +92,24 @@ export const saveRow = (row, oldRow, isNew) => {
     }
 
     try {
-      const responseFromApi = await CallApi(method, 'offices', body, null);
-      body.id = responseFromApi.data.id;
-      resolve(body);
+      //const responseFromApi = await CallApi(method, 'offices', body, null);
+      const response = await CallApiPromise(method, 'offices', body, null);
+      //console.log('response.data from api:', response.data.id);
+
+      let savedRow = {
+        id: response.data.id,
+        practice_id: body.practice_id,
+        name: body.name,
+        postal_code: body.postal_code,
+        city: body.city,
+        county: body.county,
+        state: body.state,
+        state_code: body.state_code,
+        status: body.status,
+        virtual: body.virtual,
+      };
+
+      resolve(savedRow);
     } catch (error) {
       reject(error);
     }

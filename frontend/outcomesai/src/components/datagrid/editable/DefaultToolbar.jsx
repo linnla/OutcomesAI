@@ -21,13 +21,16 @@ function DefaultToolbar(props) {
 
   const handleClick = () => {
     const newData = createRowData(rows);
+    console.log('handleClick newData', rows);
     newData.isNew = true;
     if (!newData.hasOwnProperty('id'))
       newData.newId = Math.max(...rows.map((r) => r.id * 1)) + 1;
+    console.log('handleClick setRows:', newData);
     setRows((oldRows) => {
       return [...oldRows, newData];
     });
     setRowModesModel((oldModel) => {
+      console.log('handleClick oldModel', oldModel);
       const firstEditable = columns.find((c) => c.editable && !c.hide);
       return {
         ...oldModel,

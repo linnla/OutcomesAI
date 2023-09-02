@@ -17,6 +17,7 @@ import {
 
 import DefaultToolbar from './DefaultToolbar';
 import { useEffect, useState } from 'react';
+import ErrorModal from '../../../utils/ErrorModal';
 
 function EditableDataGrid({
   title,
@@ -37,27 +38,36 @@ function EditableDataGrid({
   const [internalRows, setInternalRows] = useState(rows);
   const [rowModesModel, setRowModesModel] = useState({});
 
+  const [errorType, setErrorType] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+  const [showErrorModal, setShowErrorModal] = useState(false);
+
   useEffect(() => {
     setInternalRows(rows);
   }, [rows]);
 
   const handleRowEditStart = (params, event) => {
+    console.log('handleRowEditStart', params, event);
     event.defaultMuiPrevented = true;
   };
 
   const handleRowEditStop = (params, event) => {
+    console.log('handleRowEditStop', params, event);
     event.defaultMuiPrevented = true;
   };
 
   const handleEditClick = (id) => () => {
+    console.log('handleEditClick', id);
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
   };
 
   const handleSaveClick = (id) => () => {
+    console.log('handleSaveClick', id);
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
   };
 
   const handleDeleteClick = (id) => () => {
+    console.log('handleDeleteClick', id);
     setInternalRows(internalRows.filter((row) => row.id !== id));
     onDeleteRow(
       id,
@@ -67,6 +77,7 @@ function EditableDataGrid({
   };
 
   const handleCancelClick = (id) => () => {
+    console.log('handleCancelClick', id);
     setRowModesModel({
       ...rowModesModel,
       [id]: { mode: GridRowModes.View, ignoreModifications: true },
@@ -80,14 +91,23 @@ function EditableDataGrid({
 
   const handleProcessRowUpdateError = React.useCallback((error) => {
     console.log('handleProcessRowUpdateError:', error);
+    setErrorType('Data Error');
+    setErrorMessage(error || 'Unknown error');
+    setShowErrorModal(true);
   }, []);
 
   const processRowUpdate = async (newRow) => {
-    //console.log('processRowUpdate newRow:', newRow);
-
+    console.log('processRowUpdate', newRow);
     const updatedRow = { ...newRow };
     if (!updatedRow.isNew) updatedRow.isNew = false;
     const oldRow = internalRows.find((r) => r.id === updatedRow.id);
+
+    if (deepEqual(newRow, oldRow)) {
+      console.log('processRowUpdate no changes made');
+      // This return statement is required or else datagrid will throw an internal error
+      // Cannot read properties of undefined (reading 'id') at getRowIdFromRowModel
+      return oldRow;
+    }
 
     try {
       const validatedRow = await onValidateRow(
@@ -95,23 +115,44 @@ function EditableDataGrid({
         oldRow,
         updatedRow.isNew
       );
-      const savedUpdatedRow = await onSaveRow(
+      const savedRow = await onSaveRow(
         validatedRow.id,
         validatedRow,
         oldRow,
         internalRows,
         updatedRow.isNew
       );
-      console.log('SAVEUPDATEDROW:', savedUpdatedRow);
-      apiRef.current.updateRows([{ id: newRow.id, ...savedUpdatedRow }]);
-      return savedUpdatedRow;
+      // This return statement is required or else datagrid will throw an internal error
+      // Cannot read properties of undefined (reading 'id') at getRowIdFromRowModel
+      return savedRow;
     } catch (error) {
-      console.log('processRowUpdate', error.message);
-      console.log(error);
-      apiRef.current.updateRows([{ id: newRow.id, ...oldRow }]);
+      console.error('processRowUpdate error', error);
+      apiRef.current.updateRows([{ id: updatedRow.id, ...oldRow }]);
       throw error;
     }
   };
+
+  function deepEqual(obj1, obj2) {
+    if (obj1 === obj2) {
+      return true; // If they're the same object or both primitives
+    }
+
+    if (typeof obj1 !== 'object' || typeof obj2 !== 'object') {
+      return false; // One is an object, the other isn't
+    }
+
+    if (Object.keys(obj1).length !== Object.keys(obj2).length) {
+      return false; // Different number of properties
+    }
+
+    for (const key in obj1) {
+      if (!obj2.hasOwnProperty(key) || !deepEqual(obj1[key], obj2[key])) {
+        return false;
+      }
+    }
+
+    return true;
+  }
 
   const appendedColumns = [
     ...columns,
@@ -162,7 +203,6 @@ function EditableDataGrid({
 
   //pagination
   const [pageSize, setPageSize] = useState(defaultPageSize);
-
   return (
     <Box m='20px'>
       <Header title={title} subtitle={subtitle} />
@@ -227,6 +267,13 @@ function EditableDataGrid({
           onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
           {...props}
         />
+        {showErrorModal && (
+          <ErrorModal
+            errorType={errorType}
+            errorMessage={errorMessage}
+            onClose={() => setShowErrorModal(false)}
+          />
+        )}
       </Box>
     </Box>
   );

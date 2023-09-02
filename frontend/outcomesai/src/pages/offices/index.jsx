@@ -2,20 +2,11 @@ import * as React from 'react';
 import { useEffect, useState } from 'react';
 import EditableDataGrid from '../../components/datagrid/editable';
 import ReadOnlyDataGrid from '../../components/datagrid/readonly';
-import ErrorModal from '../../utils/ErrorModal';
 import { getAll, validateRow, saveRow, deleteRow } from './OfficeController';
 
 export default function OfficeManageGrid() {
   const [rows, setRawRows] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [showErrorModal, setShowErrorModal] = useState(false);
-  const [errorType, setErrorType] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
-
-  const title = 'Offices';
-  const subtitle = 'Manage Offices';
-  const role = 'manager';
-  const table = 'Office'; /// used for error messages
 
   const setRows = (rows) => {
     return setRawRows([...rows.map((r, i) => ({ ...r, no: i + 1 }))]);
@@ -42,15 +33,12 @@ export default function OfficeManageGrid() {
   const onValidateRow = (newRow, oldRow, isNew) => {
     return new Promise((resolve, reject) => {
       validateRow(newRow, oldRow, isNew)
-        .then((result) => {
-          resolve(result); // Resolve with the updatedRow
+        .then((updatedRow) => {
+          resolve(updatedRow); // Resolve with the updatedRow
         })
         .catch((error) => {
           console.error('onValidateRow error:', error);
-          setErrorType('Data Error');
-          setErrorMessage(error || 'Unknown error');
-          setShowErrorModal(true);
-          reject(error); // Reject with the validation error
+          reject(error); // Reject with the validateRow error
         });
     });
   };
@@ -68,55 +56,31 @@ export default function OfficeManageGrid() {
           setRows(
             oldRows.map((r) => (r.id === updatedRow.id ? { ...dbRow } : r))
           );
+
           resolve(dbRow);
         })
         .catch((error) => {
           console.error('onSaveRow error', error);
-
-          if (
-            error.message ===
-            'DatabaseError: Unique Constraint Error or Duplicate Key Violation. The record being inserted or updated already exists.'
-          ) {
-            setErrorType('Data Error');
-            setErrorMessage(`An ${table} with this name already exists`);
-            setShowErrorModal(true);
-          } else if (
-            // Postal code lookup error's, postal code not found
-            error.message ===
-            'DatabaseError: A database result was required but none was found'
-          ) {
-            setErrorType('Data Error');
-            setErrorMessage(error.message || 'Unknown error');
-            setShowErrorModal(true);
-          } else {
-            setErrorType('Save Error');
-            setErrorMessage(error.message || 'Unknown error');
-            setShowErrorModal(true);
-          }
-
           setRows(oldRows);
-          reject(error);
+          reject(error); // Reject with saveRow error
         });
     });
   };
 
   const onDeleteRow = (id, oldRow, oldRows) => {
-    deleteRow(id, oldRows)
-      .then((res) => {
-        const dbRowId = res.data.id;
-        setRows(oldRows.filter((r) => r.id !== dbRowId));
-      })
-      .catch((error) => {
-        console.error(error);
-        setRows(oldRows);
-      });
-  };
-
-  const createRowData = (rows) => {
-    console.log(rows);
-
-    const newId = Math.floor(100000 + Math.random() * 900000);
-    return { id: newId, name: '', status: 'Active', virtual: false };
+    return new Promise((resolve, reject) => {
+      deleteRow(id, oldRows)
+        .then((res) => {
+          const dbRowId = res.data.id;
+          setRows(oldRows.filter((r) => r.id !== dbRowId));
+          resolve(); // Resolve on successful deletion
+        })
+        .catch((error) => {
+          console.error('onDeleteRow error', error);
+          setRows(oldRows);
+          reject(error); // Reject on error
+        });
+    });
   };
 
   if (role === 'user') {
@@ -146,17 +110,22 @@ export default function OfficeManageGrid() {
           createRowData={createRowData}
           loading={loading}
         />
-        {showErrorModal && (
-          <ErrorModal
-            errorType={errorType}
-            errorMessage={errorMessage}
-            onClose={() => setShowErrorModal(false)}
-          />
-        )}
       </div>
     );
   }
 }
+
+// Customize this data
+const title = 'Offices';
+const subtitle = 'Manage Offices';
+const role = 'manager';
+
+const createRowData = (rows) => {
+  console.log(rows);
+
+  const newId = Math.floor(100000 + Math.random() * 900000);
+  return { id: newId, name: '', status: 'Active', virtual: false };
+};
 
 const columns = [
   { field: 'id', headerName: 'ID', flex: 0.5 },

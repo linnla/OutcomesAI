@@ -3,12 +3,11 @@ import ReactHtmlParser from 'react-html-parser';
 import { tokens } from '../theme';
 import { Box, Typography, useTheme } from '@mui/material';
 import '../styles/ErrorModal.css';
-import { additionalProperties } from 'serverless/lib/config-schema';
 
 function ErrorModal(props) {
   const { errorType, errorMessage, onClose } = props;
 
-  console.log('ErrorModal props', additionalProperties);
+  //console.log('ErrorModal props', props);
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -17,6 +16,20 @@ function ErrorModal(props) {
     backgroundColor: colors.grey[300], // Adjust the shade as needed
     color: 'black', // Adjust text color as needed
   };
+
+  let formattedErrorMessage;
+
+  if (typeof errorMessage === 'string') {
+    formattedErrorMessage = errorMessage;
+  } else if (
+    typeof errorMessage === 'object' &&
+    errorMessage.message &&
+    typeof errorMessage.message === 'string'
+  ) {
+    formattedErrorMessage = errorMessage.message;
+  } else {
+    formattedErrorMessage = 'Undefined error';
+  }
 
   return (
     <div className='modal'>
@@ -31,7 +44,7 @@ function ErrorModal(props) {
             {errorType}
           </Typography>
           <Typography variant='h3' color={colors.grey[100]}>
-            {errorMessage
+            {formattedErrorMessage
               .split(/([.:])/)
               .reduce((acc, part, index) => {
                 if (index % 2 === 0) {
