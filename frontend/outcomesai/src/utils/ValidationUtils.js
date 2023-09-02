@@ -26,7 +26,7 @@ export const validatePostalCode = (postalCode) => {
   console.log('validatePostalCode:', postalCode);
   return new Promise((resolve, reject) => {
     if (postalCode === '00000') {
-      reject(`Postal code ${postalCode} not found`);
+      reject(`Postal code ${postalCode} is not a valid postal code`);
     }
 
     if (postalCode.length !== 5) {

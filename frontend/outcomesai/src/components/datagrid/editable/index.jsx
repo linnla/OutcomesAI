@@ -47,12 +47,14 @@ function EditableDataGrid({
   }, [rows]);
 
   const handleRowEditStart = (params, event) => {
-    console.log('handleRowEditStart', params, event);
+    //console.log('handleRowEditStart params', params);
+    //console.log('handleRowEditStart event', event);
     event.defaultMuiPrevented = true;
   };
 
   const handleRowEditStop = (params, event) => {
-    console.log('handleRowEditStop', params, event);
+    //console.log('handleRowEditStop params', params.field);
+    //console.log('handleRowEditStop event', event);
     event.defaultMuiPrevented = true;
   };
 
