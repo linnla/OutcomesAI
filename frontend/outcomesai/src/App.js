@@ -1,5 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
+import { CssBaseline, ThemeProvider } from '@mui/material';
+
+// Components and pages
 import Topbar from './components/Topbar';
 import Sidebar from './components/Sidebar';
 import Home from './pages/Home';
@@ -7,31 +10,50 @@ import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Team from './pages/Team';
 import Invoices from './pages/Invoices';
-import OfficeManagerGrid from './pages/offices';
-import Practitioners from './pages/Practitioners';
-import Patients from './pages/Patients';
+import OfficeManageGrid from './pages/offices';
+import PractitionerManageGrid from './pages/practitioners/index';
+import PatientManageGrid from './pages/patients/index';
+
 import Bar from './pages/Bar';
 import Form from './pages/Form';
 import Line from './pages/Line';
 import Pie from './pages/Pie';
 import FAQ from './pages/Faq';
 import Geography from './pages/Geography';
-import { CssBaseline, ThemeProvider } from '@mui/material';
-import { ColorModeContext, useMode } from './theme';
 import Calendar from './pages/Calendar';
+
+// Utils and Contexts
+import { ColorModeContext, useMode } from './theme';
 import { RequireAuth } from './utils/RequireAuth';
 import { Authenticator } from '@aws-amplify/ui-react';
+import { Auth } from 'aws-amplify';
+import { OfficeProvider } from './contexts/OfficeContext';
+import { PatientProvider } from './contexts/PatientContext';
+import { PractitionerProvider } from './contexts/PractitionerContext';
 
 function App() {
   const [theme, colorMode] = useMode();
   const [isSidebar, setIsSidebar] = useState(true);
-  const userData = {
-    role: 'manager',
-  };
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  console.log('App userData:', userData);
+  useEffect(() => {
+    async function checkAuthentication() {
+      try {
+        const session = await Auth.currentSession();
+        setIsAuthenticated(true);
+      } catch (error) {
+        console.error('User not authenticated:', error);
+        setIsAuthenticated(false);
+      }
+    }
 
-  function MyRoutes() {
+    checkAuthentication();
+  }, []);
+
+  function AppRoutes() {
+    if (!isAuthenticated) {
+      return <Login />;
+    }
     return (
       <Routes>
         <Route index element={<Home />} />
@@ -39,21 +61,49 @@ function App() {
         <Route path='home' element={<Home />} />
         <Route path='/login' element={<Login />} />
         <Route path='/dashboard' element={<Dashboard />} />
-        {
-          (userData.role = 'admin' && (
-            <Route
-              path='/offices'
-              element={
-                <RequireAuth>
-                  <OfficeManagerGrid />
-                </RequireAuth>
-              }
-            />
-          ))
-        }
-        <Route path='/practitioners' element={<Practitioners />} />
-        <Route path='/team' element={<Team />} />
-        <Route path='/patients' element={<Patients />} />
+
+        <Route
+          path='/team'
+          element={
+            <OfficeProvider>
+              <Team />
+            </OfficeProvider>
+          }
+        />
+
+        <Route
+          path='/offices'
+          element={
+            <OfficeProvider>
+              <RequireAuth>
+                <OfficeManageGrid />
+              </RequireAuth>
+            </OfficeProvider>
+          }
+        />
+
+        <Route
+          path='/practitioners'
+          element={
+            <PractitionerProvider>
+              <RequireAuth>
+                <PractitionerManageGrid />
+              </RequireAuth>
+            </PractitionerProvider>
+          }
+        />
+
+        <Route
+          path='/patients'
+          element={
+            <PatientProvider>
+              <RequireAuth>
+                <PatientManageGrid />
+              </RequireAuth>
+            </PatientProvider>
+          }
+        />
+
         <Route path='/invoices' element={<Invoices />} />
         <Route path='/form' element={<Form />} />
         <Route path='/bar' element={<Bar />} />
@@ -66,20 +116,21 @@ function App() {
     );
   }
 
+  console.log('App.js return rerender');
   return (
     <ColorModeContext.Provider value={colorMode}>
-      <Authenticator.Provider>
-        <ThemeProvider theme={theme}>
+      <ThemeProvider theme={theme}>
+        <Authenticator.Provider>
           <CssBaseline />
           <div className='app'>
             <Sidebar isSidebar={isSidebar} />
             <main className='content'>
               <Topbar setIsSidebar={setIsSidebar} />
-              <MyRoutes />
+              <AppRoutes />
             </main>
           </div>
-        </ThemeProvider>
-      </Authenticator.Provider>
+        </Authenticator.Provider>
+      </ThemeProvider>
     </ColorModeContext.Provider>
   );
 }

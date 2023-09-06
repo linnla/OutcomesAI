@@ -7,10 +7,16 @@ import LockOpenOutlinedIcon from '@mui/icons-material/LockOpenOutlined';
 import SecurityOutlinedIcon from '@mui/icons-material/SecurityOutlined';
 import Header from '../components/Header';
 import React from 'react';
+import { useContext } from 'react';
+import UserContext from '../contexts/UserContext';
 
 const Team = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+
+  const { role, practiceId } = useContext(UserContext);
+  console.log('UserContext', role, practiceId);
+
   const columns = [
     { field: 'id', headerName: 'ID' },
     {

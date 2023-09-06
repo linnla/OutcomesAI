@@ -44,7 +44,7 @@ class PracticePractitioner(Base):
 
         return {
             "practice_id": self.practice_id,
-            "practitioner_id": self.practitioner_id,
+            "id": self.practitioner_id,
             "status": self.status,
             "practice_name": practice["name"],
             "full_name": full_name,

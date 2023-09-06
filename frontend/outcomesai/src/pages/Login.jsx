@@ -1,16 +1,17 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useContext } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Authenticator, useAuthenticator } from '@aws-amplify/ui-react';
 import '@aws-amplify/ui-react/styles.css';
 import CallApi from '../api/CallApi';
-import { getUser, getCognitoUser } from '../utils/AuthService';
-//import { useUser } from '../contexts/UserContext';
+import { Auth } from 'aws-amplify';
+import UserContext from '../contexts/UserContext';
 
 function Login() {
   const { route } = useAuthenticator((context) => [context.route]);
   const location = useLocation();
   const navigate = useNavigate();
-  //const { setUser } = useUser();
+
+  const { setUserData } = useContext(UserContext);
 
   let from = location.state?.from?.pathname || '/';
   useEffect(() => {
@@ -20,45 +21,29 @@ function Login() {
   }, [route, navigate, from]);
 
   const createNewUser = async () => {
+    const currentUser = Auth.currentAuthenticatedUser();
+    const method = 'POST';
+    const table = 'users';
+    const body = {
+      cognito_id: currentUser.username,
+      last_name: currentUser.attributes.family_name,
+      first_name: currentUser.attributes.given_name,
+      email: currentUser.attributes.email,
+    };
     try {
-      // Get the authenticated user
-      const cognitoUser = await getCognitoUser();
-      console.log('Cognito User:', cognitoUser);
-
-      const method = 'POST';
-      const table = 'users';
-      const body = {
-        cognito_id: cognitoUser.username,
-        last_name: cognitoUser.attributes.family_name,
-        first_name: cognitoUser.attributes.given_name,
-        email: cognitoUser.attributes.email,
-      };
-
-      try {
-        const response = await CallApi(method, table, body, null);
-        console.log('User record created successfully:', response.data);
-        return response.data;
-      } catch (error) {
-        console.error('Error creating user record:', error);
-        // Handle the error, such as displaying an error message to the user
-        throw error; // Re-throw the error to propagate it further if needed
-      }
+      await CallApi(method, table, body, null);
+      setUserData();
     } catch (error) {
-      console.error('Error creating user:', error);
-      // Handle the error, such as displaying an error message to the user
-      throw error; // Re-throw the error to propagate it further if needed
+      console.error('Error creating user', error);
     }
   };
 
   const handleLogin = async () => {
     try {
-      const user = await getUser();
-      console.log('login handleLogin user:', user);
+      setUserData();
     } catch (error) {
-      // CHECK FOR DATA NOT FOUND ERROR vs ANY OTHER ERROR
-      // ONLY CREATENEWUSER() IF USER (DATA OR RESULT) NOT FOUND ERROR
-      console.log('User data not found. Creating user...', error);
-      //await createNewUser();
+      console.log('User data not found. Creating user', error);
+      await createNewUser();
     }
   };
 

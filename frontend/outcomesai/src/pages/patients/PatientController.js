@@ -5,8 +5,22 @@ import {
 } from '../../utils/ValidationUtils';
 
 export const validateRow = (newRow, oldRow, isNew) => {
-  const requiredAttributes = ['name', 'postal_code'];
-  const attributeNames = ['Office name', 'Postal Code'];
+  const requiredAttributes = [
+    'last_name',
+    'first_name',
+    'email',
+    'postal_code',
+    'gender',
+    'birthdate',
+  ];
+  const attributeNames = [
+    'Last Name',
+    'First Name',
+    'Email',
+    'Postal Code',
+    'Birth Gender',
+    'Birth Date',
+  ];
 
   return new Promise(async (resolve, reject) => {
     try {
@@ -60,19 +74,29 @@ export const saveRow = (newRow, oldRow, isNew) => {
     }
 
     try {
-      const response = await CallApiPromise(method, 'offices', newRow, null);
+      const response = await CallApiPromise(method, 'patients', newRow, null);
       let savedRow = {
         id: response.data.id,
         practice_id: newRow.practice_id,
-        name: newRow.name,
+        last_name: newRow.last_name,
+        first_name: newRow.first_name,
+        email: newRow.email,
+        birthdate: newRow.birthdate,
+        gender: newRow.gender,
         postal_code: newRow.postal_code,
         city: newRow.city,
         county: newRow.county,
         state: newRow.state,
         state_code: newRow.state_code,
-        status: newRow.status,
-        virtual: newRow.virtual,
       };
+      if (isNew) {
+        const newPatient = {
+          practice_id: newRow.practice_id,
+          patient_id: savedRow.id,
+          status: 'Active',
+        };
+        await CallApiPromise(method, 'practice_patients', newPatient, null);
+      }
       resolve(savedRow);
     } catch (error) {
       reject(error);
@@ -85,7 +109,7 @@ export const deleteRow = (rowId, rows) => {
     console.log(rowId);
 
     try {
-      await CallApi('DELETE', 'offices', { id: rowId }, null);
+      await CallApi('DELETE', 'patients', { id: rowId }, null);
       const deletedRow = rows.find((r) => r.id === rowId);
       rows = rows.filter((r) => r.id !== rowId);
 

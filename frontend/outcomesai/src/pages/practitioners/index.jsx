@@ -2,11 +2,11 @@ import * as React from 'react';
 import { useEffect, useState, useContext } from 'react';
 import EditableDataGrid from '../../components/datagrid/editable';
 import ReadOnlyDataGrid from '../../components/datagrid/readonly';
-import { validateRow, saveRow, deleteRow } from './OfficeController';
+import { validateRow, saveRow, deleteRow } from './PractitionerController';
 import UserContext from '../../contexts/UserContext';
-import OfficeContext from '../../contexts/OfficeContext';
+import PractitionerContext from '../../contexts/PractitionerContext';
 
-export default function OfficeManageGrid() {
+export default function PractitionerManageGrid() {
   const { role, practiceId } = useContext(UserContext);
   const [rows, setRawRows] = useState([]);
 
@@ -14,15 +14,15 @@ export default function OfficeManageGrid() {
     return setRawRows([...rows.map((r, i) => ({ ...r, no: i + 1 }))]);
   };
 
-  const { offices, fetchAll } = useContext(OfficeContext);
+  const { practitioners, fetchAll } = useContext(PractitionerContext);
 
   useEffect(() => {
     fetchAll();
   }, [fetchAll]);
 
   useEffect(() => {
-    setRows(offices);
-  }, [offices]);
+    setRows(practitioners);
+  }, [practitioners]);
 
   const onValidateRow = (newRow, oldRow, isNew) => {
     return new Promise((resolve, reject) => {
@@ -115,67 +115,82 @@ export default function OfficeManageGrid() {
 }
 
 // Customize this data
-const title = 'Offices';
-const subtitle = 'Manage Offices';
+const title = 'Practitioners';
+const subtitle = 'Manage Practitioners';
 
 const createRowData = (rows) => {
   // IS THIS REDUNDANT, ITS ALSO IN DefaultToolBar
   const newId = Math.floor(100000 + Math.random() * 900000);
   return {
     id: newId,
-    name: '',
-    status: 'Active',
-    virtual: false,
+    last_name: '',
+    first_name: '',
+    suffix: 'F',
+    prefix: '',
+    email: '',
   };
 };
 
 const columns = [
   { field: 'id', headerName: 'ID', flex: 0.5 },
   {
-    field: 'name',
+    field: 'full_name',
     headerName: 'Name',
+    editable: false,
+    flex: 1,
+    cellClassName: 'name-column--cell',
+  },
+  {
+    field: 'prefix',
+    headerName: 'Prefix',
+    editable: true,
+    type: 'singleSelect',
+    valueOptions: ['Dr.', ''],
+    defaultValueGetter: () => '',
+    flex: 1,
+    cellClassName: 'name-column--cell',
+  },
+  {
+    field: 'first_name',
+    headerName: 'First',
     editable: true,
     flex: 1,
     cellClassName: 'name-column--cell',
   },
   {
-    field: 'postal_code',
-    headerName: 'Zip Code',
-    headerAlign: 'center',
-    align: 'center',
+    field: 'last_name',
+    headerName: 'Last',
     editable: true,
     flex: 1,
+    cellClassName: 'name-column--cell',
   },
   {
-    field: 'virtual',
-    headerName: 'Telehealth',
+    field: 'suffix',
+    headerName: 'Suffix',
     editable: true,
-    type: 'boolean',
-    defaultValueGetter: () => false,
-  },
-  {
-    field: 'city',
-    headerName: 'City',
-    headerAlign: 'center',
-    align: 'center',
-    flex: 1,
-  },
-  {
-    field: 'state',
-    headerName: 'State',
-    headerAlign: 'center',
-    align: 'center',
-    flex: 1,
-  },
-  {
-    field: 'status',
-    headerName: 'Status',
-    editable: true,
-    headerAlign: 'center',
-    align: 'center',
     type: 'singleSelect',
-    valueOptions: ['Active', 'Inactive'],
-    defaultValueGetter: () => 'Active',
+    valueOptions: [
+      'MD',
+      'DO',
+      'PMHNP',
+      'AGNP',
+      'ANP',
+      'FNP',
+      'GNP',
+      'NP',
+      'PA',
+      'WHNP',
+      '',
+    ],
+    defaultValueGetter: () => '',
     flex: 1,
+    cellClassName: 'name-column--cell',
+  },
+  {
+    field: 'email',
+    headerName: 'First',
+    editable: true,
+    flex: 1,
+    cellClassName: 'name-column--cell',
   },
 ];

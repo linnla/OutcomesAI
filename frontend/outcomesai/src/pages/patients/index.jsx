@@ -1,12 +1,13 @@
 import * as React from 'react';
 import { useEffect, useState, useContext } from 'react';
+import { Box } from '@mui/material';
 import EditableDataGrid from '../../components/datagrid/editable';
 import ReadOnlyDataGrid from '../../components/datagrid/readonly';
-import { validateRow, saveRow, deleteRow } from './OfficeController';
+import { validateRow, saveRow, deleteRow } from './PatientController';
 import UserContext from '../../contexts/UserContext';
-import OfficeContext from '../../contexts/OfficeContext';
+import PatientContext from '../../contexts/PatientContext';
 
-export default function OfficeManageGrid() {
+export default function PatientManageGrid() {
   const { role, practiceId } = useContext(UserContext);
   const [rows, setRawRows] = useState([]);
 
@@ -14,15 +15,15 @@ export default function OfficeManageGrid() {
     return setRawRows([...rows.map((r, i) => ({ ...r, no: i + 1 }))]);
   };
 
-  const { offices, fetchAll } = useContext(OfficeContext);
+  const { patients, fetchAll } = useContext(PatientContext);
 
   useEffect(() => {
     fetchAll();
   }, [fetchAll]);
 
   useEffect(() => {
-    setRows(offices);
-  }, [offices]);
+    setRows(patients);
+  }, [patients]);
 
   const onValidateRow = (newRow, oldRow, isNew) => {
     return new Promise((resolve, reject) => {
@@ -115,28 +116,67 @@ export default function OfficeManageGrid() {
 }
 
 // Customize this data
-const title = 'Offices';
-const subtitle = 'Manage Offices';
+const title = 'Patients';
+const subtitle = 'Manage Patients';
 
 const createRowData = (rows) => {
   // IS THIS REDUNDANT, ITS ALSO IN DefaultToolBar
   const newId = Math.floor(100000 + Math.random() * 900000);
   return {
     id: newId,
-    name: '',
-    status: 'Active',
-    virtual: false,
+    last_name: '',
+    first_name: '',
+    email: '',
+    birthdate: '',
+    gender: '',
   };
 };
 
 const columns = [
   { field: 'id', headerName: 'ID', flex: 0.5 },
   {
-    field: 'name',
-    headerName: 'Name',
+    field: 'last_name',
+    headerName: 'Last',
     editable: true,
     flex: 1,
     cellClassName: 'name-column--cell',
+  },
+  {
+    field: 'first_name',
+    headerName: 'First',
+    editable: true,
+    flex: 1,
+    cellClassName: 'name-column--cell',
+  },
+  {
+    field: 'email',
+    headerName: 'First',
+    editable: true,
+    flex: 1,
+    cellClassName: 'name-column--cell',
+  },
+  {
+    field: 'birthdate',
+    type: 'date',
+    headerName: 'Birth Date',
+    headerAlign: 'center',
+    align: 'center',
+    valueGetter: (params) => new Date(params.row.birthdate),
+    renderCell: (params) => {
+      return <Box>{params.value ? params.value.toLocaleDateString() : ''}</Box>;
+    },
+    editable: true,
+    flex: 1,
+  },
+  {
+    field: 'gender',
+    headerName: 'Birth Gender',
+    editable: true,
+    headerAlign: 'center',
+    align: 'center',
+    type: 'singleSelect',
+    valueOptions: ['M', 'F'],
+    flex: 1,
   },
   {
     field: 'postal_code',
@@ -145,13 +185,6 @@ const columns = [
     align: 'center',
     editable: true,
     flex: 1,
-  },
-  {
-    field: 'virtual',
-    headerName: 'Telehealth',
-    editable: true,
-    type: 'boolean',
-    defaultValueGetter: () => false,
   },
   {
     field: 'city',
@@ -165,17 +198,6 @@ const columns = [
     headerName: 'State',
     headerAlign: 'center',
     align: 'center',
-    flex: 1,
-  },
-  {
-    field: 'status',
-    headerName: 'Status',
-    editable: true,
-    headerAlign: 'center',
-    align: 'center',
-    type: 'singleSelect',
-    valueOptions: ['Active', 'Inactive'],
-    defaultValueGetter: () => 'Active',
     flex: 1,
   },
 ];

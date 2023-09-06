@@ -6,6 +6,7 @@ import botocore.exceptions
 import collections
 from sqlalchemy import create_engine
 from sqlalchemy import inspect
+from contextlib import contextmanager
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.exc import OperationalError
 from sqlalchemy.exc import IntegrityError
@@ -197,7 +198,6 @@ def create_entity(entity_class, data):
         StatementError,
     ) as error:
         session.rollback()
-        session.close()
         return exception_handling(error)
 
 
@@ -244,7 +244,6 @@ def update_entity(entity_instance, updated_data):
         NoResultFound,
     ) as error:
         session.rollback()
-        session.close()
         return exception_handling(error)
 
 
@@ -288,7 +287,6 @@ def delete_entity(entity_instance):
         NoResultFound,
     ) as error:
         session.rollback()
-        session.close()
         return exception_handling(error)
 
 
@@ -318,12 +316,15 @@ def create_database_connection():
     engine = create_engine(connection_url, execution_options={"raiseerr": True})
     return engine
 
-
+@contextmanager
 def get_database_session():
     engine = create_database_connection()
     Session = sessionmaker(bind=engine)
-    return Session()
-
+    session = Session()
+    try:
+        yield session
+    finally:
+        session.close()
 
 __all__ = [
     "select_entity",

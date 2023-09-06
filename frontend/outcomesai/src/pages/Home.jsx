@@ -4,8 +4,8 @@ import { useNavigate } from 'react-router-dom';
 function Home() {
   const navigate = useNavigate();
 
-  function onLogin() {
-    console.log('onLogin');
+  function signIn() {
+    console.log('signIn');
     navigate('/login');
   }
 
@@ -21,7 +21,7 @@ function Home() {
   return (
     <div>
       <h2>Home (Public)</h2>
-      <button type='button' onClick={onLogin} style={{ marginRight: '10px' }}>
+      <button type='button' onClick={signIn} style={{ marginRight: '10px' }}>
         Sign In
       </button>
       <button type='button' onClick={signOut}>

@@ -42,7 +42,7 @@ class PracticePatient(Base):
 
         return {
             "practice_id": self.practice_id,
-            "patient_id": self.patient_id,
+            "id": self.patient_id,
             "status": self.status,
             "practice_name": practice["name"],
             "full_name": full_name,
