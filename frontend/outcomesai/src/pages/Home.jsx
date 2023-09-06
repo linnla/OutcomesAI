@@ -18,6 +18,7 @@ function Home() {
       console.log('error signing out: ', error);
     }
   }
+
   return (
     <div>
       <h2>Home (Public)</h2>

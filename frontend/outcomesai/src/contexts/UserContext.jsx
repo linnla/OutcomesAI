@@ -13,16 +13,10 @@ const staticDefaultUserValue = {
 const UserContext = createContext(staticDefaultUserValue);
 
 function UserProvider({ children }) {
-  console.log('UserProvider Loaded');
-
   const [user, setUser] = useState(staticDefaultUserValue);
   const [defaultUserData, setDefaultUserData] = useState(
     staticDefaultUserValue
   );
-
-  useEffect(() => {
-    console.log("UserContext's practiceId changed:", user.practiceId);
-  }, [user.practiceId]);
 
   const setUserData = async () => {
     return new Promise((resolve, reject) => {
@@ -38,17 +32,18 @@ function UserProvider({ children }) {
           const userData = response.data.data[0];
 
           const userDataValues = {
-            role: 'admin',
+            role: userData.role,
             practiceId: userData.practice_id,
             email: currentUser.attributes.email,
             firstName: currentUser.attributes.given_name,
             lastName: currentUser.attributes.family_name,
           };
 
-          setUser(userDataValues);
-
-          // Update the default user data
-          setDefaultUserData(userDataValues);
+          // Check if user data is different from current state
+          if (JSON.stringify(userDataValues) !== JSON.stringify(user)) {
+            setUser(userDataValues);
+            setDefaultUserData(userDataValues);
+          }
 
           resolve();
         })

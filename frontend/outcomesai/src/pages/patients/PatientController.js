@@ -93,12 +93,12 @@ export const saveRow = (newRow, oldRow, isNew) => {
         const newPatient = {
           practice_id: newRow.practice_id,
           patient_id: savedRow.id,
-          status: 'Active',
         };
         await CallApiPromise(method, 'practice_patients', newPatient, null);
       }
       resolve(savedRow);
     } catch (error) {
+      console.error('saveRow', error);
       reject(error);
     }
   });

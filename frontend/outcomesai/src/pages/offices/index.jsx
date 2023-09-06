@@ -82,6 +82,7 @@ export default function OfficeManageGrid() {
     });
   };
 
+  console.log('office: role', role);
   if (role === 'user') {
     return (
       <div>

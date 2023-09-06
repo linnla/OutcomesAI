@@ -35,6 +35,7 @@ function App() {
   const [theme, colorMode] = useMode();
   const [isSidebar, setIsSidebar] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [loginSuccess, setLoginSuccess] = useState(false);
 
   useEffect(() => {
     async function checkAuthentication() {
@@ -48,12 +49,13 @@ function App() {
     }
 
     checkAuthentication();
-  }, []);
+  }, [loginSuccess]);
+
+  function handleSuccessfulLogin() {
+    setLoginSuccess((prev) => !prev); // Toggle the state
+  }
 
   function AppRoutes() {
-    if (!isAuthenticated) {
-      return <Login />;
-    }
     return (
       <Routes>
         <Route index element={<Home />} />
@@ -116,7 +118,6 @@ function App() {
     );
   }
 
-  console.log('App.js return rerender');
   return (
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
@@ -126,7 +127,11 @@ function App() {
             <Sidebar isSidebar={isSidebar} />
             <main className='content'>
               <Topbar setIsSidebar={setIsSidebar} />
-              <AppRoutes />
+              {isAuthenticated ? (
+                <AppRoutes />
+              ) : (
+                <Login onSuccessfulLogin={handleSuccessfulLogin} />
+              )}
             </main>
           </div>
         </Authenticator.Provider>
