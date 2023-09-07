@@ -1,7 +1,6 @@
 import axios from 'axios';
 import { config } from '../config/Config';
 import { getToken } from '../utils/AuthService';
-import HandleTokenError from '../utils/HandleTokenError';
 
 export const getRequest = (method, table, body, query_params) => {
   return new Promise(async (resolve, reject) => {
@@ -52,9 +51,9 @@ const CallApi = async (method, table, body, query_params) => {
     const token = await getToken();
 
     // Check for token error and handle
-    if (token instanceof Error) {
-      return <HandleTokenError error={token} />;
-    }
+    //if (token instanceof Error) {
+    //  return <HandleTokenError error={token} />;
+    //}
 
     let response;
     switch (method) {
@@ -111,9 +110,9 @@ export const CallApiPromise = (method, table, body, query_params) => {
       const token = await getToken();
 
       // Check for token error and handle
-      if (token instanceof Error) {
-        return reject(new HandleTokenError({ error: token }));
-      }
+      //if (token instanceof Error) {
+      //  return reject(new HandleTokenError({ error: token }));
+      //}
 
       let response;
       switch (method) {

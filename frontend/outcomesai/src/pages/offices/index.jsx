@@ -3,23 +3,18 @@ import { useEffect, useState, useContext } from 'react';
 import EditableDataGrid from '../../components/datagrid/editable';
 import ReadOnlyDataGrid from '../../components/datagrid/readonly';
 import UserContext from '../../contexts/UserContext';
-import ShowDatabaseError from '../../utils/ErrorModal';
+import { getData, postData, putData, deleteData } from '../../utils/API';
 import {
-  getOne,
-  getData,
-  postData,
-  putData,
-  deleteData,
-} from '../../utils/API';
-import {
-  validatePostalCode,
+  validatePostalCodeFormat,
+  validatePostalCodeExists,
   validateRequiredAttributes,
 } from '../../utils/ValidationUtils';
+import { createErrorMessage } from '../../utils/CreateErrorMessage';
+import ErrorModal from '../../utils/ErrorModal';
 
 export default function OfficeManageGrid() {
   const { role, practiceId } = useContext(UserContext);
   const [rows, setRawRows] = useState([]);
-
   const [errorType, setErrorType] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [showErrorModal, setShowErrorModal] = useState(false);
@@ -29,159 +24,144 @@ export default function OfficeManageGrid() {
   };
 
   useEffect(() => {
-    getData('offices', { practice_id: practiceId })
+    getData(table, { practice_id: practiceId })
       .then((data) => {
-        console.log('Data:', data);
         setRows(data);
       })
       .catch((error) => {
-        const databaseErrorMessage =
-          error?.response?.data?.errorMessage || 'Unknown error';
-
-        const status = error?.response?.data?.status;
-
-        const getErrorMessage = (message, status) => {
-          switch (message) {
-            case 'A database result was required but none was found':
-              return 'No Offices found for your Practice';
-            case 'Query parameters required: id or practice_id':
-              return 'Invalid request, practice is a required parameter';
-            default:
-              return status >= 500 ? 'Error accessing database' : message;
-          }
-        };
-
-        const errorMessage = getErrorMessage(databaseErrorMessage, status);
-        console.error('Error message:', databaseErrorMessage);
-
-        setErrorType('Data Error');
+        const errorMessage = createErrorMessage(error, table);
+        setErrorType('Data Fetch Error');
         setErrorMessage(errorMessage);
         setShowErrorModal(true);
       });
   }, [practiceId]);
 
-  const validateRow = async (newRow) => {
-    const requiredAttributes = ['name', 'postal_code'];
-    const attributeNames = ['Office name', 'Postal Code'];
+  // *************** CUSTOMIZE ************** START
+  const title = 'Offices';
+  const subtitle = 'Manage Offices';
+  const table = 'offices';
+  const requiredAttributes = ['name', 'postal_code'];
+  const attributeNames = ['Office name', 'Postal Code'];
 
+  async function validateRow(newRow) {
     try {
-      await validateRequiredAttributes(
-        requiredAttributes,
-        attributeNames,
-        newRow
-      );
-      await validatePostalCode(newRow.postal_code);
-      const postalCodeInfo = await getPostalCodeInfo(newRow.postal_code);
+      validateRequiredAttributes(requiredAttributes, attributeNames, newRow);
+      validatePostalCodeFormat(newRow.postal_code);
+      const postalCodeInfo = await validatePostalCodeExists(newRow.postal_code);
       const updatedRow = { ...newRow, ...postalCodeInfo };
-      //console.log('updatedRow', updatedRow);
       return updatedRow;
     } catch (error) {
-      console.error(error);
-      setErrorType('Data Validation Error');
-      setErrorMessage(error.message);
-      setShowErrorModal(true);
+      const errorMessage = createErrorMessage(error, table);
+      throw errorMessage;
     }
-  };
+  }
 
-  const getPostalCodeInfo = async (postalCode) => {
-    try {
-      const data = await getOne('postal_codes', { postal_code: postalCode });
-      return data;
-    } catch (error) {
-      const databaseErrorMessage =
-        error?.response?.data?.errorMessage || 'Unknown error';
-      const status = error?.response?.data?.status;
+  function createRowData(rows) {
+    // IS THIS REDUNDANT, ITS ALSO IN DefaultToolBar
+    const newId = Math.floor(100000 + Math.random() * 900000);
+    return {
+      id: newId,
+      name: '',
+      status: 'Active',
+      virtual: false,
+    };
+  }
+  // *************** CUSTOMIZE ************** END
 
-      const getErrorMessage = (message, status) => {
-        switch (message) {
-          case 'A database result was required but none was found':
-            return 'Postal code not found';
-          default:
-            return status >= 500 ? 'Error accessing database' : message;
-        }
-      };
-
-      const errorMessage = getErrorMessage(databaseErrorMessage, status);
-      throw new Error(errorMessage); // Corrected this line
-    }
-  };
-
-  const saveRow = async (id, row, oldRow, oldRows) => {
+  async function saveRow(id, row, oldRow, oldRows) {
     try {
       if (row.isNew) {
+        // *************** CUSTOMIZE ************** START
         const rowToSave = { ...row, practice_id: practiceId };
+        // *************** CUSTOMIZE ************** END
+
         // Delete the id that was generated when row was created
         delete rowToSave.id;
-        const data = await postData('offices', rowToSave);
+        const data = await postData(table, rowToSave);
         // Add the id returned from the database
         rowToSave.id = data.data.id;
         setRows(oldRows.map((r) => (r.id === id ? { ...rowToSave } : r)));
         return rowToSave;
       } else {
-        const data = await putData('offices', row);
+        await putData(table, row);
         setRows(oldRows.map((r) => (r.id === id ? { ...row } : r)));
         return row;
       }
     } catch (error) {
       setRows(oldRows);
-      const databaseErrorType =
-        error?.response?.data?.errorType || 'Unknown errorType';
-      const databaseErrorMessage =
-        error?.response?.data?.errorMessage || 'Unknown error';
-      const status = error?.response?.data?.status;
 
-      const getErrorMessage = (errorType, status) => {
-        switch (errorType) {
-          case 'DuplicateKeyError':
-            return 'This office already exists';
-          default:
-            return status >= 500
-              ? 'Error accessing database'
-              : databaseErrorMessage;
-        }
-      };
+      // *************** CUSTOMIZE ************** START
+      const errorMessage = createErrorMessage(error, row.name);
+      // *************** CUSTOMIZE ************** END
 
-      const errorMessage = getErrorMessage(databaseErrorType, status);
-      throw new Error(errorMessage);
+      throw errorMessage;
     }
-  };
+  }
 
-  const deleteRow = async (id, row, oldRows) => {
-    console.log('deleteRow id', id);
-    console.log('deleteRow row', row);
-
+  async function deleteRow(id, row, oldRows) {
+    // *************** CUSTOMIZE ************** START
     const body = {
       practice_id: row.practice_id,
       id: row.id,
     };
+    // *************** CUSTOMIZE ************** END
 
     try {
-      const data = await deleteData('offices', body);
+      await deleteData(table, body);
       setRows(oldRows.filter((r) => r.id !== id));
     } catch (error) {
-      console.error('deleteRow', error);
       setRows(oldRows);
 
-      let errorMessage = 'Unknown Error';
-      if (error?.response?.data?.errorType) {
-        console.log('errorType exists:', error.response.data.errorType);
-        errorMessage = error.response.data.errorMessage;
-      } else if (error?.response?.data?.message) {
-        console.log('message exists', error.response.data.message);
+      // *************** CUSTOMIZE ************** START
+      const errorMessage = createErrorMessage(error, row.name);
+      // *************** CUSTOMIZE ************** END
+
+      throw errorMessage;
+    }
+  }
+
+  /*
+  function processError(error, data) {
+    console.log('processError error', error);
+    console.log('processError data', data);
+
+    // Default error message
+    let errorMessage = 'Unknown Error';
+
+    // Handling Axios-like error responses
+    if (error?.response?.data) {
+      if (error.response.data.errorType === 'DuplicateKeyError') {
+        errorMessage = `${data} already exists`;
+      } else if (error.response.data.message) {
         errorMessage = error.response.data.message;
-      } else if (error?.response?.data?.status) {
+      } else if (error.response.data.errorMessage) {
+        if (
+          error.response.data.errorMessage ===
+          'A database result was required but none was found'
+        ) {
+          errorMessage = `No ${data} found`;
+        } else {
+          errorMessage = error.response.data.errorMessage;
+        }
+      } else if (error.response.data.status) {
         const statusCode = error.response.data.status;
         if (statusCode >= 500) {
           errorMessage = 'Error accessing database or server';
         }
       }
-      throw new Error(errorMessage);
     }
+    // Handling local JavaScript Error objects
+    else if (error.message) {
+      errorMessage = error.message;
+    }
+
+    return errorMessage;
   };
+  */
 
   if (showErrorModal) {
     return (
-      <ShowDatabaseError
+      <ErrorModal
         errorType={errorType}
         errorMessage={errorMessage}
         onClose={() => setShowErrorModal(false)}
@@ -189,7 +169,6 @@ export default function OfficeManageGrid() {
     );
   }
 
-  console.log('office: role', role);
   if (role === 'user') {
     return (
       <div>
@@ -222,21 +201,7 @@ export default function OfficeManageGrid() {
   }
 }
 
-// Customize this data
-const title = 'Offices';
-const subtitle = 'Manage Offices';
-
-const createRowData = (rows) => {
-  // IS THIS REDUNDANT, ITS ALSO IN DefaultToolBar
-  const newId = Math.floor(100000 + Math.random() * 900000);
-  return {
-    id: newId,
-    name: '',
-    status: 'Active',
-    virtual: false,
-  };
-};
-
+// *************** CUSTOMIZE ************** START
 const columns = [
   { field: 'id', headerName: 'ID', flex: 0.5 },
   {
@@ -287,3 +252,4 @@ const columns = [
     flex: 1,
   },
 ];
+// *************** CUSTOMIZE ************** END

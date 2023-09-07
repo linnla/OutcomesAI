@@ -47,29 +47,29 @@ function EditableDataGrid({
   }, [rows]);
 
   const handleRowEditStart = (params, event) => {
-    console.log('handleRowEditStart params', params);
-    console.log('handleRowEditStart event', event);
+    //console.log('handleRowEditStart params', params);
+    //console.log('handleRowEditStart event', event);
     event.defaultMuiPrevented = true;
   };
 
   const handleRowEditStop = (params, event) => {
-    console.log('handleRowEditStop params', params.field);
-    console.log('handleRowEditStop event', event);
+    //console.log('handleRowEditStop params', params.field);
+    //console.log('handleRowEditStop event', event);
     event.defaultMuiPrevented = true;
   };
 
   const handleEditClick = (id) => () => {
-    console.log('handleEditClick', id);
+    //console.log('handleEditClick', id);
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
   };
 
   const handleSaveClick = (id) => () => {
-    console.log('handleSaveClick', id);
+    //console.log('handleSaveClick', id);
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
   };
 
   const handleDeleteClick = async (id) => {
-    console.log('handleDeleteClick', id);
+    //console.log('handleDeleteClick', id);
     setInternalRows(internalRows.filter((row) => row.id !== id));
     const row = internalRows.find((r) => r.id === id);
 
@@ -85,7 +85,7 @@ function EditableDataGrid({
   };
 
   const handleCancelClick = (id) => () => {
-    console.log('handleCancelClick', id);
+    //console.log('handleCancelClick', id);
     setRowModesModel({
       ...rowModesModel,
       [id]: { mode: GridRowModes.View, ignoreModifications: true },
@@ -98,14 +98,14 @@ function EditableDataGrid({
   };
 
   const handleProcessRowUpdateError = React.useCallback((error) => {
-    console.log('handleProcessRowUpdateError:', error);
+    console.error('handleProcessRowUpdateError:', error);
     setErrorType('Data Error');
     setErrorMessage(error || 'Unknown error');
     setShowErrorModal(true);
   }, []);
 
   const processRowUpdate = async (newRow) => {
-    console.log('processRowUpdate newRow', newRow);
+    //console.log('processRowUpdate newRow', newRow);
     const updatedRow = { ...newRow };
     if (!updatedRow.isNew) updatedRow.isNew = false;
     const oldRow = internalRows.find((r) => r.id === updatedRow.id);
@@ -120,19 +120,17 @@ function EditableDataGrid({
     console.log('updatedRow', updatedRow);
     try {
       const validatedRow = await onValidateRow(updatedRow);
-      console.log('validatedRow', validatedRow);
       const savedRow = await onSaveRow(
         validatedRow.id,
         validatedRow,
         oldRow,
         internalRows
       );
-      console.log('savedRow', savedRow);
       // This return statement is required or else datagrid will throw an internal error
       // Cannot read properties of undefined (reading 'id') at getRowIdFromRowModel
       return savedRow;
     } catch (error) {
-      console.error('processRowUpdate error', error);
+      console.error('processRowUpdate', error);
       apiRef.current.updateRows([{ id: updatedRow.id, ...oldRow }]);
       throw error;
     }

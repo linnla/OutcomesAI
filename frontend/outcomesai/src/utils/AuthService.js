@@ -1,6 +1,6 @@
 import { Auth } from 'aws-amplify';
 
-export const getToken = async () => {
+export async function getToken() {
   try {
     const session = await Auth.currentSession();
     const idToken = session.getIdToken().getJwtToken();
@@ -9,4 +9,4 @@ export const getToken = async () => {
     console.log('Error getting token:', error);
     throw error; // Re-throw the error to be caught by the caller
   }
-};
+}

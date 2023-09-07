@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { config } from '../config/Config';
 import { getToken } from './AuthService';
-import HandleTokenError from './HandleTokenError';
+import { HandleTokenError } from './HandleTokenError';
 
 async function makeRequest(method, table, options = {}) {
   const url = `${config.baseUrl}${config.stage}/${table}`;

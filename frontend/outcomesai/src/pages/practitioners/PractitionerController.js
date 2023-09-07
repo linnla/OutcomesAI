@@ -1,4 +1,4 @@
-import CallApi, { CallApiPromise } from '../../api/CallApi';
+import { CallApiPromise } from '../../api/CallApi';
 import { validateRequiredAttributes } from '../../utils/ValidationUtils';
 
 export const validateRow = (newRow, oldRow, isNew) => {
@@ -7,11 +7,7 @@ export const validateRow = (newRow, oldRow, isNew) => {
 
   return new Promise(async (resolve, reject) => {
     try {
-      await validateRequiredAttributes(
-        requiredAttributes,
-        attributeNames,
-        newRow
-      );
+      validateRequiredAttributes(requiredAttributes, attributeNames, newRow);
       const updatedRow = {
         ...newRow,
       };

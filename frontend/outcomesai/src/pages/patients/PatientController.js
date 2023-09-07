@@ -1,6 +1,6 @@
-import CallApi, { getRequest, CallApiPromise } from '../../api/CallApi';
+import { getRequest, CallApiPromise } from '../../api/CallApi';
 import {
-  validatePostalCode,
+  validatePostalCodeFormat,
   validateRequiredAttributes,
 } from '../../utils/ValidationUtils';
 
@@ -24,14 +24,10 @@ export const validateRow = (newRow, oldRow, isNew) => {
 
   return new Promise(async (resolve, reject) => {
     try {
-      await validateRequiredAttributes(
-        requiredAttributes,
-        attributeNames,
-        newRow
-      );
+      validateRequiredAttributes(requiredAttributes, attributeNames, newRow);
       let updatedRow = {};
       if (newRow.postal_code !== oldRow.postal_code) {
-        await validatePostalCode(newRow.postal_code);
+        await validatePostalCodeFormat(newRow.postal_code);
         const method = 'GET';
         const table = 'postal_codes';
         const query_params = {
