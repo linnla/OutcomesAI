@@ -26,7 +26,12 @@ def lambda_handler(event, context):
         )
     else:
         method = event["httpMethod"]
-        message = f"{method} method not allowed"
-        error_message = {"error": message}
-        response = {"statusCode": 405, "body": dumps(error_message)}
+        message = f"{method} method is not allowed"
+        description = f"{message} on this resource"
+        error = {
+            "errorType": "InvalidHttpMethod",
+            "errorMessage": message,
+            "errorDescription": description,
+        }
+        response = {"statusCode": 405, "body": dumps(error)}
         return response

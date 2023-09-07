@@ -47,14 +47,14 @@ function EditableDataGrid({
   }, [rows]);
 
   const handleRowEditStart = (params, event) => {
-    //console.log('handleRowEditStart params', params);
-    //console.log('handleRowEditStart event', event);
+    console.log('handleRowEditStart params', params);
+    console.log('handleRowEditStart event', event);
     event.defaultMuiPrevented = true;
   };
 
   const handleRowEditStop = (params, event) => {
-    //console.log('handleRowEditStop params', params.field);
-    //console.log('handleRowEditStop event', event);
+    console.log('handleRowEditStop params', params.field);
+    console.log('handleRowEditStop event', event);
     event.defaultMuiPrevented = true;
   };
 
@@ -68,14 +68,20 @@ function EditableDataGrid({
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
   };
 
-  const handleDeleteClick = (id) => () => {
+  const handleDeleteClick = async (id) => {
     console.log('handleDeleteClick', id);
     setInternalRows(internalRows.filter((row) => row.id !== id));
-    onDeleteRow(
-      id,
-      internalRows.find((row) => row.id === id),
-      internalRows
-    );
+    const row = internalRows.find((r) => r.id === id);
+
+    try {
+      const deleteResponse = await onDeleteRow(id, row, internalRows);
+      console.log('handleDeleteClick delete response', deleteResponse);
+    } catch (error) {
+      console.error('handleDeleteClick error', error);
+      setErrorType('Delete Error');
+      setErrorMessage(error || 'Unknown error');
+      setShowErrorModal(true);
+    }
   };
 
   const handleCancelClick = (id) => () => {
@@ -99,7 +105,7 @@ function EditableDataGrid({
   }, []);
 
   const processRowUpdate = async (newRow) => {
-    console.log('processRowUpdate', newRow);
+    console.log('processRowUpdate newRow', newRow);
     const updatedRow = { ...newRow };
     if (!updatedRow.isNew) updatedRow.isNew = false;
     const oldRow = internalRows.find((r) => r.id === updatedRow.id);
@@ -111,19 +117,17 @@ function EditableDataGrid({
       return oldRow;
     }
 
+    console.log('updatedRow', updatedRow);
     try {
-      const validatedRow = await onValidateRow(
-        updatedRow,
-        oldRow,
-        updatedRow.isNew
-      );
+      const validatedRow = await onValidateRow(updatedRow);
+      console.log('validatedRow', validatedRow);
       const savedRow = await onSaveRow(
         validatedRow.id,
         validatedRow,
         oldRow,
-        internalRows,
-        updatedRow.isNew
+        internalRows
       );
+      console.log('savedRow', savedRow);
       // This return statement is required or else datagrid will throw an internal error
       // Cannot read properties of undefined (reading 'id') at getRowIdFromRowModel
       return savedRow;
@@ -195,7 +199,7 @@ function EditableDataGrid({
           <GridActionsCellItem
             icon={<DeleteIcon />}
             label='Delete'
-            onClick={handleDeleteClick(id)}
+            onClick={() => handleDeleteClick(id)}
             color='inherit'
           />,
         ];

@@ -76,11 +76,9 @@ function App() {
         <Route
           path='/offices'
           element={
-            <OfficeProvider>
-              <RequireAuth>
-                <OfficeManageGrid />
-              </RequireAuth>
-            </OfficeProvider>
+            <RequireAuth>
+              <OfficeManageGrid />
+            </RequireAuth>
           }
         />
 

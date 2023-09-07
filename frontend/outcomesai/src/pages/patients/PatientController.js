@@ -109,7 +109,7 @@ export const deleteRow = (rowId, rows) => {
     console.log(rowId);
 
     try {
-      await CallApi('DELETE', 'patients', { id: rowId }, null);
+      await CallApiPromise('DELETE', 'patients', { id: rowId }, null);
       const deletedRow = rows.find((r) => r.id === rowId);
       rows = rows.filter((r) => r.id !== rowId);
 

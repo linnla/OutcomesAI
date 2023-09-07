@@ -1,43 +1,40 @@
-export const validateRequiredAttributes = (
+export const validateRequiredAttributes = async (
   requiredAttributes,
   attributeNames,
   row
 ) => {
-  return new Promise((resolve, reject) => {
-    for (let i = 0; i < requiredAttributes.length; i++) {
-      const key = requiredAttributes[i];
-      const attributeName = attributeNames[i];
+  for (let i = 0; i < requiredAttributes.length; i++) {
+    const key = requiredAttributes[i];
+    const attributeName = attributeNames[i];
 
-      if (
-        !(key in row) ||
-        !row[key] ||
-        row[key] === null ||
-        row[key] === undefined
-      ) {
-        reject(`${attributeName} is a required field`);
-      }
+    if (
+      !(key in row) ||
+      !row[key] ||
+      row[key] === null ||
+      row[key] === undefined
+    ) {
+      throw new Error(`${attributeName} is a required field`);
     }
+  }
 
-    resolve(true);
-  });
+  return true;
 };
 
-export const validatePostalCode = (postalCode) => {
+export const validatePostalCode = async (postalCode) => {
   console.log('validatePostalCode:', postalCode);
-  return new Promise((resolve, reject) => {
-    if (postalCode === '00000') {
-      reject(`Postal code ${postalCode} is not a valid postal code`);
-    }
 
-    if (postalCode.length !== 5) {
-      reject('Postal code must have 5 digits');
-    }
+  if (postalCode === '00000') {
+    throw new Error(`Postal code ${postalCode} is not a valid postal code`);
+  }
 
-    const regex = /^[0-9]{1,5}$/;
-    if (!regex.test(postalCode)) {
-      reject('Postal code must be numbers');
-    }
+  if (postalCode.length !== 5) {
+    throw new Error('Postal code must have 5 digits');
+  }
 
-    resolve(true);
-  });
+  const regex = /^[0-9]{1,5}$/;
+  if (!regex.test(postalCode)) {
+    throw new Error('Postal code must be numbers');
+  }
+
+  return true;
 };

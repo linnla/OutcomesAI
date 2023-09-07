@@ -150,6 +150,9 @@ def create(event, entity_class, required_fields, allowed_fields):
     except JSONDecodeError as e:
         error_message = f"InvalidJSON: {event['body']} is not valid JSON, {str(e)}."
         return create_error_response(error_message)
+    except Exception as e:
+        error_message = f"Unexpected error occurred: {str(e)}"
+        return create_error_response(error_message)
 
     validation_error = validate_request_body(
         request_body, required_fields, required_fields
@@ -192,6 +195,9 @@ def update(event, entity_class, required_fields, allowed_fields, non_null_fields
         print(request_body)
     except JSONDecodeError as e:
         error_message = f"InvalidJSON: {event['body']} is not valid JSON, {str(e)}."
+        return create_error_response(error_message)
+    except Exception as e:
+        error_message = f"Unexpected error occurred: {str(e)}"
         return create_error_response(error_message)
 
     validation_error = validate_request_body(
@@ -240,6 +246,9 @@ def delete(event, entity_class, required_fields):
         print(request_body)
     except JSONDecodeError as e:
         error_message = f"InvalidJSON: {event['body']} is not valid JSON, {str(e)}."
+        return create_error_response(error_message)
+    except Exception as e:
+        error_message = f"Unexpected error occurred: {str(e)}"
         return create_error_response(error_message)
 
     if not isinstance(request_body, dict):

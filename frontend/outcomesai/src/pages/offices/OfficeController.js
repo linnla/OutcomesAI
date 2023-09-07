@@ -85,7 +85,7 @@ export const deleteRow = (rowId, rows) => {
     console.log(rowId);
 
     try {
-      await CallApi('DELETE', 'offices', { id: rowId }, null);
+      await CallApiPromise('DELETE', 'offices', { id: rowId }, null);
       const deletedRow = rows.find((r) => r.id === rowId);
       rows = rows.filter((r) => r.id !== rowId);
 

@@ -1,8 +1,7 @@
 import axios from 'axios';
 import { config } from '../config/Config';
 import { getToken } from '../utils/AuthService';
-import HandleTokenError from './HandleTokenError';
-import { ErrorMessage } from 'formik';
+import HandleTokenError from '../utils/HandleTokenError';
 
 export const getRequest = (method, table, body, query_params) => {
   return new Promise(async (resolve, reject) => {
