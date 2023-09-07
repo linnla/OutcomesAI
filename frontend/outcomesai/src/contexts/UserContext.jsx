@@ -1,6 +1,8 @@
-import { createContext, useState, useEffect } from 'react';
+import { createContext, useState } from 'react';
 import { Auth } from 'aws-amplify';
-import CallApi from '../api/CallApi';
+import { getOne } from '../utils/API';
+import { createErrorMessage } from '../utils/ErrorMessage';
+import ErrorModal from '../utils/ErrorModal';
 
 const staticDefaultUserValue = {
   role: '',
@@ -17,41 +19,36 @@ function UserProvider({ children }) {
   const [defaultUserData, setDefaultUserData] = useState(
     staticDefaultUserValue
   );
+  const [error, setError] = useState(null);
 
   const setUserData = async () => {
-    return new Promise((resolve, reject) => {
-      Auth.currentAuthenticatedUser()
-        .then(async (currentUser) => {
-          const method = 'GET';
-          const table = 'practice_users';
-          const query_params = {
-            email: currentUser.attributes.email,
-          };
-          const response = await CallApi(method, table, null, query_params);
-          console.log('UserContext setUserData', response.data.data[0]);
-          const userData = response.data.data[0];
+    try {
+      const currentUser = await Auth.currentAuthenticatedUser();
+      const emailAttribute = currentUser.attributes.email;
 
-          const userDataValues = {
-            role: userData.role,
-            practiceId: userData.practice_id,
-            email: currentUser.attributes.email,
-            firstName: currentUser.attributes.given_name,
-            lastName: currentUser.attributes.family_name,
-          };
+      const userData = await getOne('practice_users', {
+        email: emailAttribute,
+      });
+      //console.log('userData:', userData);
+      const userDataValues = {
+        role: userData.role,
+        practiceId: userData.practice_id,
+        email: emailAttribute,
+        firstName: currentUser.attributes.given_name,
+        lastName: currentUser.attributes.family_name,
+      };
 
-          // Check if user data is different from current state
-          if (JSON.stringify(userDataValues) !== JSON.stringify(user)) {
-            setUser(userDataValues);
-            setDefaultUserData(userDataValues);
-          }
-
-          resolve();
-        })
-        .catch((error) => {
-          console.error('Error getting user data:', error);
-          reject(error);
-        });
-    });
+      // Check if user data is different from current state
+      if (JSON.stringify(userDataValues) !== JSON.stringify(user)) {
+        setUser(userDataValues);
+        setDefaultUserData(userDataValues);
+      }
+    } catch (err) {
+      console.error('Error getting user data:', err);
+      const errorMessage = createErrorMessage(err, 'user');
+      console.log('UserContext errorMessage:', errorMessage);
+      setError(errorMessage);
+    }
   };
 
   const userInfo = {
@@ -60,7 +57,16 @@ function UserProvider({ children }) {
   };
 
   return (
-    <UserContext.Provider value={userInfo}>{children}</UserContext.Provider>
+    <UserContext.Provider value={userInfo}>
+      {error && (
+        <ErrorModal
+          errorType='User Retrieval Error'
+          errorMessage={error}
+          onClose={() => setError(null)}
+        />
+      )}
+      {children}
+    </UserContext.Provider>
   );
 }
 

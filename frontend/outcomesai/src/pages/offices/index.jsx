@@ -9,7 +9,7 @@ import {
   validatePostalCodeExists,
   validateRequiredAttributes,
 } from '../../utils/ValidationUtils';
-import { createErrorMessage } from '../../utils/CreateErrorMessage';
+import { createErrorMessage } from '../../utils/ErrorMessage';
 import ErrorModal from '../../utils/ErrorModal';
 
 export default function OfficeManageGrid() {

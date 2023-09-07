@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { config } from '../config/Config';
 import { getToken } from './AuthService';
-import { HandleTokenError } from './HandleTokenError';
+import { HandleTokenError } from './TokenError';
 
 async function makeRequest(method, table, options = {}) {
   const url = `${config.baseUrl}${config.stage}/${table}`;
@@ -28,7 +28,12 @@ async function makeRequest(method, table, options = {}) {
 export async function getOne(table, query_params) {
   try {
     const response = await makeRequest('get', table, { query_params });
-    console.log(response.data.data[0]);
+    //console.log('getOne:', response.data.data[0]);
+
+    if (!response.data.data.length) {
+      throw new Error('No data found');
+    }
+
     return response.data.data[0];
   } catch (error) {
     console.error('getOne error fetching data:', error);
@@ -39,7 +44,7 @@ export async function getOne(table, query_params) {
 export async function getData(table, query_params) {
   try {
     const response = await makeRequest('get', table, { query_params });
-    console.log(response.data.data);
+    //console.log('getData:', response.data.data);
     return response.data.data;
   } catch (error) {
     console.error('getData error fetching data:', error);
@@ -50,7 +55,7 @@ export async function getData(table, query_params) {
 export async function postData(table, body) {
   try {
     const response = await makeRequest('post', table, { body });
-    console.log('POST request', response);
+    //console.log('postData:', response);
     return response;
   } catch (error) {
     console.error('postData error creating data:', error);
@@ -61,7 +66,7 @@ export async function postData(table, body) {
 export async function putData(table, body) {
   try {
     const response = await makeRequest('put', table, { body });
-    console.log('PUT request', response);
+    //console.log('putData:', response);
     return response;
   } catch (error) {
     console.error('putData error updating data:', error);
@@ -72,7 +77,7 @@ export async function putData(table, body) {
 export async function deleteData(table, body) {
   try {
     const response = await makeRequest('delete', table, { body });
-    console.log('DELETE request', response);
+    //console.log('deleteData:', response);
     return response;
   } catch (error) {
     console.error('deleteData error deleting data:', error);
