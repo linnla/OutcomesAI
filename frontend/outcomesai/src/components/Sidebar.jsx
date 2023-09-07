@@ -93,23 +93,9 @@ const Sidebar = () => {
               setSelected={setSelected}
             />
             <Item
-              title='Manage Team'
-              to='/team'
-              icon={<PeopleOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <Item
               title='Manage Offices'
               to='/offices'
               icon={<BusinessOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <Item
-              title='Invoices Balances'
-              to='/invoices'
-              icon={<ReceiptOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />

@@ -18,12 +18,14 @@ export default function OfficeManageGrid() {
   const [errorType, setErrorType] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [showErrorModal, setShowErrorModal] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const setRows = (rows) => {
     return setRawRows([...rows.map((r, i) => ({ ...r, no: i + 1 }))]);
   };
 
   useEffect(() => {
+    setLoading(true);
     getData(getTable, { practice_id: practiceId })
       .then((data) => {
         setRows(data);
@@ -33,6 +35,9 @@ export default function OfficeManageGrid() {
         setErrorType('Data Fetch Error');
         setErrorMessage(errorMessage);
         setShowErrorModal(true);
+      })
+      .finally(() => {
+        setLoading(false);
       });
   }, [practiceId]);
 
@@ -163,7 +168,7 @@ export default function OfficeManageGrid() {
           onSaveRow={saveRow}
           onDeleteRow={deleteRow}
           createRowData={createRowData}
-          //loading={loading}
+          loading={loading}
         />
       </div>
     );

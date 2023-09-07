@@ -63,15 +63,6 @@ function App() {
         <Route path='/dashboard' element={<Dashboard />} />
 
         <Route
-          path='/team'
-          element={
-            <OfficeProvider>
-              <Team />
-            </OfficeProvider>
-          }
-        />
-
-        <Route
           path='/offices'
           element={
             <RequireAuth>
@@ -98,7 +89,6 @@ function App() {
           }
         />
 
-        <Route path='/invoices' element={<Invoices />} />
         <Route path='/form' element={<Form />} />
         <Route path='/bar' element={<Bar />} />
         <Route path='/pie' element={<Pie />} />
