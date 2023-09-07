@@ -116,6 +116,7 @@ export default function OfficeManageGrid() {
     try {
       await deleteData(saveTable, body);
       setRows(oldRows.filter((r) => r.id !== id));
+      return 'Deleted';
     } catch (error) {
       setRows(oldRows);
 

@@ -6,15 +6,13 @@ import ReadOnlyDataGrid from '../../components/datagrid/readonly';
 import UserContext from '../../contexts/UserContext';
 import { getData, postData, putData, deleteData } from '../../utils/API';
 import {
-  validatePostalCodeFormat,
-  validatePostalCodeExists,
   validateRequiredAttributes,
-  validateDateObject,
+  validateEmail,
 } from '../../utils/ValidationUtils';
 import { createErrorMessage } from '../../utils/ErrorMessage';
 import ErrorModal from '../../utils/ErrorModal';
 
-export default function PatientManageGrid() {
+export default function PractitionerManageGrid() {
   const { role, practiceId } = useContext(UserContext);
   const [rows, setRawRows] = useState([]);
   const [errorType, setErrorType] = useState('');
@@ -39,35 +37,18 @@ export default function PatientManageGrid() {
   }, [practiceId]);
 
   // *************** CUSTOMIZE ************** START
-  const title = 'Patients';
-  const subtitle = 'Manage Patients';
-  const saveTable = 'patients';
-  const getTable = 'practice_patients';
-  const requiredAttributes = [
-    'last_name',
-    'first_name',
-    'email',
-    'postal_code',
-    'gender',
-    'birthdate',
-  ];
-  const attributeNames = [
-    'Last Name',
-    'First Name',
-    'Email',
-    'Postal Code',
-    'Birth Gender',
-    'Birth Date',
-  ];
+  const title = 'Practitioners';
+  const subtitle = 'Manage Practitioners';
+  const saveTable = 'practitioners';
+  const getTable = 'practice_practitioners';
+  const requiredAttributes = ['last_name', 'first_name', 'email'];
+  const attributeNames = ['Last Name', 'First Name', 'Email'];
 
   async function validateRow(newRow) {
     try {
       validateRequiredAttributes(requiredAttributes, attributeNames, newRow);
-      validateDateObject(newRow.birthdate);
-      validatePostalCodeFormat(newRow.postal_code);
-      const postalCodeInfo = await validatePostalCodeExists(newRow.postal_code);
-      const updatedRow = { ...newRow, ...postalCodeInfo };
-      return updatedRow;
+      validateEmail(newRow.email);
+      return newRow;
     } catch (error) {
       const errorMessage = createErrorMessage(error, saveTable);
       throw errorMessage;
@@ -81,23 +62,32 @@ export default function PatientManageGrid() {
       id: newId,
       last_name: '',
       first_name: '',
+      suffix: '',
+      prefix: '',
       email: '',
-      birthdate: '',
-      gender: '',
+      status: 'Active',
     };
   };
+
+  function formatFullName(row) {
+    let fullName = '';
+
+    if (row.prefix && row.prefix.trim() !== '') {
+      fullName += row.prefix + ' ';
+    }
+
+    fullName += `${row.first_name} ${row.last_name}`;
+
+    if (row.suffix && row.suffix.trim() !== '') {
+      fullName += ' ' + row.suffix;
+    }
+
+    return fullName;
+  }
   // *************** CUSTOMIZE ************** END
 
   async function saveRow(id, row, oldRow, oldRows) {
     try {
-      // *************** CUSTOMIZE ************** START
-      // Convert the birthdate to the desired format
-      const dateString = row.birthdate.toISOString().slice(0, 10);
-
-      // Update the row object with the dateString
-      row.birthdate = dateString;
-      // *************** CUSTOMIZE ************** END
-
       if (row.isNew) {
         // *************** CUSTOMIZE ************** START
         const rowToSave = { ...row, practice_id: practiceId };
@@ -111,25 +101,33 @@ export default function PatientManageGrid() {
         setRows(oldRows.map((r) => (r.id === id ? { ...rowToSave } : r)));
 
         // *************** CUSTOMIZE ************** START
+        rowToSave.status = 'Active';
         // Create one-to-many row
-        const practicePatient = {
+        const practicePractitioner = {
           practice_id: rowToSave.practice_id,
-          patient_id: rowToSave.id,
+          practitioner_id: rowToSave.id,
         };
-        await postData(getTable, practicePatient);
+        await postData(getTable, practicePractitioner);
+        rowToSave.full_name = formatFullName(row);
         // *************** CUSTOMIZE ************** END
 
         return rowToSave;
       } else {
         await putData(saveTable, row);
+
+        // *************** CUSTOMIZE ************** START
+        row.full_name = formatFullName(row);
+        // *************** CUSTOMIZE ************** END
+
         setRows(oldRows.map((r) => (r.id === id ? { ...row } : r)));
+
         return row;
       }
     } catch (error) {
       setRows(oldRows);
 
       // *************** CUSTOMIZE ************** START
-      let fullName = `${row.first_name} ${row.last_name}`;
+      const fullName = formatFullName(row);
       const errorMessage = createErrorMessage(error, fullName);
       // *************** CUSTOMIZE ************** END
 
@@ -162,20 +160,20 @@ export default function PatientManageGrid() {
 
   async function inActivateRow(id, row, oldRows) {
     try {
-      const practicePatient = {
+      const practicePractitioner = {
         practice_id: row.practice_id,
-        patient_id: row.id,
+        practitioner_id: row.id,
         status: 'Inactive',
       };
-      await putData(getTable, practicePatient);
+      await putData(getTable, practicePractitioner);
       row.status = 'Inactive';
       setRows(oldRows.map((r) => (r.id === id ? { ...row } : r)));
-      return row;
+      return 'Inactive';
     } catch (error) {
       setRows(oldRows);
 
       // *************** CUSTOMIZE ************** START
-      let fullName = `${row.first_name} ${row.last_name}`;
+      const fullName = formatFullName(row);
       const errorMessage = createErrorMessage(error, fullName);
       // *************** CUSTOMIZE ************** END
 
@@ -227,95 +225,65 @@ export default function PatientManageGrid() {
 
 // *************** CUSTOMIZE ************** START
 
-function parseUTCDate(dateStr) {
-  const [year, month, day] = dateStr.split('-').map(Number);
-  return new Date(Date.UTC(year, month - 1, day)); // Remember that months are 0-indexed in JS
-}
-
-function formatDateToMMDDYYYY(date) {
-  const day = String(date.getUTCDate()).padStart(2, '0');
-  const month = String(date.getUTCMonth() + 1).padStart(2, '0'); // +1 because months are 0-indexed.
-  const year = date.getUTCFullYear();
-  return `${month}-${day}-${year}`;
-}
-
 const columns = [
   { field: 'id', headerName: 'ID', flex: 0.5 },
   {
-    field: 'last_name',
-    headerName: 'Last',
-    editable: true,
+    field: 'full_name',
+    headerName: 'Name',
+    editable: false,
+    flex: 1,
     cellClassName: 'name-column--cell',
+  },
+  {
+    field: 'prefix',
+    headerName: 'Prefix',
+    editable: true,
+    type: 'singleSelect',
+    valueOptions: ['Dr.', ''],
+    defaultValueGetter: () => '',
     flex: 1,
   },
   {
     field: 'first_name',
     headerName: 'First',
     editable: true,
-    cellClassName: 'name-column--cell',
     flex: 1,
   },
   {
-    field: 'birthdate',
-    type: 'date',
-    headerName: 'Birth Date',
-    flex: 1,
-    valueGetter: (params) => new Date(params.row.birthdate),
-    renderCell: (params) => {
-      if (params.value) {
-        // If it's already a Date object, use it directly
-        if (params.value instanceof Date) {
-          return <Box>{formatDateToMMDDYYYY(params.value)}</Box>;
-        }
-
-        // If it's a string, try to parse it using our function
-        if (typeof params.value === 'string') {
-          const date = parseUTCDate(params.value); // This is the function we defined previously
-          return <Box>{formatDateToMMDDYYYY(date)}</Box>;
-        }
-      }
-
-      return <Box></Box>; // Default empty box if no valid date was found
-    },
+    field: 'last_name',
+    headerName: 'Last',
     editable: true,
+    flex: 1,
   },
   {
-    field: 'gender',
-    headerName: 'Birth Gender',
+    field: 'suffix',
+    headerName: 'Suffix',
     editable: true,
-    headerAlign: 'center',
-    align: 'center',
     type: 'singleSelect',
-    valueOptions: ['M', 'F'],
+    valueOptions: [
+      'MD',
+      'DO',
+      'PMHNP',
+      'AGNP',
+      'ANP',
+      'FNP',
+      'GNP',
+      'LMFT',
+      'MFT',
+      'NP',
+      'PA',
+      'PhD',
+      'WHNP',
+      '',
+    ],
+    defaultValueGetter: () => '',
+    flex: 1,
   },
   {
     field: 'email',
     headerName: 'Email',
-    headerAlign: 'center',
-    align: 'center',
     editable: true,
-    cellClassName: 'name-column--cell',
     flex: 1,
-  },
-  {
-    field: 'postal_code',
-    headerName: 'Zip Code',
-    headerAlign: 'center',
-    align: 'center',
-    editable: true,
-  },
-  {
-    field: 'city',
-    headerName: 'City',
-    headerAlign: 'center',
-    align: 'center',
-    flex: 1,
-  },
-  {
-    field: 'state',
-    headerName: 'State',
-    headerAlign: 'center',
-    align: 'center',
   },
   {
     field: 'status',

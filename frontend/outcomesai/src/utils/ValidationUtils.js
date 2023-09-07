@@ -5,6 +5,8 @@ export function validateRequiredAttributes(
   attributeNames,
   row
 ) {
+  const missingAttributes = [];
+
   for (let i = 0; i < requiredAttributes.length; i++) {
     const key = requiredAttributes[i];
     const attributeName = attributeNames[i];
@@ -13,12 +15,33 @@ export function validateRequiredAttributes(
       !(key in row) ||
       !row[key] ||
       row[key] === null ||
-      row[key] === undefined
+      row[key] === undefined ||
+      (typeof row[key] === 'string' && row[key].trim() === '')
     ) {
-      throw new Error(`${attributeName} is a required field`);
+      missingAttributes.push(attributeName);
     }
   }
 
+  if (missingAttributes.length) {
+    const lastAttribute = missingAttributes.pop();
+    const errorMessage = missingAttributes.length
+      ? `${missingAttributes.join(
+          ', '
+        )} and ${lastAttribute} are required fields`
+      : `${lastAttribute} is a required field`;
+    //console.log(errorMessage);
+    throw new Error(errorMessage);
+  }
+  return true;
+}
+
+export function validateEmail(email) {
+  // A common regex pattern for basic email validation
+  const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+
+  if (!emailRegex.test(email)) {
+    throw new Error(`${email} is not a valid email address`);
+  }
   return true;
 }
 

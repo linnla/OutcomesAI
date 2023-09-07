@@ -11,7 +11,7 @@ import Dashboard from './pages/Dashboard';
 import Team from './pages/Team';
 import Invoices from './pages/Invoices';
 import OfficeManageGrid from './pages/offices';
-import PractitionerManageGrid from './pages/practitioners/indexOld';
+import PractitionerManageGrid from './pages/practitioners/index';
 import PatientManageGrid from './pages/patients/index';
 
 import Bar from './pages/Bar';
@@ -28,8 +28,6 @@ import { RequireAuth } from './utils/RequireAuth';
 import { Authenticator } from '@aws-amplify/ui-react';
 import { Auth } from 'aws-amplify';
 import { OfficeProvider } from './contexts/OfficeContext';
-//import { PatientProvider } from './contexts/PatientContext';
-//import { PractitionerProvider } from './contexts/PractitionerContext';
 
 function App() {
   const [theme, colorMode] = useMode();

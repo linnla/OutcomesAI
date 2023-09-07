@@ -70,12 +70,14 @@ function EditableDataGrid({
 
   const handleDeleteClick = async (id) => {
     //console.log('handleDeleteClick', id);
-    setInternalRows(internalRows.filter((row) => row.id !== id));
     const row = internalRows.find((r) => r.id === id);
 
     try {
       const deleteResponse = await onDeleteRow(id, row, internalRows);
-      console.log('handleDeleteClick delete response', deleteResponse);
+      if (deleteResponse === 'Deleted') {
+        setInternalRows(internalRows.filter((row) => row.id !== id));
+      }
+      //console.log('handleDeleteClick delete response', deleteResponse);
     } catch (error) {
       console.error('handleDeleteClick error', error);
       setErrorType('Delete Error');
@@ -110,14 +112,17 @@ function EditableDataGrid({
     if (!updatedRow.isNew) updatedRow.isNew = false;
     const oldRow = internalRows.find((r) => r.id === updatedRow.id);
 
-    if (deepEqual(newRow, oldRow)) {
-      console.log('processRowUpdate no changes made');
-      // This return statement is required or else datagrid will throw an internal error
-      // Cannot read properties of undefined (reading 'id') at getRowIdFromRowModel
-      return oldRow;
+    // If its not a new row and it hasn't changed, don't save the row
+    if (updatedRow.isNew === false) {
+      if (deepEqual(newRow, oldRow)) {
+        console.log('processRowUpdate no changes made');
+        // This return statement is required or else datagrid will throw an internal error
+        // Cannot read properties of undefined (reading 'id') at getRowIdFromRowModel
+        return oldRow;
+      }
     }
 
-    console.log('updatedRow', updatedRow);
+    //console.log('updatedRow', updatedRow);
     try {
       const validatedRow = await onValidateRow(updatedRow);
       const savedRow = await onSaveRow(

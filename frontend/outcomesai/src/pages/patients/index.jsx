@@ -10,7 +10,10 @@ import {
   validatePostalCodeExists,
   validateRequiredAttributes,
   validateDateObject,
+  validateEmail,
 } from '../../utils/ValidationUtils';
+import { parseUTCDate, formatDateToMMDDYYYY } from '../../utils/DateUtils';
+
 import { createErrorMessage } from '../../utils/ErrorMessage';
 import ErrorModal from '../../utils/ErrorModal';
 
@@ -63,6 +66,7 @@ export default function PatientManageGrid() {
   async function validateRow(newRow) {
     try {
       validateRequiredAttributes(requiredAttributes, attributeNames, newRow);
+      validateEmail(newRow.email);
       validateDateObject(newRow.birthdate);
       validatePostalCodeFormat(newRow.postal_code);
       const postalCodeInfo = await validatePostalCodeExists(newRow.postal_code);
@@ -84,6 +88,7 @@ export default function PatientManageGrid() {
       email: '',
       birthdate: '',
       gender: '',
+      status: 'Active',
     };
   };
   // *************** CUSTOMIZE ************** END
@@ -111,6 +116,7 @@ export default function PatientManageGrid() {
         setRows(oldRows.map((r) => (r.id === id ? { ...rowToSave } : r)));
 
         // *************** CUSTOMIZE ************** START
+        rowToSave.status = 'Active';
         // Create one-to-many row
         const practicePatient = {
           practice_id: rowToSave.practice_id,
@@ -170,7 +176,7 @@ export default function PatientManageGrid() {
       await putData(getTable, practicePatient);
       row.status = 'Inactive';
       setRows(oldRows.map((r) => (r.id === id ? { ...row } : r)));
-      return row;
+      return 'Inactive';
     } catch (error) {
       setRows(oldRows);
 
@@ -227,18 +233,6 @@ export default function PatientManageGrid() {
 
 // *************** CUSTOMIZE ************** START
 
-function parseUTCDate(dateStr) {
-  const [year, month, day] = dateStr.split('-').map(Number);
-  return new Date(Date.UTC(year, month - 1, day)); // Remember that months are 0-indexed in JS
-}
-
-function formatDateToMMDDYYYY(date) {
-  const day = String(date.getUTCDate()).padStart(2, '0');
-  const month = String(date.getUTCMonth() + 1).padStart(2, '0'); // +1 because months are 0-indexed.
-  const year = date.getUTCFullYear();
-  return `${month}-${day}-${year}`;
-}
-
 const columns = [
   { field: 'id', headerName: 'ID', flex: 0.5 },
   {
@@ -294,7 +288,6 @@ const columns = [
     headerAlign: 'center',
     align: 'center',
     editable: true,
-    cellClassName: 'name-column--cell',
     flex: 1,
   },
   {
