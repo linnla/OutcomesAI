@@ -11,7 +11,7 @@ import Dashboard from './pages/Dashboard';
 import Team from './pages/Team';
 import Invoices from './pages/Invoices';
 import OfficeManageGrid from './pages/offices';
-import PractitionerManageGrid from './pages/practitioners/index';
+import PractitionerManageGrid from './pages/practitioners/indexOld';
 import PatientManageGrid from './pages/patients/index';
 
 import Bar from './pages/Bar';
@@ -28,8 +28,8 @@ import { RequireAuth } from './utils/RequireAuth';
 import { Authenticator } from '@aws-amplify/ui-react';
 import { Auth } from 'aws-amplify';
 import { OfficeProvider } from './contexts/OfficeContext';
-import { PatientProvider } from './contexts/PatientContext';
-import { PractitionerProvider } from './contexts/PractitionerContext';
+//import { PatientProvider } from './contexts/PatientContext';
+//import { PractitionerProvider } from './contexts/PractitionerContext';
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -40,7 +40,7 @@ function App() {
   useEffect(() => {
     async function checkAuthentication() {
       try {
-        const session = await Auth.currentSession();
+        await Auth.currentSession();
         setIsAuthenticated(true);
       } catch (error) {
         console.error('User not authenticated:', error);
@@ -85,22 +85,18 @@ function App() {
         <Route
           path='/practitioners'
           element={
-            <PractitionerProvider>
-              <RequireAuth>
-                <PractitionerManageGrid />
-              </RequireAuth>
-            </PractitionerProvider>
+            <RequireAuth>
+              <PractitionerManageGrid />
+            </RequireAuth>
           }
         />
 
         <Route
           path='/patients'
           element={
-            <PatientProvider>
-              <RequireAuth>
-                <PatientManageGrid />
-              </RequireAuth>
-            </PatientProvider>
+            <RequireAuth>
+              <PatientManageGrid />
+            </RequireAuth>
           }
         />
 

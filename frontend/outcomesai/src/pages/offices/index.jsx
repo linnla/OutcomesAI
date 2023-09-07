@@ -24,12 +24,12 @@ export default function OfficeManageGrid() {
   };
 
   useEffect(() => {
-    getData(table, { practice_id: practiceId })
+    getData(getTable, { practice_id: practiceId })
       .then((data) => {
         setRows(data);
       })
       .catch((error) => {
-        const errorMessage = createErrorMessage(error, table);
+        const errorMessage = createErrorMessage(error, getTable);
         setErrorType('Data Fetch Error');
         setErrorMessage(errorMessage);
         setShowErrorModal(true);
@@ -39,7 +39,8 @@ export default function OfficeManageGrid() {
   // *************** CUSTOMIZE ************** START
   const title = 'Offices';
   const subtitle = 'Manage Offices';
-  const table = 'offices';
+  const saveTable = 'offices';
+  const getTable = 'offices';
   const requiredAttributes = ['name', 'postal_code'];
   const attributeNames = ['Office name', 'Postal Code'];
 
@@ -51,7 +52,7 @@ export default function OfficeManageGrid() {
       const updatedRow = { ...newRow, ...postalCodeInfo };
       return updatedRow;
     } catch (error) {
-      const errorMessage = createErrorMessage(error, table);
+      const errorMessage = createErrorMessage(error, getTable);
       throw errorMessage;
     }
   }
@@ -77,13 +78,19 @@ export default function OfficeManageGrid() {
 
         // Delete the id that was generated when row was created
         delete rowToSave.id;
-        const data = await postData(table, rowToSave);
+        const data = await postData(saveTable, rowToSave);
         // Add the id returned from the database
         rowToSave.id = data.data.id;
         setRows(oldRows.map((r) => (r.id === id ? { ...rowToSave } : r)));
+
+        // *************** CUSTOMIZE ************** START
+        // Create one-to-many row
+        // No one-to-many tables for Offices
+        // *************** CUSTOMIZE ************** END
+
         return rowToSave;
       } else {
-        await putData(table, row);
+        await putData(saveTable, row);
         setRows(oldRows.map((r) => (r.id === id ? { ...row } : r)));
         return row;
       }
@@ -107,7 +114,7 @@ export default function OfficeManageGrid() {
     // *************** CUSTOMIZE ************** END
 
     try {
-      await deleteData(table, body);
+      await deleteData(saveTable, body);
       setRows(oldRows.filter((r) => r.id !== id));
     } catch (error) {
       setRows(oldRows);
@@ -119,45 +126,6 @@ export default function OfficeManageGrid() {
       throw errorMessage;
     }
   }
-
-  /*
-  function processError(error, data) {
-    console.log('processError error', error);
-    console.log('processError data', data);
-
-    // Default error message
-    let errorMessage = 'Unknown Error';
-
-    // Handling Axios-like error responses
-    if (error?.response?.data) {
-      if (error.response.data.errorType === 'DuplicateKeyError') {
-        errorMessage = `${data} already exists`;
-      } else if (error.response.data.message) {
-        errorMessage = error.response.data.message;
-      } else if (error.response.data.errorMessage) {
-        if (
-          error.response.data.errorMessage ===
-          'A database result was required but none was found'
-        ) {
-          errorMessage = `No ${data} found`;
-        } else {
-          errorMessage = error.response.data.errorMessage;
-        }
-      } else if (error.response.data.status) {
-        const statusCode = error.response.data.status;
-        if (statusCode >= 500) {
-          errorMessage = 'Error accessing database or server';
-        }
-      }
-    }
-    // Handling local JavaScript Error objects
-    else if (error.message) {
-      errorMessage = error.message;
-    }
-
-    return errorMessage;
-  };
-  */
 
   if (showErrorModal) {
     return (
