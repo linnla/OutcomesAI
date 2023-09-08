@@ -1,0 +1,404 @@
+﻿id,classification_system,disorders,code,description
+1,ICD-10,Mental and behavioural disorders,F01.0,Vascular dementia of acute onset
+2,ICD-10,Mental and behavioural disorders,F01.1,Multi-infarct dementia
+3,ICD-10,Mental and behavioural disorders,F01.2,Subcortical vascular dementia
+4,ICD-10,Mental and behavioural disorders,F01.3,Mixed cortical and subcortical vascular dementia
+5,ICD-10,Mental and behavioural disorders,F01.8,Other vascular dementia
+6,ICD-10,Mental and behavioural disorders,F01.9,"Vascular dementia, unspecified"
+7,ICD-10,Mental and behavioural disorders,F02.0,Dementia in Pick's disease (G31.0+)
+8,ICD-10,Mental and behavioural disorders,F02.1,Dementia in Creutzfeldt-Jakob disease (A81.0+)
+9,ICD-10,Mental and behavioural disorders,F02.2,Dementia in Huntington's disease (G10+)
+10,ICD-10,Mental and behavioural disorders,F02.3,Dementia in Parkinson's disease (G20+)
+11,ICD-10,Mental and behavioural disorders,F02.4,Dementia in human immunodeficiency virus [HIV] disease (B22.0+)
+12,ICD-10,Mental and behavioural disorders,F02.8,Dementia in other specified diseases classified elsewhere
+13,ICD-10,Mental and behavioural disorders,F03,Unspecified dementia
+14,ICD-10,Mental and behavioural disorders,F04,"Organic amnesic syndrome, not induced by alcohol and other psychoactive substances"
+15,ICD-10,Mental and behavioural disorders,F05.0,"Delirium not superimposed on dementia, so described"
+16,ICD-10,Mental and behavioural disorders,F05.1,Delirium superimposed on dementia
+17,ICD-10,Mental and behavioural disorders,F05.8,Other delirium
+18,ICD-10,Mental and behavioural disorders,F05.9,"Delirium, unspecified"
+19,ICD-10,Mental and behavioural disorders,F06.0,Organic hallucinosis
+20,ICD-10,Mental and behavioural disorders,F06.1,Organic catatonic disorder
+21,ICD-10,Mental and behavioural disorders,F06.2,Organic delusional [schizophrenia-like] disorder
+22,ICD-10,Mental and behavioural disorders,F06.3,Organic mood [affective] disorders
+23,ICD-10,Mental and behavioural disorders,F06.4,Organic anxiety disorder
+24,ICD-10,Mental and behavioural disorders,F06.5,Organic dissociative disorder
+25,ICD-10,Mental and behavioural disorders,F06.6,Organic emotionally labile [asthenic] disorder
+26,ICD-10,Mental and behavioural disorders,F06.7,Mild cognitive disorder
+27,ICD-10,Mental and behavioural disorders,F06.8,Other specified mental disorders due to brain damage and dysfunction and to physical disease
+28,ICD-10,Mental and behavioural disorders,F06.9,Unspecified mental disorder due to brain damage and dysfunction and to physical disease
+29,ICD-10,Mental and behavioural disorders,F07.0,Organic personality disorder
+30,ICD-10,Mental and behavioural disorders,F07.1,Postencephalitic syndrome
+31,ICD-10,Mental and behavioural disorders,F07.2,Postconcussional syndrome
+32,ICD-10,Mental and behavioural disorders,F07.8,"Other organic personality and behavioural disorders due to brain disease, damage and dysfunction"
+33,ICD-10,Mental and behavioural disorders,F07.9,"Unspecified organic personality and behavioural disorder due to brain disease, damage and dysfunction"
+34,ICD-10,Mental and behavioural disorders,F09,Unspecified organic or symptomatic mental disorder
+35,ICD-10,Mental and behavioural disorders,F10.0,"Mental and behavioural disorders due to use of alcohol, acute intoxication"
+36,ICD-10,Mental and behavioural disorders,F10.1,"Mental and behavioural disorders due to use of alcohol, harmful use"
+37,ICD-10,Mental and behavioural disorders,F10.2,"Mental and behavioural disorders due to use of alcohol, dependence syndrome"
+38,ICD-10,Mental and behavioural disorders,F10.3,"Mental and behavioural disorders due to use of alcohol, withdrawal state"
+39,ICD-10,Mental and behavioural disorders,F10.4,"Mental and behavioural disorders due to use of alcohol, withdrawal state with delirium"
+40,ICD-10,Mental and behavioural disorders,F10.5,"Mental and behavioural disorders due to use of alcohol, psychotic disorder"
+41,ICD-10,Mental and behavioural disorders,F10.6,"Mental and behavioural disorders due to use of alcohol, amnesic syndrome"
+42,ICD-10,Mental and behavioural disorders,F10.7,"Mental and behavioural disorders due to use of alcohol, residual and late-onset psychotic disorder"
+43,ICD-10,Mental and behavioural disorders,F10.8,"Mental and behavioural disorders due to use of alcohol, other mental and behavioural disorders"
+44,ICD-10,Mental and behavioural disorders,F10.9,"Mental and behavioural disorders due to use of alcohol, unspecified mental and behavioural disorder"
+45,ICD-10,Mental and behavioural disorders,F11.0,"Mental and behavioural disorders due to use of opioids, acute intoxication"
+46,ICD-10,Mental and behavioural disorders,F11.1,"Mental and behavioural disorders due to use of opioids, harmful use"
+47,ICD-10,Mental and behavioural disorders,F11.2,"Mental and behavioural disorders due to use of opioids, dependence syndrome"
+48,ICD-10,Mental and behavioural disorders,F11.3,"Mental and behavioural disorders due to use of opioids, withdrawal state"
+49,ICD-10,Mental and behavioural disorders,F11.4,"Mental and behavioural disorders due to use of opioids, withdrawal state with delirium"
+50,ICD-10,Mental and behavioural disorders,F11.5,"Mental and behavioural disorders due to use of opioids, psychotic disorder"
+51,ICD-10,Mental and behavioural disorders,F11.6,"Mental and behavioural disorders due to use of opioids, amnesic syndrome"
+52,ICD-10,Mental and behavioural disorders,F11.7,"Mental and behavioural disorders due to use of opioids, residual and late-onset psychotic disorder"
+53,ICD-10,Mental and behavioural disorders,F11.8,"Mental and behavioural disorders due to use of opioids, other mental and behavioural disorders"
+54,ICD-10,Mental and behavioural disorders,F11.9,"Mental and behavioural disorders due to use of opioids, unspecified mental and behavioural disorder"
+55,ICD-10,Mental and behavioural disorders,F12.0,"Mental and behavioural disorders due to use of cannabinoids, acute intoxication"
+56,ICD-10,Mental and behavioural disorders,F12.1,"Mental and behavioural disorders due to use of cannabinoids, harmful use"
+57,ICD-10,Mental and behavioural disorders,F12.2,"Mental and behavioural disorders due to use of cannabinoids, dependence syndrome"
+58,ICD-10,Mental and behavioural disorders,F12.3,"Mental and behavioural disorders due to use of cannabinoids, withdrawal state"
+59,ICD-10,Mental and behavioural disorders,F12.4,"Mental and behavioural disorders due to use of cannabinoids, withdrawal state with delirium"
+60,ICD-10,Mental and behavioural disorders,F12.5,"Mental and behavioural disorders due to use of cannabinoids, psychotic disorder"
+61,ICD-10,Mental and behavioural disorders,F12.6,"Mental and behavioural disorders due to use of cannabionoids, amnesic syndrome"
+62,ICD-10,Mental and behavioural disorders,F12.7,"Mental and behavioural disorders due to use of cannabinoids, residual and late-onset psychotic disorder"
+63,ICD-10,Mental and behavioural disorders,F12.8,"Mental and behavioural disorders due to use of cannabinoids, other mental and behavioural disorders"
+64,ICD-10,Mental and behavioural disorders,F12.9,"Mental and behavioural disorders due to use of cannabinoids, unspecified mental and behavioural disorder"
+65,ICD-10,Mental and behavioural disorders,F13.0,"Mental and behavioural disorders due to use of sedatives or hypnotics, acute intoxication"
+66,ICD-10,Mental and behavioural disorders,F13.1,"Mental and behavioural disorders due to use of sedatives or hypnotics, harmful use"
+67,ICD-10,Mental and behavioural disorders,F13.2,"Mental and behavioural disorders due to use of sedatives or hypnotics, dependence syndrome"
+68,ICD-10,Mental and behavioural disorders,F13.3,"Mental and behavioural disorders due to use of sedatives or hypnotics, withdrawal state"
+69,ICD-10,Mental and behavioural disorders,F13.4,"Mental and behavioural disorders due to use of sedatives or hypnotics, withdrawal state with delirium"
+70,ICD-10,Mental and behavioural disorders,F13.5,"Mental and behavioural disorders due to use of sedatives or hypnotics, psychotic disorder"
+71,ICD-10,Mental and behavioural disorders,F13.6,"Mental and behavioural disorders due to use of sedatives or hypnotics, amnesic syndrome"
+72,ICD-10,Mental and behavioural disorders,F13.7,"Mental and behavioural disorders due to use of sedatives or hypnotics, residual and late-onset psychotic disorder"
+73,ICD-10,Mental and behavioural disorders,F13.8,"Mental and behavioural disorders due to use of sedatives or hypnotics, other mental and behavioural disorders"
+74,ICD-10,Mental and behavioural disorders,F13.9,"Mental and behavioural disorders due to use of sedatives or hypnotics, unspecified mental and behavioural disorder"
+75,ICD-10,Mental and behavioural disorders,F14.0,"Mental and behavioural disorders due to use of cocaine, acute intoxication"
+76,ICD-10,Mental and behavioural disorders,F14.1,"Mental and behavioural disorders due to use of cocaine, harmful use"
+77,ICD-10,Mental and behavioural disorders,F14.2,"Mental and behavioural disorders due to use of cocaine, dependence syndrome"
+78,ICD-10,Mental and behavioural disorders,F14.3,"Mental and behavioural disorders due to use of cocaine, withdrawal state"
+79,ICD-10,Mental and behavioural disorders,F14.4,"Mental and behavioural disorders due to use of cocaine, withdrawal state with delirium"
+80,ICD-10,Mental and behavioural disorders,F14.5,"Mental and behavioural disorders due to use of cocaine, psychotic disorder"
+81,ICD-10,Mental and behavioural disorders,F14.6,"Mental and behavioural disorders due to use of cocaine, amnesic syndrome"
+82,ICD-10,Mental and behavioural disorders,F14.7,"Mental and behavioural disorders due to use of cocaine, residual and late-onset psychotic disorder"
+83,ICD-10,Mental and behavioural disorders,F14.8,"Mental and behavioural disorders due to use of cocaine, other mental and behavioural disorders"
+84,ICD-10,Mental and behavioural disorders,F14.9,"Mental and behavioural disorders due to use of cocaine, unspecified mental and behavioural disorder"
+85,ICD-10,Mental and behavioural disorders,F15.0,"Mental and behavioural disorders due to use of other stimulants, including caffeine, acute intoxication"
+86,ICD-10,Mental and behavioural disorders,F15.1,"Mental and behavioural disorders due to use of other stimulants, including caffeine, harmful use"
+87,ICD-10,Mental and behavioural disorders,F15.2,"Mental and behavioural disorders due to use of other stimulants, including caffeine, dependence syndrome"
+88,ICD-10,Mental and behavioural disorders,F15.3,"Mental and behavioural disorders due to use of other stimulants, including caffeine, withdrawal state"
+89,ICD-10,Mental and behavioural disorders,F15.4,"Mental and behavioural disorders due to use of other stimulants, including caffeine, withdrawal state with delirium"
+90,ICD-10,Mental and behavioural disorders,F15.5,"Mental and behavioural disorders due to use of other stimulants, including caffeine, psychotic disorder"
+91,ICD-10,Mental and behavioural disorders,F15.6,"Mental and behavioural disorders due to use of other stimulants, including caffeine, amnesic syndrome"
+92,ICD-10,Mental and behavioural disorders,F15.7,"Mental and behavioural disorders due to use of other stimulants, including caffeine, residual and late-onset psychotic disorder"
+93,ICD-10,Mental and behavioural disorders,F15.8,"Mental and behavioural disorders due to use of other stimulants, including caffeine, other mental and behavioural disorders"
+94,ICD-10,Mental and behavioural disorders,F15.9,"Mental and behavioural disorders due to use of other stimulants, including caffeine, unspecified mental and behavioural disorder"
+95,ICD-10,Mental and behavioural disorders,F16.0,"Mental and behavioural disorders due to use of hallucinogens, acute intoxication"
+96,ICD-10,Mental and behavioural disorders,F16.1,"Mental and behavioural disorders due to use of hallucinogens, harmful use"
+97,ICD-10,Mental and behavioural disorders,F16.2,"Mental and behavioural disorders due to use of hallucinogens, dependence syndrome"
+98,ICD-10,Mental and behavioural disorders,F16.3,"Mental and behavioural disorders due to use of hallucinogens, withdrawal state"
+99,ICD-10,Mental and behavioural disorders,F16.4,"Mental and behavioural disorders due to use of hallucinogens, withdrawal state with delirium"
+100,ICD-10,Mental and behavioural disorders,F16.5,"Mental and behavioural disorders due to use of hallucinogens, psychotic disorder"
+101,ICD-10,Mental and behavioural disorders,F16.6,"Mental and behavioural disorders due to use of hallucinogens, amnesic syndrome"
+102,ICD-10,Mental and behavioural disorders,F16.7,"Mental and behavioural disorders due to use of hallucinogens, residual and late-onset psychotic disorder"
+103,ICD-10,Mental and behavioural disorders,F16.8,"Mental and behavioural disorders due to use of hallucinogens, other mental and behavioural disorders"
+104,ICD-10,Mental and behavioural disorders,F16.9,"Mental and behavioural disorders due to use of hallucinogens, unspecified mental and behavioural disorder"
+105,ICD-10,Mental and behavioural disorders,F17.0,"Mental and behavioural disorders due to use of tobacco, acute intoxication"
+106,ICD-10,Mental and behavioural disorders,F17.1,"Mental and behavioural disorders due to use of tobacco, harmful use"
+107,ICD-10,Mental and behavioural disorders,F17.2,"Mental and behavioural disorders due to use of tobacco, dependence syndrome"
+108,ICD-10,Mental and behavioural disorders,F17.3,"Mental and behavioural disorders due to use of tobacco, withdrawal state"
+109,ICD-10,Mental and behavioural disorders,F17.4,"Mental and behavioural disorders due to use of tobacco, withdrawal state with delirium"
+110,ICD-10,Mental and behavioural disorders,F17.5,"Mental and behavioural disorders due to use of tobacco, psychotic disorder"
+111,ICD-10,Mental and behavioural disorders,F17.6,"Mental and behavioural disorders due to use of tobacco, amnesic syndrome"
+112,ICD-10,Mental and behavioural disorders,F17.7,"Mental and behavioural disorders due to use of tobacco, residual and late-onset psychotic disorder"
+113,ICD-10,Mental and behavioural disorders,F17.8,"Mental and behavioural disorders due to use of tobacco, other mental and behavioural disorders"
+114,ICD-10,Mental and behavioural disorders,F17.9,"Mental and behavioural disorders due to use of tobacco, unspecified mental and behavioural disorder"
+115,ICD-10,Mental and behavioural disorders,F18.0,"Mental and behavioural disorders due to use of volatile solvents, acute intoxication"
+116,ICD-10,Mental and behavioural disorders,F18.1,"Mental and behavioural disorders due to use of volatile solvents, harmful use"
+117,ICD-10,Mental and behavioural disorders,F18.2,"Mental and behavioural disorders due to use of volatile solvents, dependence syndrome"
+118,ICD-10,Mental and behavioural disorders,F18.3,"Mental and behavioural disorders due to use of volatile solvents, withdrawal state"
+119,ICD-10,Mental and behavioural disorders,F18.4,"Mental and behavioural disorders due to use of volatile solvents, withdrawal state with delirium"
+120,ICD-10,Mental and behavioural disorders,F18.5,"Mental and behavioural disorders due to use of volatile solvents, psychotic disorder"
+121,ICD-10,Mental and behavioural disorders,F18.6,"Mental and behavioural disorders due to use of volatile solvents, amnesic syndrome"
+122,ICD-10,Mental and behavioural disorders,F18.7,"Mental and behavioural disorders due to use of volatile solvents, residual and late-onset psychotic disorder"
+123,ICD-10,Mental and behavioural disorders,F18.8,"Mental and behavioural disorders due to use of volatile solvents, other mental and behavioural disorders"
+124,ICD-10,Mental and behavioural disorders,F18.9,"Mental and behavioural disorders due to use of volatile solvents, unspecified mental and behavioural disorder"
+125,ICD-10,Mental and behavioural disorders,F19.0,"Mental and behavioural disorders due to multiple drug use and use of other psychoactive substances, acute intoxication"
+126,ICD-10,Mental and behavioural disorders,F19.1,"Mental and behavioural disorders due to multiple drug use and use of other psychoactive substances, harmful use"
+127,ICD-10,Mental and behavioural disorders,F19.2,"Mental and behavioural disorders due to multiple drug use and use of other psychoactive substances, dependence syndrome"
+128,ICD-10,Mental and behavioural disorders,F19.3,"Mental and behavioural disorders due to multiple drug use and use of other psychoactive substances, withdrawal state"
+129,ICD-10,Mental and behavioural disorders,F19.4,"Mental and behavioural disorders due to multiple drug use and use of other psychoactive substances, withdrawal state with delirium"
+130,ICD-10,Mental and behavioural disorders,F19.5,"Mental and behavioural disorders due to multiple drug use and use of other psychoactive substances, other psychotic disorder"
+131,ICD-10,Mental and behavioural disorders,F19.6,"Mental and behavioural disorders due to multiple drug use and use of other psychoactive substances, amnesic syndrome"
+132,ICD-10,Mental and behavioural disorders,F19.7,"Mental and behavioural disorders due to multiple drug use and use of other psychoactive substances, residual and late-onset other psychotic disorder"
+133,ICD-10,Mental and behavioural disorders,F19.8,"Mental and behavioural disorders due to multiple drug use and use of other psychoactive substances, other mental and behavioural disorders"
+134,ICD-10,Mental and behavioural disorders,F19.9,"Mental and behavioural disorders due to multiple drug use and use of other psychoactive substances, unspecified mental and behavioural disorder"
+135,ICD-10,Mental and behavioural disorders,F20.0,Paranoid schizophrenia
+136,ICD-10,Mental and behavioural disorders,F20.1,Hebephrenic schizophrenia
+137,ICD-10,Mental and behavioural disorders,F20.2,Catatonic schizophrenia
+138,ICD-10,Mental and behavioural disorders,F20.3,Undifferentiated schizophrenia
+139,ICD-10,Mental and behavioural disorders,F20.4,Post-schizophrenic depression
+140,ICD-10,Mental and behavioural disorders,F20.5,Residual schizophrenia
+141,ICD-10,Mental and behavioural disorders,F20.6,Simple schizophrenia
+142,ICD-10,Mental and behavioural disorders,F20.8,Other schizophrenia
+143,ICD-10,Mental and behavioural disorders,F20.9,"Schizophrenia, unspecified"
+144,ICD-10,Mental and behavioural disorders,F21,Schizotypal disorder
+145,ICD-10,Mental and behavioural disorders,F22.0,Delusional disorder
+146,ICD-10,Mental and behavioural disorders,F22.8,Other persistent delusional disorders
+147,ICD-10,Mental and behavioural disorders,F22.9,"Persistent delusional disorder, unspecified"
+148,ICD-10,Mental and behavioural disorders,F23.0,Acute polymorphic psychotic disorder without symptoms of schizophrenia
+149,ICD-10,Mental and behavioural disorders,F23.1,Acute polymorphic psychotic disorder with symptoms of schizophrenia
+150,ICD-10,Mental and behavioural disorders,F23.2,Acute schizophrenia-like psychotic disorder
+151,ICD-10,Mental and behavioural disorders,F23.3,Other acute predominantly delusional psychotic disorders
+152,ICD-10,Mental and behavioural disorders,F23.8,Other acute and transient psychotic disorders
+153,ICD-10,Mental and behavioural disorders,F23.9,"Acute and transient psychotic disorder, unspecified"
+154,ICD-10,Mental and behavioural disorders,F24,Induced delusional disorder
+155,ICD-10,Mental and behavioural disorders,F25.0,"Schizoaffective disorder, manic type"
+156,ICD-10,Mental and behavioural disorders,F25.1,"Schizoaffective disorder, depressive type"
+157,ICD-10,Mental and behavioural disorders,F25.2,"Schizoaffective disorder, mixed type"
+158,ICD-10,Mental and behavioural disorders,F25.8,Other schizoaffective disorders
+159,ICD-10,Mental and behavioural disorders,F25.9,"Schizoaffective disorder, unspecified"
+160,ICD-10,Mental and behavioural disorders,F28,Other nonorganic psychotic disorders
+161,ICD-10,Mental and behavioural disorders,F29,Unspecified nonorganic psychosis
+162,ICD-10,Mental and behavioural disorders,F30.0,Hypomania
+163,ICD-10,Mental and behavioural disorders,F30.1,Mania without psychotic symptoms
+164,ICD-10,Mental and behavioural disorders,F30.2,Mania with psychotic symptoms
+165,ICD-10,Mental and behavioural disorders,F30.8,Other manic episodes
+166,ICD-10,Mental and behavioural disorders,F30.9,"Manic episode, unspecified"
+167,ICD-10,Mental and behavioural disorders,F31.0,"Bipolar affective disorder, current episode hypomanic"
+168,ICD-10,Mental and behavioural disorders,F31.1,"Bipolar affective disorder, current episode manic without psychotic symptoms"
+169,ICD-10,Mental and behavioural disorders,F31.2,"Bipolar affective disorder, current episode manic with psychotic symptoms"
+170,ICD-10,Mental and behavioural disorders,F31.3,"Bipolar affective disorder, current episode mild or moderate depression"
+171,ICD-10,Mental and behavioural disorders,F31.4,"Bipolar affective disorder, current episode severe depression without psychotic symptoms"
+172,ICD-10,Mental and behavioural disorders,F31.5,"Bipolar affective disorder, current episode severe depression with psychotic symptoms"
+173,ICD-10,Mental and behavioural disorders,F31.6,"Bipolar affective disorder, current episode mixed"
+174,ICD-10,Mental and behavioural disorders,F31.7,"Bipolar affective disorder, currently in remission"
+175,ICD-10,Mental and behavioural disorders,F31.8,Other bipolar affective disorders
+176,ICD-10,Mental and behavioural disorders,F31.9,"Bipolar affective disorder, unspecified"
+177,ICD-10,Mental and behavioural disorders,F32.0,Mild depressive episode
+178,ICD-10,Mental and behavioural disorders,F32.1,Moderate depressive episode
+179,ICD-10,Mental and behavioural disorders,F32.2,Severe depressive episode without psychotic symptoms
+180,ICD-10,Mental and behavioural disorders,F32.3,Severe depressive episode with psychotic symptoms
+181,ICD-10,Mental and behavioural disorders,F32.8,Other depressive episodes
+182,ICD-10,Mental and behavioural disorders,F32.9,"Depressive episode, unspecified"
+183,ICD-10,Mental and behavioural disorders,F33.0,"Recurrent depressive disorder, current episode mild"
+184,ICD-10,Mental and behavioural disorders,F33.1,"Recurrent depressive disorder, current episode moderate"
+185,ICD-10,Mental and behavioural disorders,F33.2,"Recurrent depressive disorder, current episode severe without psychotic symptoms"
+186,ICD-10,Mental and behavioural disorders,F33.3,"Recurrent depressive disorder, current episode severe with psychotic symptoms"
+187,ICD-10,Mental and behavioural disorders,F33.4,"Recurrent depressive disorder, currently in remission"
+188,ICD-10,Mental and behavioural disorders,F33.8,Other recurrent depressive disorders
+189,ICD-10,Mental and behavioural disorders,F33.9,"Recurrent depressive disorder, unspecified"
+190,ICD-10,Mental and behavioural disorders,F34.0,Cyclothymia
+191,ICD-10,Mental and behavioural disorders,F34.1,Dysthymia
+192,ICD-10,Mental and behavioural disorders,F34.8,Other persistent mood [affective] disorders
+193,ICD-10,Mental and behavioural disorders,F34.9,"Persistent mood [affective] disorder, unspecified"
+194,ICD-10,Mental and behavioural disorders,F38.0,Other single mood [affective] disorders
+195,ICD-10,Mental and behavioural disorders,F38.1,Other recurrent mood [affective] disorders
+196,ICD-10,Mental and behavioural disorders,F38.8,Other specified mood [affective] disorders
+197,ICD-10,Mental and behavioural disorders,F39,Unspecified mood [affective] disorder
+198,ICD-10,Mental and behavioural disorders,F40.0,Agoraphobia
+199,ICD-10,Mental and behavioural disorders,F40.1,Social phobias
+200,ICD-10,Mental and behavioural disorders,F40.2,Specific (isolated) phobias
+201,ICD-10,Mental and behavioural disorders,F40.8,Other phobic anxiety disorders
+202,ICD-10,Mental and behavioural disorders,F40.9,"Phobic anxiety disorder, unspecified"
+203,ICD-10,Mental and behavioural disorders,F41.0,Panic disorder [episodic paroxysmal anxiety]
+204,ICD-10,Mental and behavioural disorders,F41.1,Generalized anxiety disorder
+205,ICD-10,Mental and behavioural disorders,F41.2,Mixed anxiety and depressive disorder
+206,ICD-10,Mental and behavioural disorders,F41.3,Other mixed anxiety disorders
+207,ICD-10,Mental and behavioural disorders,F41.8,Other specified anxiety disorders
+208,ICD-10,Mental and behavioural disorders,F41.9,"Anxiety disorder, unspecified"
+209,ICD-10,Mental and behavioural disorders,F42.0,Predominantly obsessional thoughts or ruminations
+210,ICD-10,Mental and behavioural disorders,F42.1,Predominantly compulsive acts [obsessional rituals]
+211,ICD-10,Mental and behavioural disorders,F42.2,Mixed obsessional thoughts and acts
+212,ICD-10,Mental and behavioural disorders,F42.8,Other obsessive-compulsive disorders
+213,ICD-10,Mental and behavioural disorders,F42.9,"Obsessive-compulsive disorder, unspecified"
+214,ICD-10,Mental and behavioural disorders,F43.0,Acute stress reaction
+215,ICD-10,Mental and behavioural disorders,F43.1,Post-traumatic stress disorder
+216,ICD-10,Mental and behavioural disorders,F43.2,Adjustment disorders
+217,ICD-10,Mental and behavioural disorders,F43.8,Other reactions to severe stress
+218,ICD-10,Mental and behavioural disorders,F43.9,"Reaction to severe stress, unspecified"
+219,ICD-10,Mental and behavioural disorders,F44.0,Dissociative amnesia
+220,ICD-10,Mental and behavioural disorders,F44.1,Dissociative fugue
+221,ICD-10,Mental and behavioural disorders,F44.2,Dissociative stupor
+222,ICD-10,Mental and behavioural disorders,F44.3,Trance and possession disorders
+223,ICD-10,Mental and behavioural disorders,F44.4,Dissociative motor disorders
+224,ICD-10,Mental and behavioural disorders,F44.5,Dissociative convulsions
+225,ICD-10,Mental and behavioural disorders,F44.6,Dissociative anaesthesia and sensory loss
+226,ICD-10,Mental and behavioural disorders,F44.7,Mixed dissociative [conversion] disorders
+227,ICD-10,Mental and behavioural disorders,F44.8,Other dissociative [conversion] disorders
+228,ICD-10,Mental and behavioural disorders,F44.9,"Dissociative [conversion] disorder, unspecified"
+229,ICD-10,Mental and behavioural disorders,F45.0,Somatization disorder
+230,ICD-10,Mental and behavioural disorders,F45.1,Undifferentiated somatoform disorder
+231,ICD-10,Mental and behavioural disorders,F45.2,Hypochondriacal disorder
+232,ICD-10,Mental and behavioural disorders,F45.3,Somatoform autonomic dysfunction
+233,ICD-10,Mental and behavioural disorders,F45.4,Persistent somatoform pain disorder
+234,ICD-10,Mental and behavioural disorders,F45.8,Other somatoform disorders
+235,ICD-10,Mental and behavioural disorders,F45.9,"Somatoform disorder, unspecified"
+236,ICD-10,Mental and behavioural disorders,F48.0,Neurasthenia
+237,ICD-10,Mental and behavioural disorders,F48.1,Depersonalization-derealization syndrome
+238,ICD-10,Mental and behavioural disorders,F48.8,Other specified neurotic disorders
+239,ICD-10,Mental and behavioural disorders,F48.9,"Neurotic disorder, unspecified"
+240,ICD-10,Mental and behavioural disorders,F50.0,Anorexia nervosa
+241,ICD-10,Mental and behavioural disorders,F50.1,Atypical anorexia nervosa
+242,ICD-10,Mental and behavioural disorders,F50.2,Bulimia nervosa
+243,ICD-10,Mental and behavioural disorders,F50.3,Atypical bulimia nervosa
+244,ICD-10,Mental and behavioural disorders,F50.4,Overeating associated with other psychological disturbances
+245,ICD-10,Mental and behavioural disorders,F50.5,Vomiting associated with other psychological disturbances
+246,ICD-10,Mental and behavioural disorders,F50.8,Other eating disorders
+247,ICD-10,Mental and behavioural disorders,F50.9,"Eating disorder, unspecified"
+248,ICD-10,Mental and behavioural disorders,F51.0,Nonorganic insomnia
+249,ICD-10,Mental and behavioural disorders,F51.1,Nonorganic hypersomnia
+250,ICD-10,Mental and behavioural disorders,F51.2,Nonorganic disorder of the sleep-wake schedule
+251,ICD-10,Mental and behavioural disorders,F51.3,Sleepwalking [somnambulism]
+252,ICD-10,Mental and behavioural disorders,F51.4,Sleep terrors [night terrors]
+253,ICD-10,Mental and behavioural disorders,F51.5,Nightmares
+254,ICD-10,Mental and behavioural disorders,F51.8,Other nonorganic sleep disorders
+255,ICD-10,Mental and behavioural disorders,F51.9,"Nonorganic sleep disorder, unspecified"
+256,ICD-10,Mental and behavioural disorders,F52.0,Lack or loss of sexual desire
+257,ICD-10,Mental and behavioural disorders,F52.1,Sexual aversion and lack of sexual enjoyment
+258,ICD-10,Mental and behavioural disorders,F52.2,Failure of genital response
+259,ICD-10,Mental and behavioural disorders,F52.3,Orgasmic dysfunction
+260,ICD-10,Mental and behavioural disorders,F52.4,Premature ejaculation
+261,ICD-10,Mental and behavioural disorders,F52.5,Nonorganic vaginismus
+262,ICD-10,Mental and behavioural disorders,F52.6,Nonorganic dyspareunia
+263,ICD-10,Mental and behavioural disorders,F52.7,Excessive sexual drive
+264,ICD-10,Mental and behavioural disorders,F52.8,"Other sexual dysfunction, not caused by organic disorder or disease"
+265,ICD-10,Mental and behavioural disorders,F52.9,"Unspecified sexual dysfunction, not caused by organic disorder or disease"
+266,ICD-10,Mental and behavioural disorders,F53.0,"Mild mental and behavioural disorders associated with the puerperium, not elsewhere classified"
+267,ICD-10,Mental and behavioural disorders,F53.1,"Severe mental and behavioural disorders associated with the puerperium, not elsewhere classified"
+268,ICD-10,Mental and behavioural disorders,F53.8,"Other mental and behavioural disorders associated with the puerperium, not elsewhere classified"
+269,ICD-10,Mental and behavioural disorders,F53.9,"Puerperal mental disorder, unspecified"
+270,ICD-10,Mental and behavioural disorders,F54,Psychological and behavioural factors associated with disorders or diseases classified elsewhere
+271,ICD-10,Mental and behavioural disorders,F55,Abuse of non-dependence-producing substances
+272,ICD-10,Mental and behavioural disorders,F59,Unspecified behavioural syndromes associated with physiological disturbances and physical factors
+273,ICD-10,Mental and behavioural disorders,F60.0,Paranoid personality disorder
+274,ICD-10,Mental and behavioural disorders,F60.1,Schizoid personality disorder
+275,ICD-10,Mental and behavioural disorders,F60.2,Dissocial personality disorder
+276,ICD-10,Mental and behavioural disorders,F60.3,Emotionally unstable personality disorder
+277,ICD-10,Mental and behavioural disorders,F60.4,Histrionic personality disorder
+278,ICD-10,Mental and behavioural disorders,F60.5,Anankastic personality disorder
+279,ICD-10,Mental and behavioural disorders,F60.6,Anxious [avoidant] personality disorder
+280,ICD-10,Mental and behavioural disorders,F60.7,Dependent personality disorder
+281,ICD-10,Mental and behavioural disorders,F60.8,Other specific personality disorders
+282,ICD-10,Mental and behavioural disorders,F60.9,"Personality disorder, unspecified"
+283,ICD-10,Mental and behavioural disorders,F61,Mixed and other personality disorders
+284,ICD-10,Mental and behavioural disorders,F62.0,Enduring personality change after catastrophic experience
+285,ICD-10,Mental and behavioural disorders,F62.1,Enduring personality change after psychiatric illness
+286,ICD-10,Mental and behavioural disorders,F62.8,Other enduring personality changes
+287,ICD-10,Mental and behavioural disorders,F62.9,"Enduring personality change, unspecified"
+288,ICD-10,Mental and behavioural disorders,F63.0,Pathological gambling
+289,ICD-10,Mental and behavioural disorders,F63.1,Pathological fire-setting [pyromania]
+290,ICD-10,Mental and behavioural disorders,F63.2,Pathological stealing [kleptomania]
+291,ICD-10,Mental and behavioural disorders,F63.3,Trichotillomania
+292,ICD-10,Mental and behavioural disorders,F63.8,Other habit and impulse disorders
+293,ICD-10,Mental and behavioural disorders,F63.9,"Habit and impulse disorder, unspecified"
+294,ICD-10,Mental and behavioural disorders,F64.0,Transsexualism
+295,ICD-10,Mental and behavioural disorders,F64.1,Dual-role transvestism
+296,ICD-10,Mental and behavioural disorders,F64.2,Gender identity disorder of childhood
+297,ICD-10,Mental and behavioural disorders,F64.8,Other gender identity disorders
+298,ICD-10,Mental and behavioural disorders,F64.9,"Gender identity disorder, unspecified"
+299,ICD-10,Mental and behavioural disorders,F65.0,Fetishism
+300,ICD-10,Mental and behavioural disorders,F65.1,Fetishistic transvestism
+301,ICD-10,Mental and behavioural disorders,F65.2,Exhibitionism
+302,ICD-10,Mental and behavioural disorders,F65.3,Voyeurism
+303,ICD-10,Mental and behavioural disorders,F65.4,Paedophilia
+304,ICD-10,Mental and behavioural disorders,F65.5,Sadomasochism
+305,ICD-10,Mental and behavioural disorders,F65.6,Multiple disorders of sexual preference
+306,ICD-10,Mental and behavioural disorders,F65.8,Other disorders of sexual preference
+307,ICD-10,Mental and behavioural disorders,F65.9,"Disorder of sexual preference, unspecified"
+308,ICD-10,Mental and behavioural disorders,F66.0,Sexual maturation disorder
+309,ICD-10,Mental and behavioural disorders,F66.1,Egodystonic sexual orientation
+310,ICD-10,Mental and behavioural disorders,F66.2,Sexual relationship disorder
+311,ICD-10,Mental and behavioural disorders,F66.8,Other psychosexual development disorders
+312,ICD-10,Mental and behavioural disorders,F66.9,"Psychosexual development disorder, unspecified"
+313,ICD-10,Mental and behavioural disorders,F68.0,Elaboration of physical symptoms for psychological reasons
+314,ICD-10,Mental and behavioural disorders,F68.1,"Intentional production or feigning of symptoms or disabilities, either physical or psychological [factitious disorder]"
+315,ICD-10,Mental and behavioural disorders,F68.8,Other specified disorders of adult personality and behaviour
+316,ICD-10,Mental and behavioural disorders,F69,Unspecified disorder of adult personality and behaviour
+317,ICD-10,Mental and behavioural disorders,F70.0,"Mild mental retardation with the statement of no, or minimal, impairment of behaviour"
+318,ICD-10,Mental and behavioural disorders,F70.1,"Mild mental retardation, significant impairment of behaviour requiring attention or treatment"
+319,ICD-10,Mental and behavioural disorders,F70.8,"Mild mental retardation, other impairments of behaviour"
+320,ICD-10,Mental and behavioural disorders,F70.9,Mild mental retardation without mention of impairment of behaviour
+321,ICD-10,Mental and behavioural disorders,F71.0,"Moderate mental retardation with the statement of no, or minimal, impairment of behaviour"
+322,ICD-10,Mental and behavioural disorders,F71.1,"Moderate mental retardation, significant impairment of behaviour requiring attention or treatment"
+323,ICD-10,Mental and behavioural disorders,F71.8,"Moderate mental retardation, other impairments of behaviour"
+324,ICD-10,Mental and behavioural disorders,F71.9,Moderate mental retardation without mention of impairment of behaviour
+325,ICD-10,Mental and behavioural disorders,F72.0,"Severe mental retardation with the statement of no, or minimal, impairment of behaviour"
+326,ICD-10,Mental and behavioural disorders,F72.1,"Severe mental retardation, significant impairment of behaviour requiring attention or treatment"
+327,ICD-10,Mental and behavioural disorders,F72.8,"Severe mental retardation, other impairments of behaviour"
+328,ICD-10,Mental and behavioural disorders,F72.9,Severe mental retardation without mention of impairment of behaviour
+329,ICD-10,Mental and behavioural disorders,F73.0,"Profound mental retardation with the statement of no, or minimal, impairment of behaviour"
+330,ICD-10,Mental and behavioural disorders,F73.1,"Profound mental retardation, significant impairment of behaviour requiring attention or treatment"
+331,ICD-10,Mental and behavioural disorders,F73.8,"Profound mental retardation, other impairments of behaviour"
+332,ICD-10,Mental and behavioural disorders,F73.9,Profound mental retardation without mention of impairment of behaviour
+333,ICD-10,Mental and behavioural disorders,F78.0,"Other mental retardation with the statement of no, or minimal, impairment of behaviour"
+334,ICD-10,Mental and behavioural disorders,F78.1,"Other mental retardation, significant impairment of behaviour requiring attention or treatment"
+335,ICD-10,Mental and behavioural disorders,F78.8,"Other mental retardation, other impairments of behaviour"
+336,ICD-10,Mental and behavioural disorders,F78.9,Other mental retardation without mention of impairment of behaviour
+337,ICD-10,Mental and behavioural disorders,F79.0,"Unspecified mental retardation with the statement of no, or minimal, impairment of behaviour"
+338,ICD-10,Mental and behavioural disorders,F79.1,"Unspecified mental retardation, significant impairment of behaviour requiring attention or treatment"
+339,ICD-10,Mental and behavioural disorders,F79.8,"Unspecified mental retardation, other impairments of behaviour"
+340,ICD-10,Mental and behavioural disorders,F79.9,Unspecified mental retardation without mention of impairment of behaviour
+341,ICD-10,Mental and behavioural disorders,F80.0,Specific speech articulation disorder
+342,ICD-10,Mental and behavioural disorders,F80.1,Expressive language disorder
+343,ICD-10,Mental and behavioural disorders,F80.2,Receptive language disorder
+344,ICD-10,Mental and behavioural disorders,F80.3,Acquired aphasia with epilepsy [Landau-Kleffner]
+345,ICD-10,Mental and behavioural disorders,F80.8,Other developmental disorders of speech and language
+346,ICD-10,Mental and behavioural disorders,F80.9,"Developmental disorder of speech and language, unspecified"
+347,ICD-10,Mental and behavioural disorders,F81.0,Specific reading disorder
+348,ICD-10,Mental and behavioural disorders,F81.1,Specific spelling disorder
+349,ICD-10,Mental and behavioural disorders,F81.2,Specific disorder of arithmetical skills
+350,ICD-10,Mental and behavioural disorders,F81.3,Mixed disorder of scholastic skills
+351,ICD-10,Mental and behavioural disorders,F81.8,Other developmental disorders of scholastic skills
+352,ICD-10,Mental and behavioural disorders,F81.9,"Developmental disorder of scholastic skills, unspecified"
+353,ICD-10,Mental and behavioural disorders,F82,Specific developmental disorder of motor function
+354,ICD-10,Mental and behavioural disorders,F83,Mixed specific developmental disorders
+355,ICD-10,Mental and behavioural disorders,F84.0,Childhood autism
+356,ICD-10,Mental and behavioural disorders,F84.1,Atypical autism
+357,ICD-10,Mental and behavioural disorders,F84.2,Rett's syndrome
+358,ICD-10,Mental and behavioural disorders,F84.3,Other childhood disintegrative disorder
+359,ICD-10,Mental and behavioural disorders,F84.4,Overactive disorder associated with mental retardation and stereotyped movements
+360,ICD-10,Mental and behavioural disorders,F84.5,Asperger's syndrome
+361,ICD-10,Mental and behavioural disorders,F84.8,Other pervasive developmental disorders
+362,ICD-10,Mental and behavioural disorders,F84.9,"Pervasive developmental disorder, unspecified"
+363,ICD-10,Mental and behavioural disorders,F88,Other disorders of psychological development
+364,ICD-10,Mental and behavioural disorders,F89,Unspecified disorder of psychological development
+365,ICD-10,Mental and behavioural disorders,F90.0,Disturbance of activity and attention
+366,ICD-10,Mental and behavioural disorders,F90.1,Hyperkinetic conduct disorder
+367,ICD-10,Mental and behavioural disorders,F90.8,Other hyperkinetic disorders
+368,ICD-10,Mental and behavioural disorders,F90.9,"Hyperkinetic disorder, unspecified"
+369,ICD-10,Mental and behavioural disorders,F91.0,Conduct disorder confined to the family context
+370,ICD-10,Mental and behavioural disorders,F91.1,Unsocialized conduct disorder
+371,ICD-10,Mental and behavioural disorders,F91.2,Socialized conduct disorder
+372,ICD-10,Mental and behavioural disorders,F91.3,Oppositional defiant disorder
+373,ICD-10,Mental and behavioural disorders,F91.8,Other conduct disorders
+374,ICD-10,Mental and behavioural disorders,F91.9,"Conduct disorder, unspecified"
+375,ICD-10,Mental and behavioural disorders,F92.0,Depressive conduct disorder
+376,ICD-10,Mental and behavioural disorders,F92.8,Other mixed disorders of conduct and emotions
+377,ICD-10,Mental and behavioural disorders,F92.9,"Mixed disorder of conduct and emotions, unspecified"
+378,ICD-10,Mental and behavioural disorders,F93.0,Separation anxiety disorder of childhood
+379,ICD-10,Mental and behavioural disorders,F93.1,Phobic anxiety disorder of childhood
+380,ICD-10,Mental and behavioural disorders,F93.2,Social anxiety disorder of childhood
+381,ICD-10,Mental and behavioural disorders,F93.3,Sibling rivalry disorder
+382,ICD-10,Mental and behavioural disorders,F93.8,Other childhood emotional disorders
+383,ICD-10,Mental and behavioural disorders,F93.9,"Childhood emotional disorder, unspecified"
+384,ICD-10,Mental and behavioural disorders,F94.0,Elective mutism
+385,ICD-10,Mental and behavioural disorders,F94.1,Reactive attachment disorder of childhood
+386,ICD-10,Mental and behavioural disorders,F94.2,Disinhibited attachment disorder of childhood
+387,ICD-10,Mental and behavioural disorders,F94.8,Other childhood disorders of social functioning
+388,ICD-10,Mental and behavioural disorders,F94.9,"Childhood disorder of social functioning, unspecified"
+389,ICD-10,Mental and behavioural disorders,F95.0,Transient tic disorder
+390,ICD-10,Mental and behavioural disorders,F95.1,Chronic motor or vocal tic disorder
+391,ICD-10,Mental and behavioural disorders,F95.2,Combined vocal and multiple motor tic disorder [de La Tourette]
+392,ICD-10,Mental and behavioural disorders,F95.8,Other tic disorders
+393,ICD-10,Mental and behavioural disorders,F95.9,"Tic disorder, unspecified"
+394,ICD-10,Mental and behavioural disorders,F98.0,Nonorganic enuresis
+395,ICD-10,Mental and behavioural disorders,F98.1,Nonorganic encopresis
+396,ICD-10,Mental and behavioural disorders,F98.2,Feeding disorder of infancy and childhood
+397,ICD-10,Mental and behavioural disorders,F98.3,Pica of infancy and childhood
+398,ICD-10,Mental and behavioural disorders,F98.4,Stereotyped movement disorders
+399,ICD-10,Mental and behavioural disorders,F98.5,Stuttering [stammering]
+400,ICD-10,Mental and behavioural disorders,F98.6,Cluttering
+401,ICD-10,Mental and behavioural disorders,F98.8,Other specified behavioural and emotional disorders with onset usually occurring in childhood and adolescence
+402,ICD-10,Mental and behavioural disorders,F98.9,Unspecified behavioural and emotional disorders with onset usually occurring in childhood and adolescence
+403,ICD-10,Mental and behavioural disorders,F99,"Mental disorder, not otherwise specified"

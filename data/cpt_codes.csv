@@ -1,0 +1,38 @@
+﻿id,code,category,description
+1,90791,Initial Evaluation,Psychiatric Diagnostic Evaluation without medical services
+2,90792,Initial Evaluation,Psychiatric Diagnostic Evaluation with medical services
+3,90832,Psychotherapy,Psychotherapy 30 minutes
+4,90833,Psychotherapy,Psychotherapy 30 minutes with EM service
+5,90834,Psychotherapy,Psychotherapy 45 minutes
+6,90836,Psychotherapy,Psychotherapy 45 minutes with EM service
+7,90837,Psychotherapy,Psychotherapy 60 minutes
+8,90838,Psychotherapy,Psychotherapy 60 minutes with EM service
+9,90839,Psychotherapy,Psychotherapy for crisis 60 minutes
+10,90840,Psychotherapy,Psychotherapy for crisis additional 30 minutes
+11,90845,Psychoanalysis,Psychoanalysis
+12,90846,Family Psychotherapy,Family psychotherapy (without the patient present) 50 minutes
+13,90847,Family Psychotherapy,Family psychotherapy (with patient present) 50 minutes
+14,90849,Family Psychotherapy,Multiple-family group psychotherapy
+15,90853,Group Psychotherapy,Group psychotherapy (other than of a multiple-family group)
+16,90863,Pharmacologic Management,Pharmacologic management including prescription and review of medication when performed with psychotherapy services
+17,90867,TMS,Therapeutic repetitive transcranial magnetic stimulation (TMS) initial
+18,90868,TMS,Therapeutic repetitive transcranial magnetic stimulation (TMS) session
+19,90869,TMS,Therapeutic repetitive transcranial magnetic stimulation (TMS) subsequent motor threshold re-determination with delivery and management
+20,90875,Biofeedback,Individual psychophysiological therapy incorporating biofeedback training 30 minutes
+21,90880,Hypnotherapy,Hypnotherapy
+22,90901,Biofeedback,Biofeedback training by any modality
+23,90912,Biofeedback,Biofeedback train 1st 15 minutes
+24,90913,Biofeedback,Biofeedback train additional 15 minutes
+25,99201,New Patient Office Visit,EM – New Patient Office Visit – 10 Minutes
+26,99202,New Patient Office Visit,EM – New Patient Office Visit – 20 Minutes
+27,99203,New Patient Office Visit,EM – New Patient Office Visit – 30 Minutes
+28,99204,New Patient Office Visit,EM – New Patient Office Visit – 45 Minutes
+29,99205,New Patient Office Visit,EM – New Patient Office Visit – 60 Minutes
+30,99211,Established Patient Office Visit,EM – Established Patients – 5 Minutes
+31,99212,Established Patient Office Visit,EM – Established Patients – 10 Minutes
+32,99213,Established Patient Office Visit,EM – Established Patients – 15 Minutes
+33,99214,Established Patient Office Visit,EM – Established Patients – 25 Minutes
+34,99215,Established Patient Office Visit,EM – Established Patients – 40 Minutes
+35,99441,Telephone Established Patient,Telephone EM service provided to an established patient-parent-guardian 5-10 minutes
+36,99442,Telephone Established Patient,Telephone EM service provided to an established patient-parent-guardian 11-20 minutes
+37,99443,Telephone Established Patient,Telephone EM service provided to an established patient-parent-guardian 21-30 minutes

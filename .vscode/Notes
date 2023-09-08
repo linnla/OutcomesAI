@@ -1,0 +1,13 @@
+diagnosis_codes (loaded), API, Datagrid episode_of_care, API, Datagrid Need way
+to drill into episode_of_care and add episode_medical_procedure (appointment)
+
+Talk to MK and figure out what these are...
+
+1.  medical_procedures (category of cpt_codes, replace with id reference in
+    cpt_codes)
+2.  cpt_codes (loaded)
+3.  protocols
+4.  medical_proceduere_protocols
+
+Recreate cognito group with practice_id as custom attribute Splash page with
+login button
