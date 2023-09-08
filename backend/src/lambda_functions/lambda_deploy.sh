@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # List of function directories
-function_directories=("biomarker_types" "biomarkers" "countries" "offices" "patients" "postal_codes" "practices" "practitioners" "roles" "users" "patient_biomarkers" "practice_users" "practice_patients" "practice_practitioners")
+function_directories=("biomarker_types" "biomarkers" "countries" "offices" "patients" "postal_codes" "practices" "practitioners" "roles" "users" "patient_biomarkers" "practice_users" "practice_patients" "practice_practitioners" "disorders" "diagnosis_codes" "cpt_categories" "cpt_codes" "episodes_of_care" )
 
 # Stage variable
 stage="dev"

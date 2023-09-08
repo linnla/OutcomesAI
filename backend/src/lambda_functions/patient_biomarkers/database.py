@@ -113,6 +113,7 @@ def exception_handling(exception):
     return response
 
 
+## Reference entities get all data returned on get request, no query parameters supported
 def select_reference_entity(entity_class):
     try:
         with get_database_session() as session:
@@ -316,6 +317,7 @@ def create_database_connection():
     engine = create_engine(connection_url, execution_options={"raiseerr": True})
     return engine
 
+
 @contextmanager
 def get_database_session():
     engine = create_database_connection()
@@ -325,6 +327,7 @@ def get_database_session():
         yield session
     finally:
         session.close()
+
 
 __all__ = [
     "select_entity",
