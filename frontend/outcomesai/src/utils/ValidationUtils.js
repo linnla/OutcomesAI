@@ -29,7 +29,7 @@ export function validateRequiredAttributes(
           ', '
         )} and ${lastAttribute} are required fields`
       : `${lastAttribute} is a required field`;
-    //console.log(errorMessage);
+    console.log(errorMessage);
     throw new Error(errorMessage);
   }
   return true;

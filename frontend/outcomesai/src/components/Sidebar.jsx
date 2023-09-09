@@ -99,6 +99,13 @@ const Sidebar = () => {
               selected={selected}
               setSelected={setSelected}
             />
+            <Item
+              title='Manage CPT Codes'
+              to='/cptCodes'
+              icon={<BusinessOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
 
             <Typography
               variant='h6'

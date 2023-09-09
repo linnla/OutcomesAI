@@ -13,6 +13,7 @@ import Invoices from './pages/Invoices';
 import OfficeManageGrid from './pages/offices';
 import PractitionerManageGrid from './pages/practitioners/index';
 import PatientManageGrid from './pages/patients/index';
+import CPTCodeGrid from './pages/cpt_codes';
 
 import Bar from './pages/Bar';
 import Form from './pages/Form';
@@ -61,6 +62,8 @@ function App() {
         <Route path='home' element={<Home />} />
         <Route path='/login' element={<Login />} />
         <Route path='/dashboard' element={<Dashboard />} />
+
+        <Route path='/cptCodes' element={<CPTCodeGrid />} />
 
         <Route
           path='/offices'

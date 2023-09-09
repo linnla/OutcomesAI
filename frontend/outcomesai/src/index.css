@@ -33,3 +33,9 @@ body,
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
+
+.wrapText {
+  white-space: normal !important;
+  overflow: hidden;
+  text-overflow: clip;
+}

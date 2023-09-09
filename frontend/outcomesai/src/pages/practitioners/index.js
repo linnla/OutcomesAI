@@ -140,29 +140,6 @@ export default function PractitionerManageGrid() {
     }
   }
 
-  /*
-  async function deleteRow(id, row, oldRows) {
-    // *************** CUSTOMIZE ************** START
-    const body = {
-      id: row.id,
-    };
-    // *************** CUSTOMIZE ************** END
-
-    try {
-      await deleteData(saveTable, body);
-      setRows(oldRows.filter((r) => r.id !== id));
-    } catch (error) {
-      setRows(oldRows);
-
-      // *************** CUSTOMIZE ************** START
-      const errorMessage = createErrorMessage(error, row.name);
-      // *************** CUSTOMIZE ************** END
-
-      throw errorMessage;
-    }
-  }
-  */
-
   async function inActivateRow(id, row, oldRows) {
     try {
       const practicePractitioner = {
