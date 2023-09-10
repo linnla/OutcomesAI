@@ -48,7 +48,12 @@ export default function PatientManageGrid() {
 
   // *************** CUSTOMIZE ************** START
   const title = 'Patients';
-  const subtitle = 'Manage Patients';
+
+  let subtitle = 'View Patients';
+  if (role === 'manager' || role === 'admin' || role === 'super') {
+    subtitle = 'Manage Patients';
+  }
+
   const saveTable = 'patients';
   const getTable = 'practice_patients';
   const requiredAttributes = [
@@ -58,6 +63,7 @@ export default function PatientManageGrid() {
     'postal_code',
     'gender',
     'birthdate',
+    'status',
   ];
   const attributeNames = [
     'Last Name',
@@ -66,6 +72,7 @@ export default function PatientManageGrid() {
     'Postal Code',
     'Birth Gender',
     'Birth Date',
+    'Status',
   ];
 
   async function validateRow(newRow) {

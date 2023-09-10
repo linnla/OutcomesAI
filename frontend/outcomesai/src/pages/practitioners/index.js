@@ -43,7 +43,12 @@ export default function PractitionerManageGrid() {
 
   // *************** CUSTOMIZE ************** START
   const title = 'Practitioners';
-  const subtitle = 'Manage Practitioners';
+
+  let subtitle = 'View Practitioners';
+  if (role === 'manager' || role === 'admin' || role === 'super') {
+    subtitle = 'Manage Practitioners';
+  }
+
   const saveTable = 'practitioners';
   const getTable = 'practice_practitioners';
   const requiredAttributes = ['last_name', 'first_name', 'email'];

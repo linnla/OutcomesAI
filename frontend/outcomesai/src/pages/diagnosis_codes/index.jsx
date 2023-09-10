@@ -9,7 +9,7 @@ import { validateRequiredAttributes } from '../../utils/ValidationUtils';
 import { createErrorMessage } from '../../utils/ErrorMessage';
 import ErrorModal from '../../utils/ErrorModal';
 
-export default function CPTCodeManageGrid() {
+export default function DiagnosisCodeManageGrid() {
   const { role, practiceId } = useContext(UserContext);
   const [rows, setRawRows] = useState([]);
   const [errorType, setErrorType] = useState('');
@@ -26,10 +26,7 @@ export default function CPTCodeManageGrid() {
     getData(getTable)
       .then((data) => {
         console.log('data:', data);
-        const sortedArray = data.sort((a, b) =>
-          a.cpt_code.localeCompare(b.cpt_code)
-        );
-        console.log('cpt codes sorted array:', sortedArray);
+        const sortedArray = data.sort((a, b) => a.code.localeCompare(b.code));
         setRows(sortedArray);
       })
       .catch((error) => {
@@ -45,17 +42,17 @@ export default function CPTCodeManageGrid() {
 
   // *************** CUSTOMIZE ************** START
 
-  const [cpt_categories, setCptCategories] = useState([]);
-  const [cpt_categoryObjects, setCptCategoryObjects] = useState([]);
+  const [disorders, setDisorders] = useState([]);
+  const [disorderObjects, setDisorderObjects] = useState([]);
 
   useEffect(() => {
     setLoading(true);
-    getData('cpt_categories')
+    getData('disorders')
       .then((data) => {
-        const categories = data.map((obj) => obj.name).sort();
-        setCptCategories(categories);
+        const disorders = data.map((obj) => obj.name).sort();
+        setDisorders(disorders);
         // Used to get the id property of user select a different category
-        setCptCategoryObjects(data);
+        setDisorderObjects(data);
       })
       .catch((error) => {
         const errorMessage = createErrorMessage(error, getTable);
@@ -68,26 +65,31 @@ export default function CPTCodeManageGrid() {
       });
   }, []);
 
-  const title = 'CPT Codes';
+  const title = 'Diagnosis Codes';
 
-  let subtitle = 'View CPT Codes';
+  let subtitle = 'View Diagnosis Codes';
   if (role === 'super') {
-    subtitle = 'Manage CPT Codes';
+    subtitle = 'Manage Diagnosis Codes';
   }
 
-  const saveTable = 'cpt_codes';
-  const getTable = 'cpt_codes';
-  const requiredAttributes = ['cpt_code', 'cpt_category_id', 'description'];
-  const attributeNames = ['CPT Code', 'CPT Category', 'Dsecription'];
+  const saveTable = 'diagnosis_codes';
+  const getTable = 'diagnosis_codes';
+  const requiredAttributes = ['code', 'disorder_id', 'description', 'status'];
+  const attributeNames = [
+    'Diagnosis Code',
+    'Disorder',
+    'Dsecription',
+    'Status',
+  ];
 
   function createRowData(rows) {
     // IS THIS REDUNDANT, ITS ALSO IN DefaultToolBar
     const newId = Math.floor(100000 + Math.random() * 900000);
     return {
       id: newId,
-      cpt_code: '',
-      category_id: '',
-      cpt_category_name: '',
+      code: '',
+      disorder_id: '',
+      disorder_name: '',
       description: '',
       status: 'Active',
     };
@@ -106,17 +108,16 @@ export default function CPTCodeManageGrid() {
   const columns = [
     { field: 'id', headerName: 'ID', flex: 0.5 },
     {
-      field: 'cpt_code',
-      headerName: 'CPT Code',
+      field: 'code',
+      headerName: 'Diagnosis Code',
       editable: true,
-      flex: 1,
       cellClassName: 'name-column--cell',
     },
     {
-      field: 'cpt_category_name',
-      headerName: 'Category',
+      field: 'disorder_name',
+      headerName: 'Disorder',
       type: 'singleSelect',
-      valueOptions: cpt_categories,
+      valueOptions: disorders,
       editable: true,
       flex: 1,
     },
@@ -143,11 +144,11 @@ export default function CPTCodeManageGrid() {
   async function saveRow(id, row, oldRow, oldRows) {
     try {
       // Get the id for the cpt_category the user selected
-      if (row.cpt_category_name !== oldRow.cpt_category_name) {
-        const correspondingObject = cpt_categoryObjects.find(
-          (obj) => obj.name === row.cpt_category_name
+      if (row.disorder_name !== oldRow.disorder_name) {
+        const correspondingObject = disorderObjects.find(
+          (obj) => obj.name === row.disorder_name
         );
-        row.cpt_category_id = correspondingObject.id;
+        row.disorder_id = correspondingObject.id;
       }
 
       console.log('saveRow row:', row);

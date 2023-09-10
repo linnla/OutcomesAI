@@ -1,15 +1,23 @@
 import * as React from 'react';
 import { useEffect, useState, useContext } from 'react';
-import '../../index.css';
+import Box from '@mui/material/Box';
 import EditableDataGrid from '../../components/datagrid/editable';
 import ReadOnlyDataGrid from '../../components/datagrid/readonly';
 import UserContext from '../../contexts/UserContext';
 import { getData, postData, putData, deleteData } from '../../utils/API';
-import { validateRequiredAttributes } from '../../utils/ValidationUtils';
+import {
+  validatePostalCodeFormat,
+  validatePostalCodeExists,
+  validateRequiredAttributes,
+  validateDateObject,
+  validateEmail,
+} from '../../utils/ValidationUtils';
+import { parseUTCDate, formatDateToMMDDYYYY } from '../../utils/DateUtils';
+
 import { createErrorMessage } from '../../utils/ErrorMessage';
 import ErrorModal from '../../utils/ErrorModal';
 
-export default function CPTCodeManageGrid() {
+export default function CPTCategoryManageGrid() {
   const { role, practiceId } = useContext(UserContext);
   const [rows, setRawRows] = useState([]);
   const [errorType, setErrorType] = useState('');
@@ -25,12 +33,7 @@ export default function CPTCodeManageGrid() {
     setLoading(true);
     getData(getTable)
       .then((data) => {
-        console.log('data:', data);
-        const sortedArray = data.sort((a, b) =>
-          a.cpt_code.localeCompare(b.cpt_code)
-        );
-        console.log('cpt codes sorted array:', sortedArray);
-        setRows(sortedArray);
+        setRows(data);
       })
       .catch((error) => {
         const errorMessage = createErrorMessage(error, getTable);
@@ -41,116 +44,53 @@ export default function CPTCodeManageGrid() {
       .finally(() => {
         setLoading(false);
       });
-  }, []);
+  }, [practiceId]);
 
   // *************** CUSTOMIZE ************** START
+  const title = 'CPT Categories';
 
-  const [cpt_categories, setCptCategories] = useState([]);
-  const [cpt_categoryObjects, setCptCategoryObjects] = useState([]);
-
-  useEffect(() => {
-    setLoading(true);
-    getData('cpt_categories')
-      .then((data) => {
-        const categories = data.map((obj) => obj.name).sort();
-        setCptCategories(categories);
-        // Used to get the id property of user select a different category
-        setCptCategoryObjects(data);
-      })
-      .catch((error) => {
-        const errorMessage = createErrorMessage(error, getTable);
-        setErrorType('Data Fetch Error');
-        setErrorMessage(errorMessage);
-        setShowErrorModal(true);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  }, []);
-
-  const title = 'CPT Codes';
-
-  let subtitle = 'View CPT Codes';
+  let subtitle = 'View CPT Categories';
   if (role === 'super') {
-    subtitle = 'Manage CPT Codes';
+    subtitle = 'Manage CPT Categories';
   }
 
-  const saveTable = 'cpt_codes';
-  const getTable = 'cpt_codes';
-  const requiredAttributes = ['cpt_code', 'cpt_category_id', 'description'];
-  const attributeNames = ['CPT Code', 'CPT Category', 'Dsecription'];
-
-  function createRowData(rows) {
-    // IS THIS REDUNDANT, ITS ALSO IN DefaultToolBar
-    const newId = Math.floor(100000 + Math.random() * 900000);
-    return {
-      id: newId,
-      cpt_code: '',
-      category_id: '',
-      cpt_category_name: '',
-      description: '',
-      status: 'Active',
-    };
-  }
+  const saveTable = 'cpt_categories';
+  const getTable = 'cpt_categories';
+  const requiredAttributes = ['name', 'description', 'status'];
+  const attributeNames = ['Name', 'Description', 'Status'];
 
   async function validateRow(newRow) {
     try {
       validateRequiredAttributes(requiredAttributes, attributeNames, newRow);
       return newRow;
     } catch (error) {
-      const errorMessage = createErrorMessage(error, getTable);
+      const errorMessage = createErrorMessage(error, saveTable);
       throw errorMessage;
     }
   }
 
-  const columns = [
-    { field: 'id', headerName: 'ID', flex: 0.5 },
-    {
-      field: 'cpt_code',
-      headerName: 'CPT Code',
-      editable: true,
-      flex: 1,
-      cellClassName: 'name-column--cell',
-    },
-    {
-      field: 'cpt_category_name',
-      headerName: 'Category',
-      type: 'singleSelect',
-      valueOptions: cpt_categories,
-      editable: true,
-      flex: 1,
-    },
-    {
-      field: 'description',
-      headerName: 'Description',
-      editable: true,
-      cellClassName: 'wrapText',
-      flex: 1,
-    },
-    {
-      field: 'status',
-      headerName: 'Status',
-      editable: true,
-      headerAlign: 'center',
-      align: 'center',
-      type: 'singleSelect',
-      valueOptions: ['Active', 'Inactive'],
-      defaultValueGetter: () => 'Active',
-      flex: 1,
-    },
-  ];
+  const createRowData = (rows) => {
+    // IS THIS REDUNDANT, ITS ALSO IN DefaultToolBar
+    const newId = Math.floor(100000 + Math.random() * 900000);
+    return {
+      id: newId,
+      name: '',
+      description: '',
+      status: 'Active',
+    };
+  };
+  // *************** CUSTOMIZE ************** END
 
   async function saveRow(id, row, oldRow, oldRows) {
     try {
-      // Get the id for the cpt_category the user selected
-      if (row.cpt_category_name !== oldRow.cpt_category_name) {
-        const correspondingObject = cpt_categoryObjects.find(
-          (obj) => obj.name === row.cpt_category_name
-        );
-        row.cpt_category_id = correspondingObject.id;
-      }
+      // *************** CUSTOMIZE ************** START
+      // Convert the birthdate to the desired format
+      const dateString = row.birthdate.toISOString().slice(0, 10);
 
-      console.log('saveRow row:', row);
+      // Update the row object with the dateString
+      row.birthdate = dateString;
+      // *************** CUSTOMIZE ************** END
+
       if (row.isNew) {
         // *************** CUSTOMIZE ************** START
         const rowToSave = { ...row };
@@ -162,12 +102,6 @@ export default function CPTCodeManageGrid() {
         // Add the id returned from the database
         rowToSave.id = data.data.id;
         setRows(oldRows.map((r) => (r.id === id ? { ...rowToSave } : r)));
-
-        // *************** CUSTOMIZE ************** START
-        // Create one-to-many row
-        // No one-to-many tables for Offices
-        // *************** CUSTOMIZE ************** END
-
         return rowToSave;
       } else {
         await putData(saveTable, row);
@@ -187,11 +121,12 @@ export default function CPTCodeManageGrid() {
 
   async function inActivateRow(id, row, oldRows) {
     try {
-      const inactiveRow = {
-        id: row.id,
+      const practicePatient = {
+        practice_id: row.practice_id,
+        patient_id: row.id,
         status: 'Inactive',
       };
-      await putData(getTable, inactiveRow);
+      await putData(getTable, practicePatient);
       row.status = 'Inactive';
       setRows(oldRows.map((r) => (r.id === id ? { ...row } : r)));
       return 'Inactive';
@@ -246,3 +181,35 @@ export default function CPTCodeManageGrid() {
     );
   }
 }
+
+// *************** CUSTOMIZE ************** START
+
+const columns = [
+  { field: 'id', headerName: 'ID', flex: 0.5 },
+  {
+    field: 'name',
+    headerName: 'Category',
+    editable: true,
+    cellClassName: 'name-column--cell',
+    flex: 1,
+  },
+  {
+    field: 'description',
+    headerName: 'Description',
+    editable: true,
+    cellClassName: 'wrapText',
+    flex: 1,
+  },
+  {
+    field: 'status',
+    headerName: 'Status',
+    editable: true,
+    headerAlign: 'center',
+    align: 'center',
+    type: 'singleSelect',
+    valueOptions: ['Active', 'Inactive'],
+    defaultValueGetter: () => 'Active',
+    flex: 1,
+  },
+];
+// *************** CUSTOMIZE ************** END

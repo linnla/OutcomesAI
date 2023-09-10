@@ -43,7 +43,12 @@ export default function OfficeManageGrid() {
 
   // *************** CUSTOMIZE ************** START
   const title = 'Offices';
-  const subtitle = 'Manage Offices';
+
+  let subtitle = 'View Offices';
+  if (role === 'manager' || role === 'admin' || role === 'super') {
+    subtitle = 'Manage Offices';
+  }
+
   const saveTable = 'offices';
   const getTable = 'offices';
   const requiredAttributes = ['name', 'postal_code'];
