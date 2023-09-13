@@ -14,3 +14,94 @@ login button
 
 Contexts for Patients Practitioners Offices Patients Diagnosis Codes Countries
 and Postal Codes, add status and reload
+
+Patient In therapy (y/n), type frrquency meds
+
+Protocols
+
+1.  Motor threshold, baseline, everytime done (MT) How motor threshold found,
+    device vs beam method, neuro navigation (MT)
+
+2.  Treatment protocol Where on brain, left dorsal cortex, right, F3
+
+3.  pulses types Theta burst, single, quadra
+
+4.  frequency 10 mhz, 20 mhz
+
+5.  train time minutes
+
+6.  number of pulses 10 mhz x 1 minute = 600 pulses (calc)
+
+7.  inter-train interval time between trains
+
+8.  number of trains total number of treatment pulses (treatment session,
+    treatment day, treatment) (clac)
+
+9.  daily, 10 sessions in one day, total number of session (user inputs day,
+    calc)
+
+Settings
+
+1. Devices
+2. Device Coils
+3. Procedure Codes
+4. TMS Protocols
+5. Medications
+
+Reference Tables:
+
+1. acquisition_sources
+2. active_ingredients
+3. administration_routes
+4. appointment_types
+5. biomarker_types (Done)
+6. countries (Done)
+7. devices
+8. disorders (Done)
+9. dosage_forms
+10. dosage_units
+11. medication_types
+12. postal_codes (Done)
+13. procedure_categories
+14. roles (Done)
+15. tms_frequencies
+16. tms_pulse_types
+17. tms_stimulation_sites
+
+Master data
+
+1. practices
+2. practitioners
+3. patients
+4. offices
+5. users
+
+One-to-Many
+
+1. biomarlers
+2. device_coils
+3. diagnosis_codes
+4. medication_dosages
+5. procedure_codes
+
+Many-to-Many
+
+1. administration_route_dosage_forms
+2. appointment_procedure_codes
+3. appointment_medication_procedures
+4. appointment_tms_procedures
+5. appointments
+6. dosage_form_dosage_units
+7. episodes_of_care
+8. episodes_of_care_diahnosis_codes
+9. medical_types_medications
+10. medications
+11. office_device_coils
+12. patient_biomarkers
+13. practice_medications
+14. practice_patients
+15. practice_practitioners
+16. practice_procedure_codes
+17. practice_tms_protocols
+18. practice_users
+19. tms_protocols
