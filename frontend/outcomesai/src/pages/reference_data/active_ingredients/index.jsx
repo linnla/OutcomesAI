@@ -1,4 +1,5 @@
 import * as React from 'react';
+import '../../../index.css';
 import { useEffect, useState, useContext } from 'react';
 import EditableDataGrid from '../../../components/datagrid/editable';
 import ReadOnlyDataGrid from '../../../components/datagrid/readonly';
@@ -9,9 +10,9 @@ import { createErrorMessage } from '../../../utils/ErrorMessage';
 import ErrorModal from '../../../utils/ErrorModal';
 
 // *************** CUSTOMIZE **************
-export default function DisordersGrid() {
-  const title = 'Disorders';
-  const table = 'disorders';
+export default function ActiveIngredientsGrid() {
+  const title = 'Active Ingredients';
+  const table = 'active_ingredients';
   // *************** CUSTOMIZE **************
 
   const { role } = useContext(UserContext);

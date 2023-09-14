@@ -1,4 +1,4 @@
-from practice_users_model import PracticeUser
+from data_model import PracticeUser
 from database_crud import select, create, update
 from json import dumps
 import logging

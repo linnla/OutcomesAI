@@ -1,4 +1,4 @@
-from practitioner_model import Practitioner
+from data_model import Practitioner
 from database_crud import select, create, update
 from json import dumps
 import logging

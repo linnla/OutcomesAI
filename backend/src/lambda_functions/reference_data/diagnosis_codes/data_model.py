@@ -1,7 +1,5 @@
 from sqlalchemy import String, Integer, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
-from sqlalchemy.dialects.postgresql import ARRAY
-from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import mapped_column
 from sqlalchemy.orm import DeclarativeBase
 

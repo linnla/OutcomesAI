@@ -1,4 +1,4 @@
-from user_model import User
+from data_model import User
 from database_crud import select, create, update
 from json import dumps
 import logging

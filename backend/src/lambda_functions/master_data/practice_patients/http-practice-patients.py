@@ -1,4 +1,4 @@
-from practice_patients_model import PracticePatient
+from data_model import PracticePatient
 from database_crud import select, create, update
 from json import dumps
 import logging

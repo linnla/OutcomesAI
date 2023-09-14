@@ -1,4 +1,4 @@
-from countries_model import Country
+from data_model import Country
 from database_crud import select, select_reference_table
 from json import dumps
 import logging

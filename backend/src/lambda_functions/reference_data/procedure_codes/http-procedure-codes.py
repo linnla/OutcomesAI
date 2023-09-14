@@ -1,4 +1,4 @@
-from cpt_code_model import CptCode
+from data_model import ProcedureCode
 from database_crud import select_reference_table, create, update, delete
 from json import dumps
 import logging
@@ -11,7 +11,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger()
 
-entity_class = CptCode
+entity_class = ProcedureCode
 
 
 def lambda_handler(event, context):

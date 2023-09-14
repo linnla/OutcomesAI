@@ -1,4 +1,4 @@
-from biomarker_model import Biomarker
+from data_model import Biomarker
 from database_crud import select_reference_table, create, update, delete
 from json import dumps
 import logging

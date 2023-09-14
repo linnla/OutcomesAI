@@ -1,4 +1,4 @@
-from diagnosis_code_model import DiagnosisCode
+from data_model import DiagnosisCode
 from database_crud import select_reference_table, create, update, delete
 from json import dumps
 import logging

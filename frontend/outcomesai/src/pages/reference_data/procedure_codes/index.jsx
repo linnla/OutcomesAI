@@ -1,4 +1,5 @@
 import * as React from 'react';
+import '../../../index.css';
 import { useEffect, useState, useContext } from 'react';
 import EditableDataGrid from '../../../components/datagrid/editable';
 import ReadOnlyDataGrid from '../../../components/datagrid/readonly';
@@ -9,9 +10,41 @@ import { createErrorMessage } from '../../../utils/ErrorMessage';
 import ErrorModal from '../../../utils/ErrorModal';
 
 // *************** CUSTOMIZE **************
-export default function DisordersGrid() {
-  const title = 'Disorders';
-  const table = 'disorders';
+export default function ProcedureCodesGrid() {
+  const title = 'Procedure Codes';
+  const table = 'procedure_codes';
+  const relatedTable = 'procedure_categories';
+  const requiredAttributes = [
+    'code',
+    'procedure_category_id',
+    'source',
+    'name',
+    'description',
+    'status',
+  ];
+  const attributeNames = [
+    'Procedure Code',
+    'Procedure Category',
+    'Source',
+    'Name',
+    'Dsecription',
+    'Status',
+  ];
+
+  function createRowData(rows) {
+    // IS THIS REDUNDANT, ITS ALSO IN DefaultToolBar
+    const newId = Math.floor(100000 + Math.random() * 900000);
+    return {
+      id: newId,
+      code: '',
+      procedure_category_id: '',
+      source: 'American Medical Associatio',
+      name: '',
+      description: '',
+      status: 'Active',
+    };
+  }
+
   // *************** CUSTOMIZE **************
 
   const { role } = useContext(UserContext);
@@ -30,50 +63,40 @@ export default function DisordersGrid() {
     subtitle = 'Add, Edit, Delete, Inactivate';
   }
 
-  const requiredAttributes = ['name', 'description', 'status'];
-  const attributeNames = ['Name', 'Description', 'Status'];
-
-  const columns = [
-    { field: 'id', headerName: 'ID', flex: 0.5 },
-    {
-      field: 'name',
-      headerName: 'Name',
-      editable: true,
-      cellClassName: 'name-column--cell',
-      width: 200,
-    },
-    {
-      field: 'description',
-      headerName: 'Description',
-      headerAlign: 'left',
-      align: 'left',
-      editable: true,
-      cellClassName: 'wrapText',
-      flex: 1,
-    },
-    {
-      field: 'status',
-      headerName: 'Status',
-      editable: true,
-      headerAlign: 'center',
-      align: 'center',
-      type: 'singleSelect',
-      valueOptions: ['Active', 'Inactive'],
-      defaultValueGetter: () => 'Active',
-      width: 100,
-    },
-  ];
-  // *************** CUSTOMIZE ************** END
-
   useEffect(() => {
     setLoading(true);
     getData(table)
       .then((data) => {
         //console.log('data:', data);
-        setRows(data);
+        const sortedArray = data.sort((a, b) => a.code.localeCompare(b.code));
+        setRows(sortedArray);
       })
       .catch((error) => {
         const errorMessage = createErrorMessage(error, table);
+        setErrorType('Data Fetch Error');
+        setErrorMessage(errorMessage);
+        setShowErrorModal(true);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, []);
+
+  const [relatedData, setRelatedData] = useState([]);
+  const [relatedObjects, setRelatedObjects] = useState([]);
+
+  useEffect(() => {
+    setLoading(true);
+    getData(relatedTable)
+      .then((data) => {
+        //console.log('related data:', data);
+        const relatedData = data.map((obj) => obj.name).sort();
+        setRelatedData(relatedData);
+        // Used to get the id property of user select a different category
+        setRelatedObjects(data);
+      })
+      .catch((error) => {
+        const errorMessage = createErrorMessage(error, relatedTable);
         setErrorType('Error fetching data');
         setErrorMessage(errorMessage);
         setShowErrorModal(true);
@@ -93,26 +116,71 @@ export default function DisordersGrid() {
     }
   }
 
-  const createRowData = (rows) => {
-    // IS THIS REDUNDANT, ITS ALSO IN DefaultToolBar
-    const newId = Math.floor(100000 + Math.random() * 900000);
-    return {
-      id: newId,
-      name: '',
-      description: '',
-      status: 'Active',
-    };
-  };
-  // *************** CUSTOMIZE ************** END
+  const columns = [
+    { field: 'id', headerName: 'ID', flex: 0.5 },
+    {
+      field: 'code',
+      headerName: 'Procedure Code',
+      editable: true,
+      cellClassName: 'name-column--cell',
+    },
+    {
+      field: 'procedure_category_name',
+      headerName: 'Procedure Name',
+      type: 'singleSelect',
+      valueOptions: relatedData,
+      editable: true,
+      flex: 1,
+    },
+    {
+      field: 'description',
+      headerName: 'Description',
+      editable: true,
+      cellClassName: 'wrapText',
+      flex: 1,
+    },
+    {
+      field: 'source',
+      headerName: 'Source',
+      editable: true,
+      headerAlign: 'center',
+      align: 'center',
+      type: 'singleSelect',
+      valueOptions: ['American Medical Associatio', 'Custom'],
+      defaultValueGetter: () => 'Active',
+      flex: 1,
+    },
+    {
+      field: 'status',
+      headerName: 'Status',
+      editable: true,
+      headerAlign: 'center',
+      align: 'center',
+      type: 'singleSelect',
+      valueOptions: ['Active', 'Inactive'],
+      defaultValueGetter: () => 'Active',
+      flex: 1,
+    },
+  ];
 
   async function saveRow(id, row, oldRow, oldRows) {
     try {
+      // Get the id for the procedure category the user selected
+
+      // *************** CUSTOMIZE **************
+      if (row.procedure_category_name !== oldRow.procedure_category_name) {
+        const correspondingObject = relatedObjects.find(
+          (obj) => obj.name === row.procedure_category_name
+        );
+        row.procedure_category_id = correspondingObject.id;
+      }
+      // *************** CUSTOMIZE **************
+
+      console.log('saveRow row:', row);
       if (row.isNew) {
         const rowToSave = { ...row };
-        // Delete the id that was generated when row was created
         delete rowToSave.id;
         const data = await postData(table, rowToSave);
-        // Add the id returned from the database
         rowToSave.id = data.data.id;
         setRows(oldRows.map((r) => (r.id === id ? { ...rowToSave } : r)));
         return rowToSave;
@@ -123,7 +191,10 @@ export default function DisordersGrid() {
       }
     } catch (error) {
       setRows(oldRows);
-      const errorMessage = createErrorMessage(error, row.name);
+      const errorMessage = createErrorMessage(
+        error,
+        row.procedure_category_name
+      );
       throw errorMessage;
     }
   }

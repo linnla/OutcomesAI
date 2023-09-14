@@ -5,13 +5,14 @@ import ReadOnlyDataGrid from '../../../components/datagrid/readonly';
 import UserContext from '../../../contexts/UserContext';
 import { getData, postData, putData, deleteData } from '../../../utils/API';
 import { validateRequiredAttributes } from '../../../utils/ValidationUtils';
+
 import { createErrorMessage } from '../../../utils/ErrorMessage';
 import ErrorModal from '../../../utils/ErrorModal';
 
 // *************** CUSTOMIZE **************
-export default function DisordersGrid() {
-  const title = 'Disorders';
-  const table = 'disorders';
+export default function MedicationTypesGrid() {
+  const title = 'Medication Types';
+  const table = 'medication_types';
   // *************** CUSTOMIZE **************
 
   const { role } = useContext(UserContext);

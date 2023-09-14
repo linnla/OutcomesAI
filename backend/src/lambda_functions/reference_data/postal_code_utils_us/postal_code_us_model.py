@@ -1,7 +1,5 @@
-from sqlalchemy import Column, String, Integer, DateTime, Date, Boolean, Numeric, Float
-from sqlalchemy.dialects.postgresql import ARRAY
+from sqlalchemy import Column, String, Integer, Numeric
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.dialects.postgresql import UUID
 
 Base = declarative_base()
 

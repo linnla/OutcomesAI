@@ -106,7 +106,7 @@ const Sidebar = () => {
               </Box>
             )}
           </MenuItem>
-          <Box paddingLeft={isCollapsed ? undefined : '10%'}>
+          <Box paddingLeft={isCollapsed ? undefined : '5%'}>
             <Item
               title='Dashboard'
               to='/dashboard'
@@ -148,6 +148,69 @@ const Sidebar = () => {
               sx={{ m: '15px 0 5px 20px' }}
             ></Typography>
             <SubMenu prefix='Reference Data'>
+              <Typography
+                variant='h6'
+                color={colors.grey[300]}
+                sx={{ m: '15px 0 5px 20px' }}
+              >
+                Medications
+              </Typography>
+              <Item
+                title='Active Ingredients'
+                to='/reference_data/active_ingredients'
+                icon={<BusinessOutlinedIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
+              <Item
+                title='Administration Methods'
+                to='/reference_data/administration_methods'
+                icon={<BusinessOutlinedIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
+              <Item
+                title='Dosage Units'
+                to='/reference_data/dosage_units'
+                icon={<BusinessOutlinedIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
+              <Item
+                title='Drug Delivery Forms'
+                to='/reference_data/drug_delivery_forms'
+                icon={<BusinessOutlinedIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
+              <Item
+                title='Medication Sources'
+                to='/reference_data/medication_sources'
+                icon={<BusinessOutlinedIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
+              <Item
+                title='Medication Types'
+                to='/reference_data/medication_types'
+                icon={<BusinessOutlinedIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
+              <Typography
+                variant='h6'
+                color={colors.grey[300]}
+                sx={{ m: '15px 0 5px 20px' }}
+              >
+                Diagnosis
+              </Typography>
+              <Item
+                title='Diagnosis Codes'
+                to='/reference_data/diagnosis_codes'
+                icon={<BusinessOutlinedIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
               <Item
                 title='Disorders'
                 to='/reference_data/disorders'
@@ -155,27 +218,34 @@ const Sidebar = () => {
                 selected={selected}
                 setSelected={setSelected}
               />
+              <Typography
+                variant='h6'
+                color={colors.grey[300]}
+                sx={{ m: '15px 0 5px 20px' }}
+              >
+                Procedures
+              </Typography>
               <Item
-                title='CPT Catgeories'
-                to='/cptCategories'
+                title='Procedure Catgeories'
+                to='/reference_data/procedure_categories'
                 icon={<BusinessOutlinedIcon />}
                 selected={selected}
                 setSelected={setSelected}
               />
               <Item
-                title='CPT Codes'
-                to='/cptCodes'
+                title='Procedure Codes'
+                to='/reference_data/procedure_codes'
                 icon={<BusinessOutlinedIcon />}
                 selected={selected}
                 setSelected={setSelected}
               />
-              <Item
-                title='Diagnosis Codes'
-                to='/diagnosisCodes'
-                icon={<BusinessOutlinedIcon />}
-                selected={selected}
-                setSelected={setSelected}
-              />
+              <Typography
+                variant='h6'
+                color={colors.grey[300]}
+                sx={{ m: '15px 0 5px 20px' }}
+              >
+                TMS Devices
+              </Typography>
             </SubMenu>
             <Typography
               variant='h6'

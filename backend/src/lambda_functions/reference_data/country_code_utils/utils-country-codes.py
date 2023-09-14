@@ -1,7 +1,7 @@
 import pandas as pd
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from countries_model import Country
+from data_model import Country
 from database import get_database_session
 
 

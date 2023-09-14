@@ -1,4 +1,4 @@
-from disorder_model import Disorder
+from data_model import Disorder
 from database_crud import select_reference_table, create, update, delete
 from json import dumps
 import logging

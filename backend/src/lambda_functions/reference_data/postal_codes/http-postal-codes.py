@@ -1,4 +1,4 @@
-from postal_code_model import PostalCode
+from data_model import PostalCode
 from database_crud import select
 from json import dumps
 import logging

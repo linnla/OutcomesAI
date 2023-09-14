@@ -1,4 +1,4 @@
-from episode_of_care_model import EpisodeOfCare
+from data_model import EpisodeOfCare
 from database_crud import select, create, update, delete
 from json import dumps
 import logging

@@ -13,12 +13,20 @@ import Invoices from './pages/Invoices';
 import OfficeManageGrid from './pages/offices';
 import PractitionerManageGrid from './pages/practitioners/index';
 import PatientManageGrid from './pages/patients/index';
-import CPTCodeManageGrid from './pages/cpt_codes';
-import DiagnosisCodeManageGrid from './pages/diagnosis_codes';
-import CPTCategoryManageGrid from './pages/cpt_categories';
 
 // Reference Data
+import ActiveIngredientsGrid from './pages/reference_data/active_ingredients';
+import AcquisitionSourcesGrid from './pages/reference_data/acquisition_sources';
+import AdministrationRoutesGrid from './pages/reference_data/administration_routes';
+import DosageFormsGrid from './pages/reference_data/dosage_forms';
+import DosageUnitsGrid from './pages/reference_data/dosage_units';
+import MedicationTypesGrid from './pages/reference_data/medication_types';
+
+import DiagnosisCodeGrid from './pages/reference_data/diagnosis_codes';
 import DisordersGrid from './pages/reference_data/disorders';
+
+import ProcedureCategoriesGrid from './pages/reference_data/procedure_categories';
+import ProcedureCodesGrid from './pages/reference_data/procedure_codes';
 
 import Bar from './pages/Bar';
 import Form from './pages/Form';
@@ -67,11 +75,62 @@ function App() {
         <Route path='home' element={<Home />} />
         <Route path='/login' element={<Login />} />
         <Route path='/dashboard' element={<Dashboard />} />
-
-        <Route path='/cptCategories' element={<CPTCategoryManageGrid />} />
-        <Route path='/cptCodes' element={<CPTCodeManageGrid />} />
-        <Route path='/diagnosisCodes' element={<DiagnosisCodeManageGrid />} />
-
+        <Route
+          path='/reference_data/active_ingredients'
+          element={
+            <RequireAuth>
+              <ActiveIngredientsGrid />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path='/reference_data/medication_sources'
+          element={
+            <RequireAuth>
+              <AcquisitionSourcesGrid />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path='/reference_data/administration_methods'
+          element={
+            <RequireAuth>
+              <AdministrationRoutesGrid />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path='/reference_data/drug_delivery_forms'
+          element={
+            <RequireAuth>
+              <DosageFormsGrid />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path='/reference_data/dosage_units'
+          element={
+            <RequireAuth>
+              <DosageUnitsGrid />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path='/reference_data/medication_types'
+          element={
+            <RequireAuth>
+              <MedicationTypesGrid />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path='/reference_data/diagnosis_codes'
+          element={
+            <RequireAuth>
+              <DiagnosisCodeGrid />
+            </RequireAuth>
+          }
+        />
         <Route
           path='/reference_data/disorders'
           element={
@@ -80,7 +139,23 @@ function App() {
             </RequireAuth>
           }
         />
-
+        <Route
+          path='/reference_data/procedure_categories'
+          element={
+            <RequireAuth>
+              <ProcedureCategoriesGrid />
+            </RequireAuth>
+          }
+        />
+        />
+        <Route
+          path='/reference_data/procedure_codes'
+          element={
+            <RequireAuth>
+              <ProcedureCodesGrid />
+            </RequireAuth>
+          }
+        />
         <Route
           path='/offices'
           element={
@@ -89,7 +164,6 @@ function App() {
             </RequireAuth>
           }
         />
-
         <Route
           path='/practitioners'
           element={
@@ -98,7 +172,6 @@ function App() {
             </RequireAuth>
           }
         />
-
         <Route
           path='/patients'
           element={
@@ -107,7 +180,6 @@ function App() {
             </RequireAuth>
           }
         />
-
         <Route path='/form' element={<Form />} />
         <Route path='/bar' element={<Bar />} />
         <Route path='/pie' element={<Pie />} />

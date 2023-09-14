@@ -1,4 +1,4 @@
-from office_model import Office
+from data_model import Office
 from database_crud import select, create, update, delete
 from json import dumps
 import logging

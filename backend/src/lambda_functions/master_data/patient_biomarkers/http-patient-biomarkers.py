@@ -1,4 +1,4 @@
-from patient_biomarkers_model import PatientBiomarker
+from data_model import PatientBiomarker
 from database_crud import select, create, update, delete
 from json import dumps
 import logging

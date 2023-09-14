@@ -1,4 +1,4 @@
-from role_model import Role
+from data_model import Role
 from database_crud import select_reference_table, create, update, delete
 from json import dumps
 import logging

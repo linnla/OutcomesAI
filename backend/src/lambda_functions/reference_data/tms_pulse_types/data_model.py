@@ -1,6 +1,4 @@
 from sqlalchemy import String, Integer, DateTime
-from sqlalchemy.dialects.postgresql import ARRAY
-from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import mapped_column
 from sqlalchemy.orm import DeclarativeBase
 
