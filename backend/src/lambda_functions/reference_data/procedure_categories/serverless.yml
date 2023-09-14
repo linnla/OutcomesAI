@@ -1,0 +1,45 @@
+service: outcomesai-procedure-categories-http
+
+frameworkVersion: '3'
+
+plugins:
+  - serverless-prune-plugin
+
+custom:
+  config: ${file(../../../lambda_config/outcomesai-${self:provider.stage}-config.json)}
+  prune:
+    automatic: true
+    number: 3
+    dryRun: false
+    olderThan: 7
+
+provider:
+  name: aws
+  runtime: python3.8
+  stage: ${opt:stage, 'dev'}
+  region: ${opt:region, 'us-west-2'}
+  deploymentBucket: outcomesai-${opt:stage}
+  logRetentionInDays: 3
+  environment:
+    SECRET: '{{resolve:ssm:/${self:provider.stage}/SECRET}}'
+    REGION: ${self:provider.region}
+    HOST: '{{resolve:ssm:/${self:provider.stage}/HOST}}'
+    DATABASE: '{{resolve:ssm:/${self:provider.stage}/DATABASE}}'
+  iam:
+    role: ${self:custom.config.iamRole}
+  vpc:
+    securityGroupIds: ${self:custom.config.securityGroupIds}
+    subnetIds: ${self:custom.config.subnets}
+
+functions:
+  http:
+    name: ${self:service}-${self:provider.stage}
+    layers:
+      - ${self:custom.config.psycopg2_jetbridge_layer}
+      - ${self:custom.config.sqlalchemy_layer}
+    handler: http-procedure-categories.lambda_handler
+    description:
+      Handles HTTP requests for CRUD operations on RDS PostgreSQL biomarkers
+      table.
+    memorySize: 512
+    timeout: 5

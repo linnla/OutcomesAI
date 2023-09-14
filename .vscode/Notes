@@ -63,10 +63,11 @@ Reference Tables:
 11. medication_types
 12. postal_codes (Done)
 13. procedure_categories
-14. roles (Done)
-15. tms_frequencies
-16. tms_pulse_types
-17. tms_stimulation_sites
+14. procedure_codes
+15. roles (Done)
+16. tms_frequencies
+17. tms_pulse_types
+18. tms_stimulation_sites
 
 Master data
 
