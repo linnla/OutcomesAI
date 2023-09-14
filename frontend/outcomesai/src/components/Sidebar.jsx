@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { ProSidebar, Menu, MenuItem } from 'react-pro-sidebar';
-import { Box, Typography, useTheme } from '@mui/material';
+import { ProSidebar, Menu, SubMenu, MenuItem } from 'react-pro-sidebar';
+import { Box, IconButton, Typography, useTheme } from '@mui/material';
 import { Link } from 'react-router-dom';
 import 'react-pro-sidebar/dist/css/styles.css';
 import { tokens } from '../theme';
@@ -15,6 +15,7 @@ import BarChartOutlinedIcon from '@mui/icons-material/BarChartOutlined';
 import PieChartOutlineOutlinedIcon from '@mui/icons-material/PieChartOutlineOutlined';
 import TimelineOutlinedIcon from '@mui/icons-material/TimelineOutlined';
 import MapOutlinedIcon from '@mui/icons-material/MapOutlined';
+import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme();
@@ -31,6 +32,24 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
       <Typography>{title}</Typography>
       <Link to={to} />
     </MenuItem>
+  );
+};
+
+const SubMenuItem = ({ title, to, icon, selected, setSelected }) => {
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
+  return (
+    <SubMenu
+      active={selected === title}
+      style={{
+        color: colors.grey[100],
+      }}
+      onClick={() => setSelected(title)}
+      icon={icon}
+    >
+      <Typography>{title}</Typography>
+      <Link to={to} />
+    </SubMenu>
   );
 };
 
@@ -62,6 +81,31 @@ const Sidebar = () => {
     >
       <ProSidebar collapsed={isCollapsed}>
         <Menu iconShape='square'>
+          {/* LOGO AND MENU ICON */}
+          <MenuItem
+            onClick={() => setIsCollapsed(!isCollapsed)}
+            icon={isCollapsed ? <MenuOutlinedIcon /> : undefined}
+            style={{
+              margin: '10px 0 20px 0',
+              color: colors.grey[100],
+            }}
+          >
+            {!isCollapsed && (
+              <Box
+                display='flex'
+                justifyContent='space-between'
+                alignItems='center'
+                ml='15px'
+              >
+                <Typography variant='h3' color={colors.grey[100]}>
+                  OutcomesAI
+                </Typography>
+                <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>
+                  <MenuOutlinedIcon />
+                </IconButton>
+              </Box>
+            )}
+          </MenuItem>
           <Box paddingLeft={isCollapsed ? undefined : '10%'}>
             <Item
               title='Dashboard'
@@ -102,30 +146,37 @@ const Sidebar = () => {
               variant='h6'
               color={colors.grey[300]}
               sx={{ m: '15px 0 5px 20px' }}
-            >
-              Master Data
-            </Typography>
-            <Item
-              title='CPT Catgeories'
-              to='/cptCategories'
-              icon={<BusinessOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <Item
-              title='CPT Codes'
-              to='/cptCodes'
-              icon={<BusinessOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <Item
-              title='Diagnosis Codes'
-              to='/diagnosisCodes'
-              icon={<BusinessOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
+            ></Typography>
+            <SubMenu prefix='Reference Data'>
+              <Item
+                title='Disorders'
+                to='/reference_data/disorders'
+                icon={<BusinessOutlinedIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
+              <Item
+                title='CPT Catgeories'
+                to='/cptCategories'
+                icon={<BusinessOutlinedIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
+              <Item
+                title='CPT Codes'
+                to='/cptCodes'
+                icon={<BusinessOutlinedIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
+              <Item
+                title='Diagnosis Codes'
+                to='/diagnosisCodes'
+                icon={<BusinessOutlinedIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
+            </SubMenu>
             <Typography
               variant='h6'
               color={colors.grey[300]}
@@ -197,3 +248,12 @@ const Sidebar = () => {
 };
 
 export default Sidebar;
+
+/*
+<SubMenu label='Reference Data'>
+            <MenuItem component={<Link to='/reference_data/disorders' />}>
+              {<BusinessOutlinedIcon />}
+              Disorders
+            </MenuItem>
+          </SubMenu>
+          */

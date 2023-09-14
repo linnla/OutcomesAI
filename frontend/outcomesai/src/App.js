@@ -17,6 +17,9 @@ import CPTCodeManageGrid from './pages/cpt_codes';
 import DiagnosisCodeManageGrid from './pages/diagnosis_codes';
 import CPTCategoryManageGrid from './pages/cpt_categories';
 
+// Reference Data
+import DisordersGrid from './pages/reference_data/disorders';
+
 import Bar from './pages/Bar';
 import Form from './pages/Form';
 import Line from './pages/Line';
@@ -68,6 +71,15 @@ function App() {
         <Route path='/cptCategories' element={<CPTCategoryManageGrid />} />
         <Route path='/cptCodes' element={<CPTCodeManageGrid />} />
         <Route path='/diagnosisCodes' element={<DiagnosisCodeManageGrid />} />
+
+        <Route
+          path='/reference_data/disorders'
+          element={
+            <RequireAuth>
+              <DisordersGrid />
+            </RequireAuth>
+          }
+        />
 
         <Route
           path='/offices'
