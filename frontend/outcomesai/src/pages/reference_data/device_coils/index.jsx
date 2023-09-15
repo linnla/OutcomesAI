@@ -10,36 +10,23 @@ import { createErrorMessage } from '../../../utils/ErrorMessage';
 import ErrorModal from '../../../utils/ErrorModal';
 
 // *************** CUSTOMIZE **************
-export default function ProcedureCodesGrid() {
-  const title = 'Procedure Codes';
-  const table = 'procedure_codes';
-  const relatedTable = 'procedure_categories';
-  const requiredAttributes = [
-    'code',
-    'procedure_category_id',
-    'source',
-    'name',
-    'description',
-    'status',
-  ];
-  const attributeNames = [
-    'Procedure Code',
-    'Procedure Category',
-    'Source',
-    'Name',
-    'Description',
-    'Status',
-  ];
+export default function DeviceCoilsGrid() {
+  const title = 'TMS Device Coils';
+  const table = 'device_coils';
+  const relatedTable = 'devices';
+  const requiredAttributes = ['name', 'device_id', 'status'];
+  const attributeNames = ['Coil Name', 'TMS Device', 'Status'];
 
   function createRowData(rows) {
     // IS THIS REDUNDANT, ITS ALSO IN DefaultToolBar
     const newId = Math.floor(100000 + Math.random() * 900000);
     return {
       id: newId,
-      code: '',
-      procedure_category_id: '',
-      source: 'American Medical Associatio',
       name: '',
+      device_id: '',
+      device_name: '',
+      model_number: '',
+      year: '',
       description: '',
       status: 'Active',
     };
@@ -119,16 +106,29 @@ export default function ProcedureCodesGrid() {
   const columns = [
     { field: 'id', headerName: 'ID', flex: 0.5 },
     {
-      field: 'code',
-      headerName: 'Procedure Code',
+      field: 'name',
+      headerName: 'Coil Name',
       editable: true,
       cellClassName: 'name-column--cell',
+      width: 200,
     },
     {
-      field: 'procedure_category_name',
-      headerName: 'Procedure Name',
+      field: 'model_number',
+      headerName: 'Model',
+      editable: true,
+      flex: 1,
+    },
+    {
+      field: 'device_name',
+      headerName: 'TMS Device',
       type: 'singleSelect',
       valueOptions: relatedData,
+      editable: true,
+      flex: 1,
+    },
+    {
+      field: 'year',
+      headerName: 'Year',
       editable: true,
       flex: 1,
     },
@@ -137,17 +137,6 @@ export default function ProcedureCodesGrid() {
       headerName: 'Description',
       editable: true,
       cellClassName: 'wrapText',
-      flex: 1,
-    },
-    {
-      field: 'source',
-      headerName: 'Source',
-      editable: true,
-      headerAlign: 'center',
-      align: 'center',
-      type: 'singleSelect',
-      valueOptions: ['American Medical Associatio', 'Custom'],
-      defaultValueGetter: () => 'Active',
       flex: 1,
     },
     {
@@ -165,14 +154,14 @@ export default function ProcedureCodesGrid() {
 
   async function saveRow(id, row, oldRow, oldRows) {
     try {
-      // Get the id for the procedure category the user selected
+      // Get the id for the disorder the user selected
 
       // *************** CUSTOMIZE **************
-      if (row.procedure_category_name !== oldRow.procedure_category_name) {
+      if (row.disorder_name !== oldRow.disorder_name) {
         const correspondingObject = relatedObjects.find(
-          (obj) => obj.name === row.procedure_category_name
+          (obj) => obj.name === row.disorder_name
         );
-        row.procedure_category_id = correspondingObject.id;
+        row.disorder_id = correspondingObject.id;
       }
       // *************** CUSTOMIZE **************
 
@@ -191,10 +180,7 @@ export default function ProcedureCodesGrid() {
       }
     } catch (error) {
       setRows(oldRows);
-      const errorMessage = createErrorMessage(
-        error,
-        row.procedure_category_name
-      );
+      const errorMessage = createErrorMessage(error, row.name);
       throw errorMessage;
     }
   }

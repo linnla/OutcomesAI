@@ -78,7 +78,7 @@ export default function CPTCodeManageGrid() {
   const saveTable = 'cpt_codes';
   const getTable = 'cpt_codes';
   const requiredAttributes = ['cpt_code', 'cpt_category_id', 'description'];
-  const attributeNames = ['CPT Code', 'CPT Category', 'Dsecription'];
+  const attributeNames = ['CPT Code', 'CPT Category', 'Description'];
 
   function createRowData(rows) {
     // IS THIS REDUNDANT, ITS ALSO IN DefaultToolBar

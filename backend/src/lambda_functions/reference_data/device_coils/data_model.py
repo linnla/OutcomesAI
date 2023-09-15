@@ -1,5 +1,4 @@
 from sqlalchemy import String, Integer, DateTime, ForeignKey
-from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy.orm import relationship
 from sqlalchemy.orm import mapped_column
 from sqlalchemy.orm import DeclarativeBase
@@ -9,63 +8,63 @@ class Base(DeclarativeBase):
     pass
 
 
-class Biomarker(Base):
-    __tablename__ = "biomarkers"
+class DeviceCoil(Base):
+    __tablename__ = "device_coils"
 
     id = mapped_column(Integer, primary_key=True)
-    biomarker_type_id = mapped_column(
-        Integer, ForeignKey("biomarker_types.id"), nullable=False
-    )
-    acronym = mapped_column(String(12), nullable=False)
-    name = mapped_column(String(85), nullable=False)
-    biomarker_values = mapped_column(ARRAY(String), nullable=False)
+    device_id = mapped_column(Integer, ForeignKey("devices.id"), primary_key=False)
+    name = mapped_column(String(65), nullable=False)
+    model_number = mapped_column(String(65), nullable=True)
+    year = mapped_column(Integer, nullable=True)
+    description = mapped_column(String(255), nullable=True)
     status = mapped_column(String(8), nullable=False, default="Active")
     created_at = mapped_column(DateTime, nullable=False)
     updated_at = mapped_column(DateTime, nullable=False)
 
     # Define relationships
-    biomarker_type = relationship("BiomarkerType", foreign_keys=[biomarker_type_id])
+    device = relationship("Device", foreign_keys=[device_id])
 
     def to_dict(self):
-        biomarker_type = self.biomarker_type.to_dict()
+        device = self.device.to_dict()
         created = self.created_at.strftime("%Y-%m-%d")
         updated = self.updated_at.strftime("%Y-%m-%d")
 
         return {
             "id": self.id,
-            "biomarker_type_id": self.biomarker_type_id,
-            "biomarker_type_name": biomarker_type["name"],
-            "acronym": self.acronym,
+            "device_id": self.device_id,
+            "device_name": device["name"],
             "name": self.name,
-            "biomarker_values": self.biomarker_values,
+            "model_number": self.model_number,
+            "year": self.year,
+            "description": self.description,
             "status": self.status,
         }
 
     select_required_params = ["id"]
-    create_required_fields = [
-        "biomarker_type_id",
-        "acronym",
-        "name",
-        "biomarker_values",
-    ]
-    create_allowed_fields = ["status"]
+    create_required_fields = ["device_id", "name"]
+    create_allowed_fields = ["model_number", "year", "status", "description"]
     update_required_fields = ["id"]
     update_allowed_fields = [
-        "biomarker_type_id",
-        "acronym",
         "name",
-        "biomarker_values",
+        "device_id",
+        "model_number",
+        "year",
+        "description",
         "status",
     ]
     delete_required_fields = ["id"]
 
 
-class BiomarkerType(Base):
-    __tablename__ = "biomarker_types"
+class Device(Base):
+    __tablename__ = "devices"
 
     id = mapped_column(Integer, primary_key=True)
+    manufacturer = mapped_column(String(55), nullable=False)
+    model_number = mapped_column(String(55), nullable=False)
     name = mapped_column(String(75), nullable=False)
-    description = mapped_column(String(255), nullable=False)
+    year = mapped_column(Integer, nullable=True)
+
+    description = mapped_column(String(255), nullable=True)
     status = mapped_column(String(8), nullable=False, default="Active")
     created_at = mapped_column(DateTime, nullable=False)
     updated_at = mapped_column(DateTime, nullable=False)
@@ -73,6 +72,8 @@ class BiomarkerType(Base):
     def to_dict(self):
         return {
             "id": self.id,
+            "manufacturer": self.manufacturer,
+            "model_number": self.model_number,
             "name": self.name,
             "description": self.description,
             "status": self.status,

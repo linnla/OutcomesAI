@@ -50,24 +50,43 @@ Settings
 
 Reference Tables:
 
-1. acquisition_sources
-2. active_ingredients
+Medications
+
+1. active_ingredients
+2. acquisition_sources
 3. administration_routes
-4. appointment_types
-5. biomarker_types (Done)
-6. countries (Done)
-7. devices
-8. disorders (Done)
-9. dosage_forms
-10. dosage_units
-11. medication_types
-12. postal_codes (Done)
-13. procedure_categories
-14. procedure_codes
-15. roles (Done)
-16. tms_frequencies
-17. tms_pulse_types
-18. tms_stimulation_sites
+4. dosage_forms
+5. dosage_units
+6. medication_types
+
+Diagnosis
+
+7. diagnosis_codes
+8. disorders
+
+Procedures
+
+9. procedure_categories
+10. procedure_codes
+
+TMS
+
+11. devices
+12. tms_frequencies
+13. tms_pulse_types 14.
+14. tms_stimulation_sites
+
+Appointments
+
+15. appointment_types
+
+Patients
+
+16. biomarker_types 17. biomarkers
+
+Security
+
+19. roles
 
 Master data
 

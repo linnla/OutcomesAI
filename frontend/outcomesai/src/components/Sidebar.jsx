@@ -244,8 +244,78 @@ const Sidebar = () => {
                 color={colors.grey[300]}
                 sx={{ m: '15px 0 5px 20px' }}
               >
-                TMS Devices
+                TMS
               </Typography>
+              <Item
+                title='Devices'
+                to='/reference_data/tms_devices'
+                icon={<BusinessOutlinedIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
+              <Item
+                title='Coils'
+                to='/reference_data/tms_device_coils'
+                icon={<BusinessOutlinedIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
+              <Item
+                title='Frequencies'
+                to='/reference_data/tms_frequencies'
+                icon={<BusinessOutlinedIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
+              <Item
+                title='Pulse Types'
+                to='/reference_data/tms_pulse_types'
+                icon={<BusinessOutlinedIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
+              <Item
+                title='Stimulation Sites'
+                to='/reference_data/tms_stimulation_sites'
+                icon={<BusinessOutlinedIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
+              <Typography
+                variant='h6'
+                color={colors.grey[300]}
+                sx={{ m: '15px 0 5px 20px' }}
+              >
+                Biomarkers
+              </Typography>
+              <Item
+                title='Biomarker Types'
+                to='/reference_data/biomarker_types'
+                icon={<BusinessOutlinedIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
+              <Item
+                title='Biomarkers'
+                to='/reference_data/biomarkers'
+                icon={<BusinessOutlinedIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
+              <Typography
+                variant='h6'
+                color={colors.grey[300]}
+                sx={{ m: '15px 0 5px 20px' }}
+              >
+                Security
+              </Typography>
+              <Item
+                title='User Roles'
+                to='/reference_data/user_roles'
+                icon={<BusinessOutlinedIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
             </SubMenu>
             <Typography
               variant='h6'

@@ -8,26 +8,25 @@ import { getData, postData, putData, deleteData } from '../../../utils/API';
 import { validateRequiredAttributes } from '../../../utils/ValidationUtils';
 import { createErrorMessage } from '../../../utils/ErrorMessage';
 import ErrorModal from '../../../utils/ErrorModal';
+import { Box, Chip, Stack } from '@mui/material';
 
 // *************** CUSTOMIZE **************
-export default function ProcedureCodesGrid() {
-  const title = 'Procedure Codes';
-  const table = 'procedure_codes';
-  const relatedTable = 'procedure_categories';
+export default function BiomarkersGrid() {
+  const title = 'Biomarkers';
+  const table = 'biomarkers';
+  const relatedTable = 'biomarker_types';
   const requiredAttributes = [
-    'code',
-    'procedure_category_id',
-    'source',
+    'acronym',
     'name',
-    'description',
+    'biomarker_type_id',
+    'biomarker_values',
     'status',
   ];
   const attributeNames = [
-    'Procedure Code',
-    'Procedure Category',
-    'Source',
-    'Name',
-    'Description',
+    'Biomarker Acronym',
+    'Biomarker Name',
+    'Biomarker Type',
+    'Biomarker Values',
     'Status',
   ];
 
@@ -36,11 +35,11 @@ export default function ProcedureCodesGrid() {
     const newId = Math.floor(100000 + Math.random() * 900000);
     return {
       id: newId,
-      code: '',
-      procedure_category_id: '',
-      source: 'American Medical Associatio',
+      acronym: '',
       name: '',
-      description: '',
+      biomarker_type_id: '',
+      biomarker_type_name: '',
+      biomarker_values: [],
       status: 'Active',
     };
   }
@@ -67,8 +66,10 @@ export default function ProcedureCodesGrid() {
     setLoading(true);
     getData(table)
       .then((data) => {
-        //console.log('data:', data);
-        const sortedArray = data.sort((a, b) => a.code.localeCompare(b.code));
+        console.log('data:', data);
+        const sortedArray = data.sort((a, b) =>
+          a.acronym.localeCompare(b.acronym)
+        );
         setRows(sortedArray);
       })
       .catch((error) => {
@@ -89,7 +90,7 @@ export default function ProcedureCodesGrid() {
     setLoading(true);
     getData(relatedTable)
       .then((data) => {
-        //console.log('related data:', data);
+        console.log('related data:', data);
         const relatedData = data.map((obj) => obj.name).sort();
         setRelatedData(relatedData);
         // Used to get the id property of user select a different category
@@ -119,36 +120,39 @@ export default function ProcedureCodesGrid() {
   const columns = [
     { field: 'id', headerName: 'ID', flex: 0.5 },
     {
-      field: 'code',
-      headerName: 'Procedure Code',
+      field: 'acronym',
+      headerName: 'Biomarker Code',
       editable: true,
       cellClassName: 'name-column--cell',
     },
     {
-      field: 'procedure_category_name',
-      headerName: 'Procedure Name',
+      field: 'biomarker_type_name',
+      headerName: 'Biomarker Type',
       type: 'singleSelect',
       valueOptions: relatedData,
       editable: true,
       flex: 1,
     },
     {
-      field: 'description',
-      headerName: 'Description',
+      field: 'name',
+      headerName: 'Biomarker Name',
       editable: true,
-      cellClassName: 'wrapText',
       flex: 1,
     },
     {
-      field: 'source',
-      headerName: 'Source',
+      field: 'biomarker_values',
+      headerName: 'Biomarker Values',
       editable: true,
-      headerAlign: 'center',
-      align: 'center',
-      type: 'singleSelect',
-      valueOptions: ['American Medical Associatio', 'Custom'],
-      defaultValueGetter: () => 'Active',
       flex: 1,
+      type: 'multipleSelect',
+      valueOptions: [...new Set(rows.map((o) => o.biomarker_values).flat())],
+      renderCell: (params) => (
+        <Stack direction='row' spacing={0.25}>
+          {params.row.biomarker_values.map((biomarker_value) => (
+            <Chip label={biomarker_value} />
+          ))}
+        </Stack>
+      ),
     },
     {
       field: 'status',
@@ -165,14 +169,14 @@ export default function ProcedureCodesGrid() {
 
   async function saveRow(id, row, oldRow, oldRows) {
     try {
-      // Get the id for the procedure category the user selected
+      // Get the id for the disorder the user selected
 
       // *************** CUSTOMIZE **************
-      if (row.procedure_category_name !== oldRow.procedure_category_name) {
+      if (row.biomarker_type_name !== oldRow.biomarker_type_name) {
         const correspondingObject = relatedObjects.find(
-          (obj) => obj.name === row.procedure_category_name
+          (obj) => obj.name === row.biomarker_typer_name
         );
-        row.procedure_category_id = correspondingObject.id;
+        row.biomarker_type_id = correspondingObject.id;
       }
       // *************** CUSTOMIZE **************
 
@@ -191,10 +195,7 @@ export default function ProcedureCodesGrid() {
       }
     } catch (error) {
       setRows(oldRows);
-      const errorMessage = createErrorMessage(
-        error,
-        row.procedure_category_name
-      );
+      const errorMessage = createErrorMessage(error, row.code);
       throw errorMessage;
     }
   }
