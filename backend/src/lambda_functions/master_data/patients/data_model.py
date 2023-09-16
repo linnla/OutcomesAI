@@ -82,3 +82,4 @@ class Patient(Base):
         "birthdate",
         "gender",
     ]
+    delete_required_fields = ["id"]

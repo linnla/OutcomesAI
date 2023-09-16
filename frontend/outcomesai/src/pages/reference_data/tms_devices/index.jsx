@@ -1,5 +1,4 @@
 import * as React from 'react';
-import '../../../index.css';
 import { useEffect, useState, useContext } from 'react';
 import EditableDataGrid from '../../../components/datagrid/editable';
 import ReadOnlyDataGrid from '../../../components/datagrid/readonly';
@@ -10,28 +9,11 @@ import { createErrorMessage } from '../../../utils/ErrorMessage';
 import ErrorModal from '../../../utils/ErrorModal';
 
 // *************** CUSTOMIZE **************
-export default function DeviceCoilsGrid() {
-  const title = 'TMS Device Coils';
-  const table = 'device_coils';
-  const relatedTable = 'devices';
-  const requiredAttributes = ['name', 'device_id', 'status'];
-  const attributeNames = ['Coil Name', 'TMS Device', 'Status'];
-
-  function createRowData(rows) {
-    // IS THIS REDUNDANT, ITS ALSO IN DefaultToolBar
-    const newId = Math.floor(100000 + Math.random() * 900000);
-    return {
-      id: newId,
-      name: '',
-      device_id: '',
-      device_name: '',
-      model_number: '',
-      year: '',
-      description: '',
-      status: 'Active',
-    };
-  }
-
+export default function TMSDevicesGrid() {
+  const title = 'TMS Devices';
+  const table = 'tms_devices';
+  const sort_1 = 'manufacturer';
+  const sort_2 = 'name';
   // *************** CUSTOMIZE **************
 
   const { role } = useContext(UserContext);
@@ -42,87 +24,55 @@ export default function DeviceCoilsGrid() {
   const [loading, setLoading] = useState(true);
 
   const setRows = (rows) => {
-    return setRawRows([...rows.map((r, i) => ({ ...r, no: i + 1 }))]);
+    if (!Array.isArray(rows)) {
+      console.error('setRows received non-array data:', rows);
+      return;
+    }
+    setRawRows(rows.map((r, i) => ({ ...r, no: i + 1 })));
   };
+
+  function sortItems(items, sort_attribute_1, sort_attribute_2) {
+    return items.sort((a, b) => {
+      // Primary criterion: sort_attribute_1
+      const comparison_1 = a[sort_attribute_1].localeCompare(
+        b[sort_attribute_1]
+      );
+
+      // If the primary criteria are the same and sort_attribute_2 is provided, sort by sort_attribute_2
+      if (comparison_1 === 0 && sort_attribute_2) {
+        return a[sort_attribute_2].localeCompare(b[sort_attribute_2]); // Secondary criterion
+      }
+
+      return comparison_1;
+    });
+  }
 
   let subtitle = `View ${title}`;
   if (role === 'super') {
     subtitle = 'Add, Edit, Delete, Inactivate';
   }
 
-  useEffect(() => {
-    setLoading(true);
-    getData(table)
-      .then((data) => {
-        //console.log('data:', data);
-        const sortedArray = data.sort((a, b) => a.code.localeCompare(b.code));
-        setRows(sortedArray);
-      })
-      .catch((error) => {
-        const errorMessage = createErrorMessage(error, table);
-        setErrorType('Data Fetch Error');
-        setErrorMessage(errorMessage);
-        setShowErrorModal(true);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  }, []);
-
-  const [relatedData, setRelatedData] = useState([]);
-  const [relatedObjects, setRelatedObjects] = useState([]);
-
-  useEffect(() => {
-    setLoading(true);
-    getData(relatedTable)
-      .then((data) => {
-        //console.log('related data:', data);
-        const relatedData = data.map((obj) => obj.name).sort();
-        setRelatedData(relatedData);
-        // Used to get the id property of user select a different category
-        setRelatedObjects(data);
-      })
-      .catch((error) => {
-        const errorMessage = createErrorMessage(error, relatedTable);
-        setErrorType('Error fetching data');
-        setErrorMessage(errorMessage);
-        setShowErrorModal(true);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  }, []);
-
-  async function validateRow(newRow) {
-    try {
-      validateRequiredAttributes(requiredAttributes, attributeNames, newRow);
-      return newRow;
-    } catch (error) {
-      const errorMessage = createErrorMessage(error, table);
-      throw errorMessage;
-    }
-  }
+  const requiredAttributes = ['manufacturer', 'name', 'status'];
+  const attributeNames = ['Manufacturer', 'Device Name', 'Status'];
 
   const columns = [
     { field: 'id', headerName: 'ID', flex: 0.5 },
     {
       field: 'name',
-      headerName: 'Coil Name',
+      headerName: 'Device Name',
       editable: true,
       cellClassName: 'name-column--cell',
       width: 200,
     },
     {
-      field: 'model_number',
-      headerName: 'Model',
+      field: 'manufacturer',
+      headerName: 'Manufacturer',
       editable: true,
-      flex: 1,
+      width: 200,
     },
     {
-      field: 'device_name',
-      headerName: 'TMS Device',
-      type: 'singleSelect',
-      valueOptions: relatedData,
+      field: 'model_number',
+      headerName: 'Model',
       editable: true,
       flex: 1,
     },
@@ -135,6 +85,8 @@ export default function DeviceCoilsGrid() {
     {
       field: 'description',
       headerName: 'Description',
+      headerAlign: 'left',
+      align: 'left',
       editable: true,
       cellClassName: 'wrapText',
       flex: 1,
@@ -148,28 +100,70 @@ export default function DeviceCoilsGrid() {
       type: 'singleSelect',
       valueOptions: ['Active', 'Inactive'],
       defaultValueGetter: () => 'Active',
-      flex: 1,
+      width: 100,
     },
   ];
+  // *************** CUSTOMIZE ************** END
+
+  useEffect(() => {
+    setLoading(true);
+    getData(table)
+      .then((data) => {
+        //console.log('data:', data);
+        const sortedItems = sortItems(data, sort_1, sort_2);
+        setRows(sortedItems);
+      })
+      .catch((error) => {
+        const errorMessage = createErrorMessage(error, table);
+        setErrorType('Error fetching data');
+        setErrorMessage(errorMessage);
+        setShowErrorModal(true);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, []);
+
+  async function validateRow(newRow, oldRow) {
+    try {
+      validateRequiredAttributes(requiredAttributes, attributeNames, newRow);
+      return newRow;
+    } catch (error) {
+      const errorMessage = createErrorMessage(error, table);
+      throw errorMessage;
+    }
+  }
+
+  const createRowData = (rows) => {
+    // IS THIS REDUNDANT, ITS ALSO IN DefaultToolBar
+    const newId = Math.floor(100000 + Math.random() * 900000);
+    return {
+      id: newId,
+      manufacturer: '',
+      model_number: '',
+      name: '',
+      year: null,
+      description: '',
+      status: 'Active',
+    };
+  };
+  // *************** CUSTOMIZE ************** END
 
   async function saveRow(id, row, oldRow, oldRows) {
     try {
-      // Get the id for the disorder the user selected
-
-      // *************** CUSTOMIZE **************
-      if (row.disorder_name !== oldRow.disorder_name) {
-        const correspondingObject = relatedObjects.find(
-          (obj) => obj.name === row.disorder_name
-        );
-        row.disorder_id = correspondingObject.id;
+      if (
+        row.model_number === '' ||
+        row.model_number === undefined ||
+        row.model_number === null
+      ) {
+        row.model_number = row.name;
       }
-      // *************** CUSTOMIZE **************
-
-      console.log('saveRow row:', row);
       if (row.isNew) {
         const rowToSave = { ...row };
+        // Delete the id that was generated when row was created
         delete rowToSave.id;
         const data = await postData(table, rowToSave);
+        // Add the id returned from the database
         rowToSave.id = data.data.id;
         setRows(oldRows.map((r) => (r.id === id ? { ...rowToSave } : r)));
         return rowToSave;

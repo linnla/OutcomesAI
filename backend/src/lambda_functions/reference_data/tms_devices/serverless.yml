@@ -1,4 +1,4 @@
-service: outcomesai-device-coils-http
+service: outcomesai-tms-devices-http
 
 frameworkVersion: '3'
 
@@ -37,7 +37,7 @@ functions:
     layers:
       - ${self:custom.config.psycopg2_jetbridge_layer}
       - ${self:custom.config.sqlalchemy_layer}
-    handler: http-device-coils.lambda_handler
+    handler: http-tms-devices.lambda_handler
     description:
       Handles HTTP requests for CRUD operations on RDS PostgreSQL biomarkers
       table.

@@ -13,6 +13,8 @@ import { Box, Chip, Stack } from '@mui/material';
 // *************** CUSTOMIZE **************
 export default function BiomarkersGrid() {
   const title = 'Biomarkers';
+  const sort_1 = 'biomarker_type_name';
+  const sort_2 = 'acronym';
   const table = 'biomarkers';
   const relatedTable = 'biomarker_types';
   const requiredAttributes = [
@@ -54,8 +56,28 @@ export default function BiomarkersGrid() {
   const [loading, setLoading] = useState(true);
 
   const setRows = (rows) => {
-    return setRawRows([...rows.map((r, i) => ({ ...r, no: i + 1 }))]);
+    if (!Array.isArray(rows)) {
+      console.error('setRows received non-array data:', rows);
+      return;
+    }
+    setRawRows(rows.map((r, i) => ({ ...r, no: i + 1 })));
   };
+
+  function sortItems(items, sort_attribute_1, sort_attribute_2) {
+    return items.sort((a, b) => {
+      // Primary criterion: sort_attribute_1
+      const comparison_1 = a[sort_attribute_1].localeCompare(
+        b[sort_attribute_1]
+      );
+
+      // If the primary criteria are the same and sort_attribute_2 is provided, sort by sort_attribute_2
+      if (comparison_1 === 0 && sort_attribute_2) {
+        return a[sort_attribute_2].localeCompare(b[sort_attribute_2]); // Secondary criterion
+      }
+
+      return comparison_1;
+    });
+  }
 
   let subtitle = `View ${title}`;
   if (role === 'super') {
@@ -66,11 +88,9 @@ export default function BiomarkersGrid() {
     setLoading(true);
     getData(table)
       .then((data) => {
-        console.log('data:', data);
-        const sortedArray = data.sort((a, b) =>
-          a.acronym.localeCompare(b.acronym)
-        );
-        setRows(sortedArray);
+        //console.log('data:', data);
+        const sortedItems = sortItems(data, sort_1, sort_2);
+        setRows(sortedItems);
       })
       .catch((error) => {
         const errorMessage = createErrorMessage(error, table);
@@ -107,8 +127,20 @@ export default function BiomarkersGrid() {
       });
   }, []);
 
-  async function validateRow(newRow) {
+  async function validateRow(newRow, oldRow) {
     try {
+      validateRequiredAttributes(
+        ['biomarker_type_name'],
+        ['Biomarker Name'],
+        newRow
+      );
+      if (newRow.biomarker_type_name !== oldRow.biomarker_type_name) {
+        const correspondingObject = relatedObjects.find(
+          (obj) => obj.name === newRow.biomarker_typer_name
+        );
+        newRow.biomarker_type_id = correspondingObject.id;
+      }
+
       validateRequiredAttributes(requiredAttributes, attributeNames, newRow);
       return newRow;
     } catch (error) {
@@ -169,17 +201,6 @@ export default function BiomarkersGrid() {
 
   async function saveRow(id, row, oldRow, oldRows) {
     try {
-      // Get the id for the disorder the user selected
-
-      // *************** CUSTOMIZE **************
-      if (row.biomarker_type_name !== oldRow.biomarker_type_name) {
-        const correspondingObject = relatedObjects.find(
-          (obj) => obj.name === row.biomarker_typer_name
-        );
-        row.biomarker_type_id = correspondingObject.id;
-      }
-      // *************** CUSTOMIZE **************
-
       console.log('saveRow row:', row);
       if (row.isNew) {
         const rowToSave = { ...row };

@@ -65,6 +65,7 @@ class PracticePatient(Base):
     create_allowed_fields = []
     update_required_fields = ["practice_id", "patient_id"]
     update_allowed_fields = ["status"]
+    delete_required_fields = ["practice_id", "patient_id"]
 
 
 class Practice(Base):

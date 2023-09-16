@@ -7,12 +7,12 @@ class Base(DeclarativeBase):
     pass
 
 
-class Device(Base):
-    __tablename__ = "devices"
+class TMS_Coil(Base):
+    __tablename__ = "tms_coils"
 
     id = mapped_column(Integer, primary_key=True)
     manufacturer = mapped_column(String(55), nullable=False)
-    model_number = mapped_column(String(55), nullable=False)
+    model_number = mapped_column(String(55), nullable=True)
     name = mapped_column(String(75), nullable=False)
     year = mapped_column(Integer, nullable=True)
 
@@ -31,8 +31,8 @@ class Device(Base):
             "status": self.status,
         }
 
-    create_required_fields = ["manufacturer", "model_number", "name"]
-    create_allowed_fields = ["description"]
+    create_required_fields = ["manufacturer", "name"]
+    create_allowed_fields = ["model_number", "year", "description"]
     update_required_fields = ["id"]
     update_allowed_fields = [
         "manufacturer",

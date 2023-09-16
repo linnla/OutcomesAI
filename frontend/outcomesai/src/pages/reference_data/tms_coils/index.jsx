@@ -5,16 +5,15 @@ import ReadOnlyDataGrid from '../../../components/datagrid/readonly';
 import UserContext from '../../../contexts/UserContext';
 import { getData, postData, putData, deleteData } from '../../../utils/API';
 import { validateRequiredAttributes } from '../../../utils/ValidationUtils';
-
 import { createErrorMessage } from '../../../utils/ErrorMessage';
 import ErrorModal from '../../../utils/ErrorModal';
 
 // *************** CUSTOMIZE **************
-export default function MedicationTypesGrid() {
-  const title = 'Medication Types';
-  const table = 'medication_types';
-  const sort_1 = 'name';
-  const sort_2 = 'null';
+export default function TMSCoilsGrid() {
+  const title = 'TMS Coils';
+  const table = 'tms_coils';
+  const sort_1 = 'manufacturer';
+  const sort_2 = 'name';
   // *************** CUSTOMIZE **************
 
   const { role } = useContext(UserContext);
@@ -53,17 +52,35 @@ export default function MedicationTypesGrid() {
     subtitle = 'Add, Edit, Delete, Inactivate';
   }
 
-  const requiredAttributes = ['name', 'description', 'status'];
-  const attributeNames = ['Name', 'Description', 'Status'];
+  const requiredAttributes = ['manufacturer', 'name', 'status'];
+  const attributeNames = ['Manufacturer', 'Device Name', 'Status'];
 
   const columns = [
     { field: 'id', headerName: 'ID', flex: 0.5 },
     {
       field: 'name',
-      headerName: 'Name',
+      headerName: 'Coil Name',
       editable: true,
       cellClassName: 'name-column--cell',
       width: 200,
+    },
+    {
+      field: 'manufacturer',
+      headerName: 'Manufacturer',
+      editable: true,
+      width: 200,
+    },
+    {
+      field: 'model_number',
+      headerName: 'Model',
+      editable: true,
+      flex: 1,
+    },
+    {
+      field: 'year',
+      headerName: 'Year',
+      editable: true,
+      flex: 1,
     },
     {
       field: 'description',
@@ -122,7 +139,10 @@ export default function MedicationTypesGrid() {
     const newId = Math.floor(100000 + Math.random() * 900000);
     return {
       id: newId,
+      manufacturer: '',
+      model_number: '',
       name: '',
+      year: null,
       description: '',
       status: 'Active',
     };
@@ -131,11 +151,20 @@ export default function MedicationTypesGrid() {
 
   async function saveRow(id, row, oldRow, oldRows) {
     try {
+      if (
+        row.model_number === '' ||
+        row.model_number === undefined ||
+        row.model_number === null
+      ) {
+        row.model_number = row.name;
+      }
       if (row.isNew) {
         const rowToSave = { ...row };
         // Delete the id that was generated when row was created
         delete rowToSave.id;
+        console.log('rowToSave:', rowToSave);
         const data = await postData(table, rowToSave);
+        console.log('save response:', data);
         // Add the id returned from the database
         rowToSave.id = data.data.id;
         setRows(oldRows.map((r) => (r.id === id ? { ...rowToSave } : r)));

@@ -1,4 +1,5 @@
 import * as React from 'react';
+import '../../../index.css';
 import { useEffect, useState, useContext } from 'react';
 import EditableDataGrid from '../../../components/datagrid/editable';
 import ReadOnlyDataGrid from '../../../components/datagrid/readonly';
@@ -9,11 +10,12 @@ import { createErrorMessage } from '../../../utils/ErrorMessage';
 import ErrorModal from '../../../utils/ErrorModal';
 
 // *************** CUSTOMIZE **************
-export default function DevicesGrid() {
-  const title = 'TMS Devices';
-  const table = 'devices';
+export default function AppointmentTypesGrid() {
+  const title = 'Appointment Types';
+  const table = 'appointment_types';
+  const sort_1 = 'name';
+  const sort_2 = 'null';
   // *************** CUSTOMIZE **************
-
   const { role } = useContext(UserContext);
   const [rows, setRawRows] = useState([]);
   const [errorType, setErrorType] = useState('');
@@ -22,48 +24,45 @@ export default function DevicesGrid() {
   const [loading, setLoading] = useState(true);
 
   const setRows = (rows) => {
-    return setRawRows([...rows.map((r, i) => ({ ...r, no: i + 1 }))]);
+    if (!Array.isArray(rows)) {
+      console.error('setRows received non-array data:', rows);
+      return;
+    }
+    setRawRows(rows.map((r, i) => ({ ...r, no: i + 1 })));
   };
+
+  function sortItems(items, sort_attribute_1, sort_attribute_2) {
+    return items.sort((a, b) => {
+      // Primary criterion: sort_attribute_1
+      const comparison_1 = a[sort_attribute_1].localeCompare(
+        b[sort_attribute_1]
+      );
+
+      // If the primary criteria are the same and sort_attribute_2 is provided, sort by sort_attribute_2
+      if (comparison_1 === 0 && sort_attribute_2) {
+        return a[sort_attribute_2].localeCompare(b[sort_attribute_2]); // Secondary criterion
+      }
+
+      return comparison_1;
+    });
+  }
 
   let subtitle = `View ${title}`;
   if (role === 'super') {
     subtitle = 'Add, Edit, Delete, Inactivate';
   }
 
-  const requiredAttributes = ['manufacturer', 'model_number', 'name', 'status'];
-  const attributeNames = [
-    'Manufacturer',
-    'Model Number',
-    'Device Name',
-    'Status',
-  ];
+  const requiredAttributes = ['name', 'description', 'status'];
+  const attributeNames = ['Name', 'Description', 'Status'];
 
   const columns = [
     { field: 'id', headerName: 'ID', flex: 0.5 },
     {
       field: 'name',
-      headerName: 'Device Name',
+      headerName: 'Name',
       editable: true,
       cellClassName: 'name-column--cell',
       width: 200,
-    },
-    {
-      field: 'manufacturer',
-      headerName: 'Manufacturer',
-      editable: true,
-      width: 200,
-    },
-    {
-      field: 'model_number',
-      headerName: 'Model',
-      editable: true,
-      flex: 1,
-    },
-    {
-      field: 'year',
-      headerName: 'Year',
-      editable: true,
-      flex: 1,
     },
     {
       field: 'description',
@@ -86,14 +85,14 @@ export default function DevicesGrid() {
       width: 100,
     },
   ];
-  // *************** CUSTOMIZE ************** END
 
   useEffect(() => {
     setLoading(true);
     getData(table)
       .then((data) => {
         //console.log('data:', data);
-        setRows(data);
+        const sortedItems = sortItems(data, sort_1, sort_2);
+        setRows(sortedItems);
       })
       .catch((error) => {
         const errorMessage = createErrorMessage(error, table);
@@ -106,7 +105,7 @@ export default function DevicesGrid() {
       });
   }, []);
 
-  async function validateRow(newRow) {
+  async function validateRow(newRow, oldRow) {
     try {
       validateRequiredAttributes(requiredAttributes, attributeNames, newRow);
       return newRow;
@@ -121,10 +120,7 @@ export default function DevicesGrid() {
     const newId = Math.floor(100000 + Math.random() * 900000);
     return {
       id: newId,
-      manufacturer: '',
-      model_number: '',
       name: '',
-      year: '',
       description: '',
       status: 'Active',
     };

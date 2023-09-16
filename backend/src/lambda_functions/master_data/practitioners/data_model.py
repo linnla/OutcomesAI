@@ -45,3 +45,4 @@ class Practitioner(Base):
     create_allowed_fields = ["prefix", "suffix", "user_id"]
     update_required_fields = ["id"]
     update_allowed_fields = ["last_name", "first_name", "prefix", "suffix", "email"]
+    delete_required_fields = ["id"]

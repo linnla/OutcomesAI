@@ -1,5 +1,5 @@
 from data_model import PracticePatient
-from database_crud import select, create, update
+from database_crud import select, create, update, delete
 from json import dumps
 import logging
 
@@ -39,6 +39,8 @@ def lambda_handler(event, context):
             entity_class.update_allowed_fields,
             entity_class.create_required_fields,
         )
+    elif event["httpMethod"] == "DELETE":
+        return delete(event, entity_class, entity_class.delete_required_fields)
     else:
         method = event["httpMethod"]
         message = f"{method} method is not allowed"

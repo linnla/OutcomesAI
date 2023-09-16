@@ -10,9 +10,9 @@ import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Team from './pages/Team';
 import Invoices from './pages/Invoices';
-import OfficeManageGrid from './pages/offices';
-import PractitionerManageGrid from './pages/practitioners/index';
-import PatientManageGrid from './pages/patients/index';
+import OfficeGrid from './pages/offices';
+import PractitionerGrid from './pages/practitioners/index';
+import PatientGrid from './pages/patients/index';
 
 // Reference Data
 import ActiveIngredientsGrid from './pages/reference_data/active_ingredients';
@@ -27,9 +27,10 @@ import DisordersGrid from './pages/reference_data/disorders';
 
 import ProcedureCategoriesGrid from './pages/reference_data/procedure_categories';
 import ProcedureCodesGrid from './pages/reference_data/procedure_codes';
+import AppointmentTypesGrid from './pages/reference_data/appointment_types';
 
-import DevicesGrid from './pages/reference_data/devices';
-import DeviceCoilsGrid from './pages/reference_data/device_coils';
+import TMSDevicesGrid from './pages/reference_data/tms_devices';
+import TMSCoilsGrid from './pages/reference_data/tms_coils';
 import TMSFrequenciesGrid from './pages/reference_data/tms_frequencies';
 import TMSPulseTypesGrid from './pages/reference_data/tms_pulse_types';
 import TMSStimlationSitesGrid from './pages/reference_data/tms_stimulation_sites';
@@ -166,18 +167,26 @@ function App() {
           }
         />
         <Route
-          path='/reference_data/tms_devices'
+          path='/reference_data/appointment_types'
           element={
             <RequireAuth>
-              <DevicesGrid />
+              <AppointmentTypesGrid />
             </RequireAuth>
           }
         />
         <Route
-          path='/reference_data/tms_device_coils'
+          path='/reference_data/tms_devices'
           element={
             <RequireAuth>
-              <DeviceCoilsGrid />
+              <TMSDevicesGrid />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path='/reference_data/tms_coils'
+          element={
+            <RequireAuth>
+              <TMSCoilsGrid />
             </RequireAuth>
           }
         />
@@ -233,7 +242,7 @@ function App() {
           path='/offices'
           element={
             <RequireAuth>
-              <OfficeManageGrid />
+              <OfficeGrid />
             </RequireAuth>
           }
         />
@@ -241,7 +250,7 @@ function App() {
           path='/practitioners'
           element={
             <RequireAuth>
-              <PractitionerManageGrid />
+              <PractitionerGrid />
             </RequireAuth>
           }
         />
@@ -249,7 +258,7 @@ function App() {
           path='/patients'
           element={
             <RequireAuth>
-              <PatientManageGrid />
+              <PatientGrid />
             </RequireAuth>
           }
         />

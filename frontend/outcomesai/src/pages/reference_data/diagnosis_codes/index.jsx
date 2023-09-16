@@ -12,6 +12,8 @@ import ErrorModal from '../../../utils/ErrorModal';
 // *************** CUSTOMIZE **************
 export default function DiagnosisCodesGrid() {
   const title = 'Diagnosis Codes';
+  const sort_1 = 'disorder_name';
+  const sort_2 = 'code';
   const table = 'diagnosis_codes';
   const relatedTable = 'disorders';
   const requiredAttributes = ['code', 'disorder_id', 'description', 'status'];
@@ -45,8 +47,28 @@ export default function DiagnosisCodesGrid() {
   const [loading, setLoading] = useState(true);
 
   const setRows = (rows) => {
-    return setRawRows([...rows.map((r, i) => ({ ...r, no: i + 1 }))]);
+    if (!Array.isArray(rows)) {
+      console.error('setRows received non-array data:', rows);
+      return;
+    }
+    setRawRows(rows.map((r, i) => ({ ...r, no: i + 1 })));
   };
+
+  function sortItems(items, sort_attribute_1, sort_attribute_2) {
+    return items.sort((a, b) => {
+      // Primary criterion: sort_attribute_1
+      const comparison_1 = a[sort_attribute_1].localeCompare(
+        b[sort_attribute_1]
+      );
+
+      // If the primary criteria are the same and sort_attribute_2 is provided, sort by sort_attribute_2
+      if (comparison_1 === 0 && sort_attribute_2) {
+        return a[sort_attribute_2].localeCompare(b[sort_attribute_2]); // Secondary criterion
+      }
+
+      return comparison_1;
+    });
+  }
 
   let subtitle = `View ${title}`;
   if (role === 'super') {
@@ -58,8 +80,8 @@ export default function DiagnosisCodesGrid() {
     getData(table)
       .then((data) => {
         //console.log('data:', data);
-        const sortedArray = data.sort((a, b) => a.code.localeCompare(b.code));
-        setRows(sortedArray);
+        const sortedItems = sortItems(data, sort_1, sort_2);
+        setRows(sortedItems);
       })
       .catch((error) => {
         const errorMessage = createErrorMessage(error, table);
@@ -96,8 +118,17 @@ export default function DiagnosisCodesGrid() {
       });
   }, []);
 
-  async function validateRow(newRow) {
+  async function validateRow(newRow, oldRow) {
     try {
+      validateRequiredAttributes(['disorder_name'], ['Disorder'], newRow);
+
+      if (newRow.disorder_name !== oldRow.disorder_name) {
+        const correspondingObject = relatedObjects.find(
+          (obj) => obj.name === newRow.disorder_name
+        );
+        newRow.disorder_id = correspondingObject.id;
+      }
+
       validateRequiredAttributes(requiredAttributes, attributeNames, newRow);
       return newRow;
     } catch (error) {
@@ -144,17 +175,6 @@ export default function DiagnosisCodesGrid() {
 
   async function saveRow(id, row, oldRow, oldRows) {
     try {
-      // Get the id for the disorder the user selected
-
-      // *************** CUSTOMIZE **************
-      if (row.disorder_name !== oldRow.disorder_name) {
-        const correspondingObject = relatedObjects.find(
-          (obj) => obj.name === row.disorder_name
-        );
-        row.disorder_id = correspondingObject.id;
-      }
-      // *************** CUSTOMIZE **************
-
       console.log('saveRow row:', row);
       if (row.isNew) {
         const rowToSave = { ...row };

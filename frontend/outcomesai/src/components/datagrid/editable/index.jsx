@@ -31,6 +31,7 @@ function EditableDataGrid({
   createRowData,
   ...props
 }) {
+  console.log('editableDataGrid:', rows);
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
@@ -124,7 +125,7 @@ function EditableDataGrid({
 
     //console.log('updatedRow', updatedRow);
     try {
-      const validatedRow = await onValidateRow(updatedRow);
+      const validatedRow = await onValidateRow(updatedRow, oldRow);
       const savedRow = await onSaveRow(
         validatedRow.id,
         validatedRow,

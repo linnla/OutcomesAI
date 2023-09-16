@@ -13,6 +13,8 @@ import ErrorModal from '../../../utils/ErrorModal';
 export default function ActiveIngredientsGrid() {
   const title = 'Active Ingredients';
   const table = 'active_ingredients';
+  const sort_1 = 'name';
+  const sort_2 = 'null';
   // *************** CUSTOMIZE **************
 
   const { role } = useContext(UserContext);
@@ -23,12 +25,32 @@ export default function ActiveIngredientsGrid() {
   const [loading, setLoading] = useState(true);
 
   const setRows = (rows) => {
-    return setRawRows([...rows.map((r, i) => ({ ...r, no: i + 1 }))]);
+    if (!Array.isArray(rows)) {
+      console.error('setRows received non-array data:', rows);
+      return;
+    }
+    setRawRows(rows.map((r, i) => ({ ...r, no: i + 1 })));
   };
 
   let subtitle = `View ${title}`;
   if (role === 'super') {
     subtitle = 'Add, Edit, Delete, Inactivate';
+  }
+
+  function sortItems(items, sort_attribute_1, sort_attribute_2) {
+    return items.sort((a, b) => {
+      // Primary criterion: sort_attribute_1
+      const comparison_1 = a[sort_attribute_1].localeCompare(
+        b[sort_attribute_1]
+      );
+
+      // If the primary criteria are the same and sort_attribute_2 is provided, sort by sort_attribute_2
+      if (comparison_1 === 0 && sort_attribute_2) {
+        return a[sort_attribute_2].localeCompare(b[sort_attribute_2]); // Secondary criterion
+      }
+
+      return comparison_1;
+    });
   }
 
   const requiredAttributes = ['name', 'description', 'status'];
@@ -71,7 +93,8 @@ export default function ActiveIngredientsGrid() {
     getData(table)
       .then((data) => {
         //console.log('data:', data);
-        setRows(data);
+        const sortedItems = sortItems(data, sort_1, sort_2);
+        setRows(sortedItems);
       })
       .catch((error) => {
         const errorMessage = createErrorMessage(error, table);
@@ -84,7 +107,7 @@ export default function ActiveIngredientsGrid() {
       });
   }, []);
 
-  async function validateRow(newRow) {
+  async function validateRow(newRow, oldRow) {
     try {
       validateRequiredAttributes(requiredAttributes, attributeNames, newRow);
       return newRow;

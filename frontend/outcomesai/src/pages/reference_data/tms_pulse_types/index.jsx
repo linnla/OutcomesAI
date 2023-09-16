@@ -13,6 +13,8 @@ import ErrorModal from '../../../utils/ErrorModal';
 export default function TMSPulseTypesGrid() {
   const title = 'TMS Pulse Types';
   const table = 'tms_pulse_types';
+  const sort_1 = 'acronym';
+  const sort_2 = 'null';
   // *************** CUSTOMIZE **************
 
   const { role } = useContext(UserContext);
@@ -23,24 +25,51 @@ export default function TMSPulseTypesGrid() {
   const [loading, setLoading] = useState(true);
 
   const setRows = (rows) => {
-    return setRawRows([...rows.map((r, i) => ({ ...r, no: i + 1 }))]);
+    if (!Array.isArray(rows)) {
+      console.error('setRows received non-array data:', rows);
+      return;
+    }
+    setRawRows(rows.map((r, i) => ({ ...r, no: i + 1 })));
   };
+
+  function sortItems(items, sort_attribute_1, sort_attribute_2) {
+    return items.sort((a, b) => {
+      // Primary criterion: sort_attribute_1
+      const comparison_1 = a[sort_attribute_1].localeCompare(
+        b[sort_attribute_1]
+      );
+
+      // If the primary criteria are the same and sort_attribute_2 is provided, sort by sort_attribute_2
+      if (comparison_1 === 0 && sort_attribute_2) {
+        return a[sort_attribute_2].localeCompare(b[sort_attribute_2]); // Secondary criterion
+      }
+
+      return comparison_1;
+    });
+  }
 
   let subtitle = `View ${title}`;
   if (role === 'super') {
     subtitle = 'Add, Edit, Delete, Inactivate';
   }
 
-  const requiredAttributes = ['name', 'description', 'status'];
-  const attributeNames = ['Name', 'Description', 'Status'];
+  const requiredAttributes = ['acronym', 'name', 'description', 'status'];
+  const attributeNames = ['Acronym', 'Name', 'Description', 'Status'];
 
   const columns = [
     { field: 'id', headerName: 'ID', flex: 0.5 },
     {
+      field: 'acronym',
+      headerName: 'Acronym',
+      editable: true,
+      cellClassName: 'name-column--cell',
+      width: 200,
+    },
+    {
       field: 'name',
       headerName: 'Name',
       editable: true,
-      cellClassName: 'name-column--cell',
+      cellClassName: 'wrapText',
       width: 200,
     },
     {
@@ -71,7 +100,8 @@ export default function TMSPulseTypesGrid() {
     getData(table)
       .then((data) => {
         //console.log('data:', data);
-        setRows(data);
+        const sortedItems = sortItems(data, sort_1, sort_2);
+        setRows(sortedItems);
       })
       .catch((error) => {
         const errorMessage = createErrorMessage(error, table);
@@ -84,7 +114,7 @@ export default function TMSPulseTypesGrid() {
       });
   }, []);
 
-  async function validateRow(newRow) {
+  async function validateRow(newRow, oldRow) {
     try {
       validateRequiredAttributes(requiredAttributes, attributeNames, newRow);
       return newRow;

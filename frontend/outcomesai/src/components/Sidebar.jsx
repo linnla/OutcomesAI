@@ -16,6 +16,27 @@ import PieChartOutlineOutlinedIcon from '@mui/icons-material/PieChartOutlineOutl
 import TimelineOutlinedIcon from '@mui/icons-material/TimelineOutlined';
 import MapOutlinedIcon from '@mui/icons-material/MapOutlined';
 import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
+import VaccinesOutlinedIcon from '@mui/icons-material/VaccinesOutlined';
+import LocalPharmacyOutlinedIcon from '@mui/icons-material/LocalPharmacyOutlined';
+import MedicationOutlinedIcon from '@mui/icons-material/MedicationOutlined';
+import ScaleOutlinedIcon from '@mui/icons-material/ScaleOutlined';
+import MedicationLiquidOutlinedIcon from '@mui/icons-material/MedicationLiquidOutlined';
+import MedicalServicesOutlinedIcon from '@mui/icons-material/MedicalServicesOutlined';
+import MedicalInformationOutlinedIcon from '@mui/icons-material/MedicalInformationOutlined';
+import CategoryOutlinedIcon from '@mui/icons-material/CategoryOutlined';
+import SickOutlinedIcon from '@mui/icons-material/SickOutlined';
+import MonitorHeartOutlinedIcon from '@mui/icons-material/MonitorHeartOutlined';
+import JoinInnerOutlinedIcon from '@mui/icons-material/JoinInnerOutlined';
+import CastOutlinedIcon from '@mui/icons-material/CastOutlined';
+import SensorsOutlinedIcon from '@mui/icons-material/SensorsOutlined';
+import WifiTetheringOutlinedIcon from '@mui/icons-material/WifiTetheringOutlined';
+import PsychologyAltOutlinedIcon from '@mui/icons-material/PsychologyAltOutlined';
+import ScienceOutlinedIcon from '@mui/icons-material/ScienceOutlined';
+import BiotechOutlinedIcon from '@mui/icons-material/BiotechOutlined';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import BloodtypeOutlinedIcon from '@mui/icons-material/BloodtypeOutlined';
+import LocalHospitalOutlinedIcon from '@mui/icons-material/LocalHospitalOutlined';
+import Diversity3OutlinedIcon from '@mui/icons-material/Diversity3Outlined';
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme();
@@ -119,7 +140,7 @@ const Sidebar = () => {
               color={colors.grey[300]}
               sx={{ m: '15px 0 5px 20px' }}
             >
-              Data Admin
+              Pracrice Data
             </Typography>
             <Item
               title='Manage Patients'
@@ -131,14 +152,14 @@ const Sidebar = () => {
             <Item
               title='Manage Practitioners'
               to='/practitioners'
-              icon={<PeopleOutlinedIcon />}
+              icon={<Diversity3OutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
             <Item
               title='Manage Offices'
               to='/offices'
-              icon={<BusinessOutlinedIcon />}
+              icon={<LocalHospitalOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
@@ -158,42 +179,42 @@ const Sidebar = () => {
               <Item
                 title='Active Ingredients'
                 to='/reference_data/active_ingredients'
-                icon={<BusinessOutlinedIcon />}
+                icon={<LocalPharmacyOutlinedIcon />}
                 selected={selected}
                 setSelected={setSelected}
               />
               <Item
                 title='Administration Methods'
                 to='/reference_data/administration_methods'
-                icon={<BusinessOutlinedIcon />}
+                icon={<VaccinesOutlinedIcon />}
                 selected={selected}
                 setSelected={setSelected}
               />
               <Item
                 title='Dosage Units'
                 to='/reference_data/dosage_units'
-                icon={<BusinessOutlinedIcon />}
+                icon={<ScaleOutlinedIcon />}
                 selected={selected}
                 setSelected={setSelected}
               />
               <Item
                 title='Drug Delivery Forms'
                 to='/reference_data/drug_delivery_forms'
-                icon={<BusinessOutlinedIcon />}
+                icon={<MedicationLiquidOutlinedIcon />}
                 selected={selected}
                 setSelected={setSelected}
               />
               <Item
                 title='Medication Sources'
                 to='/reference_data/medication_sources'
-                icon={<BusinessOutlinedIcon />}
+                icon={<MedicalServicesOutlinedIcon />}
                 selected={selected}
                 setSelected={setSelected}
               />
               <Item
                 title='Medication Types'
                 to='/reference_data/medication_types'
-                icon={<BusinessOutlinedIcon />}
+                icon={<MedicalInformationOutlinedIcon />}
                 selected={selected}
                 setSelected={setSelected}
               />
@@ -207,14 +228,14 @@ const Sidebar = () => {
               <Item
                 title='Diagnosis Codes'
                 to='/reference_data/diagnosis_codes'
-                icon={<BusinessOutlinedIcon />}
+                icon={<MonitorHeartOutlinedIcon />}
                 selected={selected}
                 setSelected={setSelected}
               />
               <Item
                 title='Disorders'
                 to='/reference_data/disorders'
-                icon={<BusinessOutlinedIcon />}
+                icon={<SickOutlinedIcon />}
                 selected={selected}
                 setSelected={setSelected}
               />
@@ -228,14 +249,14 @@ const Sidebar = () => {
               <Item
                 title='Procedure Catgeories'
                 to='/reference_data/procedure_categories'
-                icon={<BusinessOutlinedIcon />}
+                icon={<CategoryOutlinedIcon />}
                 selected={selected}
                 setSelected={setSelected}
               />
               <Item
                 title='Procedure Codes'
                 to='/reference_data/procedure_codes'
-                icon={<BusinessOutlinedIcon />}
+                icon={<MedicationOutlinedIcon />}
                 selected={selected}
                 setSelected={setSelected}
               />
@@ -249,35 +270,49 @@ const Sidebar = () => {
               <Item
                 title='Devices'
                 to='/reference_data/tms_devices'
-                icon={<BusinessOutlinedIcon />}
+                icon={<CastOutlinedIcon />}
                 selected={selected}
                 setSelected={setSelected}
               />
               <Item
                 title='Coils'
-                to='/reference_data/tms_device_coils'
-                icon={<BusinessOutlinedIcon />}
+                to='/reference_data/tms_coils'
+                icon={<JoinInnerOutlinedIcon />}
                 selected={selected}
                 setSelected={setSelected}
               />
               <Item
                 title='Frequencies'
                 to='/reference_data/tms_frequencies'
-                icon={<BusinessOutlinedIcon />}
+                icon={<SensorsOutlinedIcon />}
                 selected={selected}
                 setSelected={setSelected}
               />
               <Item
                 title='Pulse Types'
                 to='/reference_data/tms_pulse_types'
-                icon={<BusinessOutlinedIcon />}
+                icon={<WifiTetheringOutlinedIcon />}
                 selected={selected}
                 setSelected={setSelected}
               />
               <Item
                 title='Stimulation Sites'
                 to='/reference_data/tms_stimulation_sites'
-                icon={<BusinessOutlinedIcon />}
+                icon={<PsychologyAltOutlinedIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
+              <Typography
+                variant='h6'
+                color={colors.grey[300]}
+                sx={{ m: '15px 0 5px 20px' }}
+              >
+                Appointments
+              </Typography>
+              <Item
+                title='Appointment Types'
+                to='/reference_data/appointment_types'
+                icon={<BloodtypeOutlinedIcon />}
                 selected={selected}
                 setSelected={setSelected}
               />
@@ -291,14 +326,14 @@ const Sidebar = () => {
               <Item
                 title='Biomarker Types'
                 to='/reference_data/biomarker_types'
-                icon={<BusinessOutlinedIcon />}
+                icon={<ScienceOutlinedIcon />}
                 selected={selected}
                 setSelected={setSelected}
               />
               <Item
                 title='Biomarkers'
                 to='/reference_data/biomarkers'
-                icon={<BusinessOutlinedIcon />}
+                icon={<BiotechOutlinedIcon />}
                 selected={selected}
                 setSelected={setSelected}
               />
@@ -312,74 +347,11 @@ const Sidebar = () => {
               <Item
                 title='User Roles'
                 to='/reference_data/user_roles'
-                icon={<BusinessOutlinedIcon />}
+                icon={<LockOutlinedIcon />}
                 selected={selected}
                 setSelected={setSelected}
               />
             </SubMenu>
-            <Typography
-              variant='h6'
-              color={colors.grey[300]}
-              sx={{ m: '15px 0 5px 20px' }}
-            >
-              Pages
-            </Typography>
-            <Item
-              title='Profile Form'
-              to='/form'
-              icon={<PersonOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <Item
-              title='Calendar'
-              to='/calendar'
-              icon={<CalendarTodayOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <Item
-              title='FAQ Page'
-              to='/faq'
-              icon={<HelpOutlineOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <Typography
-              variant='h6'
-              color={colors.grey[300]}
-              sx={{ m: '15px 0 5px 20px' }}
-            >
-              Charts
-            </Typography>
-            <Item
-              title='Bar Chart'
-              to='/bar'
-              icon={<BarChartOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <Item
-              title='Pie Chart'
-              to='/pie'
-              icon={<PieChartOutlineOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <Item
-              title='Line Chart'
-              to='/line'
-              icon={<TimelineOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <Item
-              title='Geography Chart'
-              to='/geography'
-              icon={<MapOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
           </Box>
         </Menu>
       </ProSidebar>
@@ -388,12 +360,3 @@ const Sidebar = () => {
 };
 
 export default Sidebar;
-
-/*
-<SubMenu label='Reference Data'>
-            <MenuItem component={<Link to='/reference_data/disorders' />}>
-              {<BusinessOutlinedIcon />}
-              Disorders
-            </MenuItem>
-          </SubMenu>
-          */

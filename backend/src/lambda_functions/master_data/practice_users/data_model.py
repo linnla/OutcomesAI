@@ -64,6 +64,8 @@ class PracticeUser(Base):
     create_allowed_fields = []
     update_required_fields = ["practice_id", "user_id"]
     update_allowed_fields = ["status", "role_id"]
+    update_required_fields = ["practice_id", "user_id", "role_id"]
+    delete_required_fields = ["practice_id", "user_id"]
 
 
 class User(Base):

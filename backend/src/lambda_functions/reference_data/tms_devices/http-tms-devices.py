@@ -1,4 +1,4 @@
-from data_model import Device
+from data_model import TMS_Device
 from database_crud import select_reference_table, create, update, delete
 from json import dumps
 import logging
@@ -11,7 +11,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger()
 
-entity_class = Device
+entity_class = TMS_Device
 
 
 def lambda_handler(event, context):

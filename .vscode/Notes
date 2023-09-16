@@ -1,19 +1,13 @@
-diagnosis_codes (loaded), API, Datagrid episode_of_care, API, Datagrid Need way
-to drill into episode_of_care and add episode_medical_procedure (appointment)
+Contexts (Practice Related Data)
 
-Talk to MK and figure out what these are...
-
-1.  medical_procedures (category of cpt_codes, replace with id reference in
-    cpt_codes)
-2.  cpt_codes (loaded)
-3.  protocols
-4.  medical_proceduere_protocols
-
-Recreate cognito group with practice_id as custom attribute Splash page with
-login button
-
-Contexts for Patients Practitioners Offices Patients Diagnosis Codes Countries
-and Postal Codes, add status and reload
+1. Offices
+2. Practitioners
+3. Patients
+4. Medications
+5. TMS Devices
+6. TMS Protocols
+7. Procedures
+8. Users
 
 Patient In therapy (y/n), type frrquency meds
 
@@ -40,15 +34,18 @@ Protocols
 9.  daily, 10 sessions in one day, total number of session (user inputs day,
     calc)
 
-Settings
+Practice Data (Admin)
 
-1. Devices
-2. Device Coils
-3. Procedure Codes
-4. TMS Protocols
-5. Medications
+1. Offices
+2. Practitioners
+3. Patients
+4. Medications
+5. TMS Devices
+6. TMS Protocols
+7. Procedures
+8. Users
 
-Reference Tables:
+Reference Tables (Super Admin)
 
 Medications
 
@@ -72,9 +69,10 @@ Procedures
 TMS
 
 11. devices
-12. tms_frequencies
-13. tms_pulse_types 14.
-14. tms_stimulation_sites
+12. coils
+13. tms_frequencies
+14. tms_pulse_types
+15. tms_stimulation_sites
 
 Appointments
 
@@ -82,7 +80,8 @@ Appointments
 
 Patients
 
-16. biomarker_types 17. biomarkers
+16. biomarker_types
+17. biomarkers
 
 Security
 
@@ -99,10 +98,9 @@ Master data
 One-to-Many
 
 1. biomarlers
-2. device_coils
-3. diagnosis_codes
-4. medication_dosages
-5. procedure_codes
+2. diagnosis_codes
+3. medication_dosages
+4. procedure_codes
 
 Many-to-Many
 
@@ -125,3 +123,16 @@ Many-to-Many
 17. practice_tms_protocols
 18. practice_users
 19. tms_protocols
+
+ToDo
+
+Setup TMS Protocol & practice_tms_protocol Setup Medication &
+practice_medication
+
+1.  Deleteing patient, practitioner, practice or office. If there attribute
+    value is used in episode_of_care, it can't be deleted until the
+    episode_of_care is deleted. It can be u=inactivated tho. Do the reference
+    check in the delete function in index.jsx. If a row exists present the error
+    with a method to fix it. Don't hit the backend with the delete until the
+    data is in a position to be deleted (it has no more foriegn integrity
+    constraints)
