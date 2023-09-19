@@ -290,4 +290,10 @@ def delete(event, entity_class, required_fields):
     return response
 
 
-__all__ = ["select", "select_reference_table", "create", "update", "delete"]
+__all__ = [
+    "select",
+    "select_reference_table",
+    "create",
+    "update",
+    "delete",
+]

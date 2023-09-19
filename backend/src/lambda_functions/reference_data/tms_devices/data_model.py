@@ -7,7 +7,7 @@ class Base(DeclarativeBase):
     pass
 
 
-class TMS_Device(Base):
+class TMSDevice(Base):
     __tablename__ = "tms_devices"
 
     id = mapped_column(Integer, primary_key=True)

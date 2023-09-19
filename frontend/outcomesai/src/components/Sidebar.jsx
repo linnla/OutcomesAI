@@ -37,6 +37,7 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import BloodtypeOutlinedIcon from '@mui/icons-material/BloodtypeOutlined';
 import LocalHospitalOutlinedIcon from '@mui/icons-material/LocalHospitalOutlined';
 import Diversity3OutlinedIcon from '@mui/icons-material/Diversity3Outlined';
+import BallotOutlinedIcon from '@mui/icons-material/BallotOutlined';
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme();
@@ -143,6 +144,13 @@ const Sidebar = () => {
               Pracrice Data
             </Typography>
             <Item
+              title='Form'
+              to='/Form'
+              icon={<PeopleOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+            <Item
               title='Manage Patients'
               to='/patients'
               icon={<PeopleOutlinedIcon />}
@@ -168,6 +176,15 @@ const Sidebar = () => {
               color={colors.grey[300]}
               sx={{ m: '15px 0 5px 20px' }}
             ></Typography>
+            <SubMenu prefix='Practice Data'>
+              <Item
+                title='TMS Devices'
+                to='/practice/tms_devices'
+                icon={<CastOutlinedIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
+            </SubMenu>
             <SubMenu prefix='Reference Data'>
               <Typography
                 variant='h6'
@@ -299,6 +316,13 @@ const Sidebar = () => {
                 title='Stimulation Sites'
                 to='/reference_data/tms_stimulation_sites'
                 icon={<PsychologyAltOutlinedIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
+              <Item
+                title='TMS Protocols'
+                to='/reference_data/tms_protocols'
+                icon={<BallotOutlinedIcon />}
                 selected={selected}
                 setSelected={setSelected}
               />

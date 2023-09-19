@@ -1,8 +1,8 @@
 import * as React from 'react';
 import '../../../index.css';
 import { useEffect, useState, useContext } from 'react';
-import EditableDataGrid from '../../../components/datagrid/editable';
-import ReadOnlyDataGrid from '../../../components/datagrid/readonly';
+import OneToManyDataGrid from '../../../components/datagrid/oneToMany';
+import ReadOnlyDataGrid from '../../../components/datagrid/readOnly';
 import UserContext from '../../../contexts/UserContext';
 import { getData, postData, putData, deleteData } from '../../../utils/API';
 import { validateRequiredAttributes } from '../../../utils/ValidationUtils';
@@ -181,7 +181,7 @@ export default function AdministrationRoutesGrid() {
   if (role === 'super') {
     return (
       <div>
-        <EditableDataGrid
+        <OneToManyDataGrid
           title={title}
           subtitle={subtitle}
           columns={columns}

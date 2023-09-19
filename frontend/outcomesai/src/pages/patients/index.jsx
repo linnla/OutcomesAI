@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { useEffect, useState, useContext } from 'react';
 import Box from '@mui/material/Box';
-import EditableDataGrid from '../../components/datagrid/editable';
-import ReadOnlyDataGrid from '../../components/datagrid/readonly';
+import OneToManyDataGrid from '../../components/datagrid/oneToMany';
+import ReadOnlyDataGrid from '../../components/datagrid/readOnly';
 import UserContext from '../../contexts/UserContext';
 import { getData, postData, putData, deleteData } from '../../utils/API';
 import {
@@ -301,7 +301,7 @@ export default function PatientGrid() {
   if (role === 'manager' || role === 'admin' || role === 'super') {
     return (
       <div>
-        <EditableDataGrid
+        <OneToManyDataGrid
           title={title}
           subtitle={subtitle}
           columns={columns}

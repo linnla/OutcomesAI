@@ -14,6 +14,9 @@ import OfficeGrid from './pages/offices';
 import PractitionerGrid from './pages/practitioners/index';
 import PatientGrid from './pages/patients/index';
 
+// Master Data
+import PracticeTMSDevicesGrid from './pages/master_data/practices_tms_devices';
+
 // Reference Data
 import ActiveIngredientsGrid from './pages/reference_data/active_ingredients';
 import AcquisitionSourcesGrid from './pages/reference_data/acquisition_sources';
@@ -34,6 +37,7 @@ import TMSCoilsGrid from './pages/reference_data/tms_coils';
 import TMSFrequenciesGrid from './pages/reference_data/tms_frequencies';
 import TMSPulseTypesGrid from './pages/reference_data/tms_pulse_types';
 import TMSStimlationSitesGrid from './pages/reference_data/tms_stimulation_sites';
+import TMSProtocolGrid from './pages/reference_data/tms_protocols';
 
 import RolesGrid from './pages/reference_data/roles';
 import BiomarkerTypesGrid from './pages/reference_data/biomarker_types';
@@ -86,6 +90,22 @@ function App() {
         <Route path='home' element={<Home />} />
         <Route path='/login' element={<Login />} />
         <Route path='/dashboard' element={<Dashboard />} />
+        <Route
+          path='/practice/tms_devices'
+          element={
+            <RequireAuth>
+              <PracticeTMSDevicesGrid />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path='/reference_data/tms_protocols'
+          element={
+            <RequireAuth>
+              <TMSProtocolGrid />
+            </RequireAuth>
+          }
+        />
         <Route
           path='/reference_data/active_ingredients'
           element={

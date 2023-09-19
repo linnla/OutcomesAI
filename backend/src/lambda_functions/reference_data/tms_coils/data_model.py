@@ -7,7 +7,7 @@ class Base(DeclarativeBase):
     pass
 
 
-class TMS_Coil(Base):
+class TMSCoil(Base):
     __tablename__ = "tms_coils"
 
     id = mapped_column(Integer, primary_key=True)

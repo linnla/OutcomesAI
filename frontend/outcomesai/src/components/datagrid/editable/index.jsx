@@ -19,7 +19,7 @@ import DefaultToolbar from './DefaultToolbar';
 import { useEffect, useState } from 'react';
 import ErrorModal from '../../../utils/ErrorModal';
 
-function EditableDataGrid({
+function DataGridOld({
   title,
   subtitle,
   columns,
@@ -31,7 +31,7 @@ function EditableDataGrid({
   createRowData,
   ...props
 }) {
-  console.log('editableDataGrid:', rows);
+  console.log('OneToManyDataGrid:', rows);
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
@@ -216,6 +216,7 @@ function EditableDataGrid({
   return (
     <Box m='20px'>
       <Header title={title} subtitle={subtitle} />
+
       <Box
         m='40px 0 0 0'
         height='75vh'
@@ -289,7 +290,7 @@ function EditableDataGrid({
   );
 }
 
-EditableDataGrid.defaultProps = {
+DataGrid2.defaultProps = {
   initialState: {
     columns: {
       columnVisibilityModel: {
@@ -305,4 +306,4 @@ EditableDataGrid.defaultProps = {
   rowsPerPageOptions: [5, 10, 25, 50, 100],
 };
 
-export default EditableDataGrid;
+export default DataGrid2;

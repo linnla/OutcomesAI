@@ -3,9 +3,9 @@
 # Variables
 stage="dev"
 master_data="master_data"
-master_directories=("offices" "patient_biomarkers" "patients" "practice_patients" "practice_practitioners" "practice_users" "practices" "practitioners" "users")
+master_directories=("offices" "patient_biomarkers" "patients" "practice_tms_devices" "practice_patients" "practice_practitioners" "practice_users" "practices" "practitioners" "users")
 reference_data="reference_data"
-reference_directories=("acquisition_sources" "active_ingredients" "administration_routes" "appointment_types" "biomarker_types" "biomarkers" "countries" "tms_devices" "tms_coils" "tms_device_coils" "diagnosis_codes" "disorders" "dosage_forms" "dosage_units" "medication_types" "postal_codes" "procedure_categories" "procedure_codes" "roles" "tms_frequencies" "tms_pulse_types" "tms_stimulation_sites")
+reference_directories=("acquisition_sources" "active_ingredients" "administration_routes" "appointment_types" "biomarker_types" "biomarkers" "countries" "tms_devices" "tms_coils" "tms_device_coils" "diagnosis_codes" "disorders" "dosage_forms" "dosage_units" "medication_types" "postal_codes" "procedure_categories" "procedure_codes" "roles" "tms_protocols" "tms_frequencies" "tms_pulse_types" "tms_stimulation_sites")
 
 lambda_libs_path="/Users/laurelinn/dev/OutcomesAI/backend/src/lambda_libs"
 

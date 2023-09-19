@@ -39,3 +39,18 @@ body,
   overflow: hidden;
   text-overflow: clip;
 }
+
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh; /* This ensures your container takes up the full viewport height */
+}
+
+.dataAboveGrid {
+  flex: 1; /* Takes up 1/4 of the space */
+  overflow: auto; /* Just in case your content is longer than the available space */
+}
+
+.dataGridContainer {
+  flex: 3; /* Takes up the remaining 3/4 of the space */
+}

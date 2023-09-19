@@ -1,4 +1,4 @@
-from data_model import TMS_Coil
+from data_model import TMSCoil
 from database_crud import select_reference_table, create, update, delete
 from json import dumps
 import logging
@@ -11,7 +11,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger()
 
-entity_class = TMS_Coil
+entity_class = TMSCoil
 
 
 def lambda_handler(event, context):
