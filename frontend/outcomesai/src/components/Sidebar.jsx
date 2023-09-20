@@ -143,13 +143,13 @@ const Sidebar = () => {
             >
               Pracrice Data
             </Typography>
-            <Item
+            {/*<Item
               title='Form'
               to='/Form'
               icon={<PeopleOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
-            />
+            />*/}
             <Item
               title='Manage Patients'
               to='/patients'
