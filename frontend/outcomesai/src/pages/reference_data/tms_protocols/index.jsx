@@ -27,8 +27,18 @@ export default function TMSProtocolGrid() {
     'pulse_type_id',
     'stimulation_site_id',
     'frequency_id',
+    'train_time',
+    'inter_train_time',
+    'status',
   ];
-  const attributeNames = ['Pulse Type', 'Stimulation Site', 'Frequency'];
+  const attributeNames = [
+    'Pulse Type',
+    'Stimulation Site',
+    'Frequency',
+    'Train Time',
+    'Inter Train Time',
+    'Status',
+  ];
 
   function createRowData(rows) {
     const newId = Math.floor(100000 + Math.random() * 900000);
@@ -42,6 +52,9 @@ export default function TMSProtocolGrid() {
       stimulation_site_name: '',
       frequency_id: 0,
       frequency_name: '',
+      train_time: 1,
+      inter_train_time: 1,
+      status: 'Active',
     };
   }
 
@@ -96,12 +109,10 @@ export default function TMSProtocolGrid() {
         setRows(sortedItems);
       })
       .catch((error) => {
-        if (error.response.status !== 404) {
-          const errorMessage = createErrorMessage(error, table);
-          setErrorType('Data Fetch Error');
-          setErrorMessage(errorMessage);
-          setShowErrorModal(true);
-        }
+        const errorMessage = createErrorMessage(error, table);
+        setErrorType('Data Fetch Error');
+        setErrorMessage(errorMessage);
+        setShowErrorModal(true);
       })
       .finally(() => {
         setLoading(false);
@@ -111,8 +122,7 @@ export default function TMSProtocolGrid() {
   // TMS Pulse Types
   useEffect(() => {
     setLoading(true);
-    const tableName = 'tms_pulse_types';
-    getData({ tableName }, { practice_id: practiceId })
+    getData('tms_pulse_types')
       .then((data) => {
         // Filter out rows where status is not Active
         const activeData = data.filter((row) => row.status === 'Active');
@@ -121,8 +131,8 @@ export default function TMSProtocolGrid() {
         setPulseTypeObjects(activeData);
       })
       .catch((error) => {
-        console.error({ tableName }, error);
-        const errorMessage = createErrorMessage(error, { tableName });
+        console.error('tms_pulse_types', error);
+        const errorMessage = createErrorMessage(error, 'tms_pulse_types');
         setErrorType('Error fetching data');
         setErrorMessage(errorMessage);
         setShowErrorModal(true);
@@ -135,8 +145,7 @@ export default function TMSProtocolGrid() {
   // TMS Stimulation Sites
   useEffect(() => {
     setLoading(true);
-    const tableName = 'tms_stimulation_sites';
-    getData({ tableName }, { practice_id: practiceId })
+    getData('tms_stimulation_sites')
       .then((data) => {
         // Filter out rows where status is not Active
         const activeData = data.filter((row) => row.status === 'Active');
@@ -145,8 +154,8 @@ export default function TMSProtocolGrid() {
         setStimulationSiteObjects(activeData);
       })
       .catch((error) => {
-        console.error({ tableName }, error);
-        const errorMessage = createErrorMessage(error, { tableName });
+        console.error('tms_stimulation_sites', error);
+        const errorMessage = createErrorMessage(error, 'tms_stimulation_sites');
         setErrorType('Error fetching data');
         setErrorMessage(errorMessage);
         setShowErrorModal(true);
@@ -159,8 +168,7 @@ export default function TMSProtocolGrid() {
   // TMS Frequencies
   useEffect(() => {
     setLoading(true);
-    const tableName = 'tms_frequencies';
-    getData({ tableName }, { practice_id: practiceId })
+    getData('tms_frequencies')
       .then((data) => {
         // Filter out rows where status is not Active
         const activeData = data.filter((row) => row.status === 'Active');
@@ -169,8 +177,8 @@ export default function TMSProtocolGrid() {
         setFrequencyObjects(activeData);
       })
       .catch((error) => {
-        console.error({ tableName }, error);
-        const errorMessage = createErrorMessage(error, { tableName });
+        console.error('tms_frequencies', error);
+        const errorMessage = createErrorMessage(error, 'tms_frequencies');
         setErrorType('Error fetching data');
         setErrorMessage(errorMessage);
         setShowErrorModal(true);
@@ -224,7 +232,7 @@ export default function TMSProtocolGrid() {
       headerName: 'Protocol Name',
       editable: true,
       cellClassName: 'name-column--cell',
-      flex: 1,
+      width: 250,
     },
     {
       field: 'pulse_type_name',
@@ -246,45 +254,63 @@ export default function TMSProtocolGrid() {
       field: 'frequency_name',
       headerName: 'Frequency',
       type: 'singleSelect',
+      align: 'center',
+      headerAlign: 'center',
       valueOptions: frequencyNames,
       editable: true,
-      flex: 1,
+      width: 120,
     },
     {
-      field: 'frequency_name',
+      field: 'train_time',
       headerName: 'Train Time',
       type: 'number',
       editable: true,
+      align: 'center',
+      headerAlign: 'center',
       renderEditCell: (params) => (
         <GridEditInputCell
           {...params}
           inputProps={{
             max: 10,
-            min: 0,
+            min: 1,
           }}
         />
       ),
-      flex: 1,
+      width: 120,
     },
     {
-      field: 'frequency_name',
+      field: 'inter_train_time',
       headerName: 'Inter-Train Time',
       type: 'number',
       editable: true,
+      align: 'center',
+      headerAlign: 'center',
       renderEditCell: (params) => (
         <GridEditInputCell
           {...params}
           inputProps={{
             max: 10,
-            min: 0,
+            min: 1,
           }}
         />
       ),
-      flex: 1,
+      width: 120,
+    },
+    {
+      field: 'status',
+      headerName: 'Status',
+      editable: true,
+      headerAlign: 'center',
+      align: 'center',
+      type: 'singleSelect',
+      valueOptions: ['Active', 'Inactive'],
+      defaultValueGetter: () => 'Active',
+      width: 100,
     },
   ];
 
   async function saveRow(id, row, oldRow, oldRows) {
+    console.log('saveRow:', row);
     try {
       console.log('saveRow row:', row);
       if (row.isNew) {
@@ -301,7 +327,7 @@ export default function TMSProtocolGrid() {
       }
     } catch (error) {
       setRows(oldRows);
-      const errorMessage = createErrorMessage(error, row.code);
+      const errorMessage = createErrorMessage(error, row.name);
       throw errorMessage;
     }
   }

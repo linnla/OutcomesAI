@@ -31,7 +31,6 @@ function OneToManyDataGrid({
   createRowData,
   ...props
 }) {
-  console.log('OneToManyDataGrid:', rows);
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 

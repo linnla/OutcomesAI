@@ -32,6 +32,11 @@ class TMSProtocols(Base):
     frequency_id = mapped_column(
         Integer, ForeignKey("tms_frequencies.id"), primary_key=False, nullable=False
     )
+
+    status = mapped_column(String(8), nullable=False, default="Active")
+    train_time = mapped_column(Integer, nullable=False)
+    inter_train_time = mapped_column(Integer, nullable=False)
+
     created_at = mapped_column(DateTime, nullable=False)
     updated_at = mapped_column(DateTime, nullable=False)
 
@@ -51,24 +56,31 @@ class TMSProtocols(Base):
         pulse_type_id = self.pulse_type_id
         stimulation_site_id = self.stimulation_site_id
         frequency_id = self.frequency_id
+        train_time = self.train_time
+        inter_train_time = self.inter_train_time
+        status = self.status
 
         procedure_category = self.procedure_category.to_dict()
-        pulse_type = self.pulse_type.to_dict()
-        stimulation_site = self.stimulation_site.to_dict()
-        frequency = self.frequency.to_dict()
+        tms_pulse_type = self.tms_pulse_type.to_dict()
+        tms_stimulation_site = self.tms_stimulation_site.to_dict()
+        tms_frequency = self.tms_frequency.to_dict()
 
         created = self.created_at.strftime("%Y-%m-%d")
         updated = self.updated_at.strftime("%Y-%m-%d")
 
         return {
+            "id": self.id,
             "name": self.name,
             "procedure_category_id": self.procedure_category_id,
             "pulse_type_id": self.pulse_type_id,
-            "pulse_type_name": pulse_type["name"],
+            "pulse_type_name": tms_pulse_type["name"],
             "stimulation_site_id": self.stimulation_site_id,
-            "stimulation_site_name": stimulation_site["name"],
+            "stimulation_site_name": tms_stimulation_site["name"],
             "frequency_id": self.frequency_id,
-            "frequency_name": frequency["name"],
+            "frequency_name": tms_frequency["name"],
+            "train_time": self.train_time,
+            "inter_train_time": self.inter_train_time,
+            "status": self.status,
         }
 
     select_required_params = []
@@ -78,6 +90,9 @@ class TMSProtocols(Base):
         "pulse_type_id",
         "stimulation_site_id",
         "frequency_id",
+        "train_time",
+        "inter_train_time",
+        "status",
     ]
     create_allowed_fields = []
     update_required_fields = [
@@ -87,6 +102,9 @@ class TMSProtocols(Base):
         "pulse_type_id",
         "stimulation_site_id",
         "frequency_id",
+        "train_time",
+        "inter_train_time",
+        "status",
     ]
     update_allowed_fields = []
     delete_required_fields = ["id"]
