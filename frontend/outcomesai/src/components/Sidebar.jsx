@@ -164,16 +164,16 @@ const Sidebar = () => {
             ></Typography>
             <SubMenu prefix='Practice Data'>
               <Item
-                title='Practitioners'
-                to='/practitioners'
-                icon={<Diversity3OutlinedIcon />}
+                title='Offices'
+                to='/practice/offices'
+                icon={<LocalHospitalOutlinedIcon />}
                 selected={selected}
                 setSelected={setSelected}
               />
               <Item
-                title='Offices'
-                to='/offices'
-                icon={<LocalHospitalOutlinedIcon />}
+                title='Practitioners'
+                to='/practice/practitioners'
+                icon={<Diversity3OutlinedIcon />}
                 selected={selected}
                 setSelected={setSelected}
               />
@@ -188,6 +188,13 @@ const Sidebar = () => {
                 title='TMS Protocols'
                 to='/practice/tms_protocols'
                 icon={<BallotOutlinedIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
+              <Item
+                title='Users'
+                to='/practice/users'
+                icon={<PersonOutlinedIcon />}
                 selected={selected}
                 setSelected={setSelected}
               />

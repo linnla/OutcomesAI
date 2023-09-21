@@ -40,14 +40,16 @@ class PracticeUser(Base):
 
         return {
             "id": self.user_id,
+            "practice_id": practice["id"],
+            "user_id": self.user_id,
+            "role_id": self.role_id,
+            "role_name": role["name"],
+            "status": self.status,
             "cognito_id": user["cognito_id"],
             "full_name": full_name,
             "last_name": user["last_name"],
             "first_name": user["first_name"],
             "email": user["email"],
-            "practice_id": practice["id"],
-            "role": role["name"],
-            "status": self.status,
             "created": created,
             "updated": updated,
         }

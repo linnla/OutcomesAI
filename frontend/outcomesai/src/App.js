@@ -12,11 +12,12 @@ import Team from './pages/Team';
 import Invoices from './pages/Invoices';
 
 // Master Data
-import PatientGrid from './pages/master_data/patients/index';
-import OfficeGrid from './pages/master_data/offices';
-import PractitionerGrid from './pages/master_data/practitioners/index';
-import PracticeTMSDevicesGrid from './pages/master_data/practices_tms_devices';
+import PatientsGrid from './pages/master_data/patients/index';
+import OfficesGrid from './pages/master_data/offices';
+import PractitionersGrid from './pages/master_data/practitioners/index';
+import PracticeTMSDevicesGrid from './pages/master_data/practice_tms_devices';
 import PracticeTMSProtocolsGrid from './pages/master_data/practice_tms_protocols';
+import UsersGrid from './pages/master_data/users';
 
 // Reference Data
 import ActiveIngredientsGrid from './pages/reference_data/active_ingredients';
@@ -91,6 +92,38 @@ function App() {
         <Route path='home' element={<Home />} />
         <Route path='/login' element={<Login />} />
         <Route path='/dashboard' element={<Dashboard />} />
+        <Route
+          path='/practice/offices'
+          element={
+            <RequireAuth>
+              <OfficesGrid />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path='/practice/practitioners'
+          element={
+            <RequireAuth>
+              <PractitionersGrid />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path='/practice/patients'
+          element={
+            <RequireAuth>
+              <PatientsGrid />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path='/practice/users'
+          element={
+            <RequireAuth>
+              <UsersGrid />
+            </RequireAuth>
+          }
+        />
         <Route
           path='/practice/tms_devices'
           element={
@@ -264,30 +297,6 @@ function App() {
           element={
             <RequireAuth>
               <RolesGrid />
-            </RequireAuth>
-          }
-        />
-        <Route
-          path='/offices'
-          element={
-            <RequireAuth>
-              <OfficeGrid />
-            </RequireAuth>
-          }
-        />
-        <Route
-          path='/practitioners'
-          element={
-            <RequireAuth>
-              <PractitionerGrid />
-            </RequireAuth>
-          }
-        />
-        <Route
-          path='/patients'
-          element={
-            <RequireAuth>
-              <PatientGrid />
             </RequireAuth>
           }
         />

@@ -11,6 +11,10 @@ export function validateRequiredAttributes(
     const key = requiredAttributes[i];
     const attributeName = attributeNames[i];
 
+    //console.log('row:', row);
+    //console.log('key:', key);
+    //console.log('key value:', row[key]);
+
     if (
       !(key in row) ||
       !row[key] ||

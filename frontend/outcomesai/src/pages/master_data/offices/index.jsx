@@ -14,7 +14,7 @@ import ErrorModal from '../../../utils/ErrorModal';
 
 // *************** CUSTOMIZE ************** START
 
-export default function OfficeGrid() {
+export default function OfficesGrid() {
   const { role, practiceId } = useContext(UserContext);
 
   const title = 'Offices';

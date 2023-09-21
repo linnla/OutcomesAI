@@ -19,7 +19,7 @@ import ErrorModal from '../../../utils/ErrorModal';
 
 // *************** CUSTOMIZE ************** START
 
-export default function PatientGrid() {
+export default function PatientsGrid() {
   const { role, practiceId } = useContext(UserContext);
 
   const title = 'Patients';

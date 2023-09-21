@@ -12,7 +12,7 @@ import { createErrorMessage } from '../../../utils/ErrorMessage';
 import ErrorModal from '../../../utils/ErrorModal';
 
 // *************** CUSTOMIZE ************** START
-export default function PractitionerGrid() {
+export default function PractitionersGrid() {
   const { role, practiceId } = useContext(UserContext);
 
   const title = 'Practitioners';
@@ -218,13 +218,7 @@ export default function PractitionerGrid() {
           };
           await putData(relatedTable, relatedRow);
         }
-
-        // *************** CUSTOMIZE ************** START
-        row.full_name = formatFullName(row);
-        // *************** CUSTOMIZE ************** END
-
         setRows(oldRows.map((r) => (r.id === id ? { ...row } : r)));
-
         return row;
       }
     } catch (error) {

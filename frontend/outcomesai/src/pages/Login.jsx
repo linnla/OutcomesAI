@@ -5,6 +5,7 @@ import '@aws-amplify/ui-react/styles.css';
 import CallApi from '../api/CallApi';
 import { Auth } from 'aws-amplify';
 import UserContext from '../contexts/UserContext';
+import ErrorModal from '../utils/ErrorModal';
 
 function Login({ onSuccessfulLogin }) {
   const { route } = useAuthenticator((context) => [context.route]);
@@ -13,6 +14,9 @@ function Login({ onSuccessfulLogin }) {
 
   const { setUserData } = useContext(UserContext);
   const [loadingUserData, setLoadingUserData] = useState(false);
+  const [errorType, setErrorType] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+  const [showErrorModal, setShowErrorModal] = useState(false);
 
   let from = location.state?.from?.pathname || '/';
 
@@ -65,6 +69,16 @@ function Login({ onSuccessfulLogin }) {
       onSuccessfulLogin();
     }
   };
+
+  if (showErrorModal) {
+    return (
+      <ErrorModal
+        errorType={errorType}
+        errorMessage={errorMessage}
+        onClose={() => setShowErrorModal(false)}
+      />
+    );
+  }
 
   return (
     <Authenticator

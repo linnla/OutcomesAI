@@ -19,7 +19,7 @@ import DefaultToolbar from './DefaultToolbar';
 import { useEffect, useState } from 'react';
 import ErrorModal from '../../../utils/ErrorModal';
 
-function DataGridOld({
+function EditOnly({
   title,
   subtitle,
   columns,
@@ -28,10 +28,8 @@ function DataGridOld({
   onValidateRow,
   onSaveRow,
   onDeleteRow,
-  createRowData,
   ...props
 }) {
-  console.log('DataEntry:', rows);
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
@@ -69,24 +67,6 @@ function DataGridOld({
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
   };
 
-  const handleDeleteClick = async (id) => {
-    //console.log('handleDeleteClick', id);
-    const row = internalRows.find((r) => r.id === id);
-
-    try {
-      const deleteResponse = await onDeleteRow(id, row, internalRows);
-      if (deleteResponse === 'Deleted') {
-        setInternalRows(internalRows.filter((row) => row.id !== id));
-      }
-      //console.log('handleDeleteClick delete response', deleteResponse);
-    } catch (error) {
-      console.error('handleDeleteClick error', error);
-      setErrorType('Delete Error');
-      setErrorMessage(error || 'Unknown error');
-      setShowErrorModal(true);
-    }
-  };
-
   const handleCancelClick = (id) => () => {
     //console.log('handleCancelClick', id);
     setRowModesModel({
@@ -108,19 +88,16 @@ function DataGridOld({
   }, []);
 
   const processRowUpdate = async (newRow) => {
-    //console.log('processRowUpdate newRow', newRow);
+    console.log('processRowUpdate newRow', newRow);
     const updatedRow = { ...newRow };
-    if (!updatedRow.isNew) updatedRow.isNew = false;
     const oldRow = internalRows.find((r) => r.id === updatedRow.id);
 
     // If its not a new row and it hasn't changed, don't save the row
-    if (updatedRow.isNew === false) {
-      if (deepEqual(newRow, oldRow)) {
-        console.log('processRowUpdate no changes made');
-        // This return statement is required or else datagrid will throw an internal error
-        // Cannot read properties of undefined (reading 'id') at getRowIdFromRowModel
-        return oldRow;
-      }
+    if (deepEqual(newRow, oldRow)) {
+      console.log('processRowUpdate no changes made');
+      // This return statement is required or else datagrid will throw an internal error
+      // Cannot read properties of undefined (reading 'id') at getRowIdFromRowModel
+      return oldRow;
     }
 
     //console.log('updatedRow', updatedRow);
@@ -200,12 +177,6 @@ function DataGridOld({
             onClick={handleEditClick(id)}
             color='inherit'
           />,
-          <GridActionsCellItem
-            icon={<DeleteIcon />}
-            label='Delete'
-            onClick={() => handleDeleteClick(id)}
-            color='inherit'
-          />,
         ];
       },
     },
@@ -268,7 +239,6 @@ function DataGridOld({
               rows: internalRows,
               setRows: setInternalRows,
               setRowModesModel,
-              createRowData,
               columns,
             },
           }}
@@ -290,7 +260,7 @@ function DataGridOld({
   );
 }
 
-DataGrid2.defaultProps = {
+EditOnly.defaultProps = {
   initialState: {
     columns: {
       columnVisibilityModel: {
@@ -306,4 +276,4 @@ DataGrid2.defaultProps = {
   rowsPerPageOptions: [5, 10, 25, 50, 100],
 };
 
-export default DataGrid2;
+export default EditOnly;
