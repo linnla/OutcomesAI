@@ -18,6 +18,7 @@ import { createErrorMessage } from '../../utils/ErrorMessage';
 import ErrorModal from '../../utils/ErrorModal';
 
 // *************** CUSTOMIZE ************** START
+
 export default function PatientGrid() {
   const { role, practiceId } = useContext(UserContext);
 
