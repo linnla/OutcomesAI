@@ -31,33 +31,18 @@ export default function TMSDevicesGrid() {
       headerName: 'Device Name',
       editable: true,
       cellClassName: 'name-column--cell',
-      width: 200,
+      flex: 1,
     },
     {
       field: 'manufacturer',
       headerName: 'Manufacturer',
       editable: true,
-      width: 200,
+      flex: 1,
     },
     {
       field: 'model_number',
       headerName: 'Model',
       editable: true,
-      flex: 1,
-    },
-    {
-      field: 'year',
-      headerName: 'Year',
-      editable: true,
-      flex: 1,
-    },
-    {
-      field: 'description',
-      headerName: 'Description',
-      headerAlign: 'left',
-      align: 'left',
-      editable: true,
-      cellClassName: 'wrapText',
       flex: 1,
     },
     {
@@ -69,7 +54,7 @@ export default function TMSDevicesGrid() {
       type: 'singleSelect',
       valueOptions: ['Active', 'Inactive'],
       defaultValueGetter: () => 'Active',
-      width: 100,
+      flex: 1,
     },
   ];
 
