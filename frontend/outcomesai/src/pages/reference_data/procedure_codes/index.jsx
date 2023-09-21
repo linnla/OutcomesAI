@@ -1,8 +1,8 @@
 import * as React from 'react';
 import '../../../index.css';
 import { useEffect, useState, useContext } from 'react';
-import OneToManyDataGrid from '../../../components/datagrid/oneToMany';
-import ReadOnlyDataGrid from '../../../components/datagrid/readOnly';
+import DataEntry from '../../components/datagrid/dataEntry';
+import ViewOnly from '../../../components/datagrid/viewOnly';
 import UserContext from '../../../contexts/UserContext';
 import { getData, postData, putData, deleteData } from '../../../utils/API';
 import { validateRequiredAttributes } from '../../../utils/ValidationUtils';
@@ -252,7 +252,7 @@ export default function ProcedureCodesGrid() {
   if (role === 'super') {
     return (
       <div>
-        <OneToManyDataGrid
+        <DataEntry
           title={title}
           subtitle={subtitle}
           columns={columns}
@@ -268,7 +268,7 @@ export default function ProcedureCodesGrid() {
   } else {
     return (
       <div>
-        <ReadOnlyDataGrid
+        <ViewOnly
           title={title}
           subtitle={subtitle}
           columns={columns}

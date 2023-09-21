@@ -2,7 +2,7 @@ import * as React from 'react';
 import '../../../index.css';
 import { useEffect, useState, useContext } from 'react';
 import DynamicMultiSelectFields from '../../../components/datagrid/dynamicMultiSelectFields';
-import ReadOnlyDataGrid from '../../../components/datagrid/readOnly';
+import ViewOnly from '../../../components/datagrid/viewOnly';
 import UserContext from '../../../contexts/UserContext';
 import { getData, postData, deleteData } from '../../../utils/API';
 import { validateRequiredAttributes } from '../../../utils/ValidationUtils';
@@ -258,7 +258,7 @@ export default function PracticeTMSProtocolsGrid() {
   } else {
     return (
       <div>
-        <ReadOnlyDataGrid
+        <ViewOnly
           title={title}
           subtitle={subtitle}
           columns={columns}

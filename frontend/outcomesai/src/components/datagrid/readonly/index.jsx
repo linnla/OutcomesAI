@@ -9,7 +9,7 @@ import React from 'react';
 import DefaultToolbar from './DefaultToolbar';
 import { useEffect, useState } from 'react';
 
-function ReadOnlyDataGrid({
+function ViewOnly({
   title,
   subtitle,
   columns,
@@ -85,7 +85,7 @@ function ReadOnlyDataGrid({
   );
 }
 
-ReadOnlyDataGrid.defaultProps = {
+ViewOnly.defaultProps = {
   initialState: {
     columns: {
       columnVisibilityModel: {
@@ -101,4 +101,4 @@ ReadOnlyDataGrid.defaultProps = {
   rowsPerPageOptions: [5, 10, 25, 50, 100],
 };
 
-export default ReadOnlyDataGrid;
+export default ViewOnly;

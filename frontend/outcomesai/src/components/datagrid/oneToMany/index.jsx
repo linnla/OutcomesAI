@@ -19,7 +19,7 @@ import DefaultToolbar from './DefaultToolbar';
 import { useEffect, useState } from 'react';
 import ErrorModal from '../../../utils/ErrorModal';
 
-function OneToManyDataGrid({
+function DataEntry({
   title,
   subtitle,
   columns,
@@ -289,7 +289,7 @@ function OneToManyDataGrid({
   );
 }
 
-OneToManyDataGrid.defaultProps = {
+DataEntry.defaultProps = {
   initialState: {
     columns: {
       columnVisibilityModel: {
@@ -305,4 +305,4 @@ OneToManyDataGrid.defaultProps = {
   rowsPerPageOptions: [5, 10, 25, 50, 100],
 };
 
-export default OneToManyDataGrid;
+export default DataEntry;
