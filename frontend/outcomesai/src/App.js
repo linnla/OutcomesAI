@@ -11,11 +11,10 @@ import Dashboard from './pages/Dashboard';
 import Team from './pages/Team';
 import Invoices from './pages/Invoices';
 
-import PatientGrid from './pages/patients/index';
-
 // Master Data
-import OfficeGrid from './pages/offices';
-import PractitionerGrid from './pages/practitioners/index';
+import PatientGrid from './pages/master_data/patients/index';
+import OfficeGrid from './pages/master_data/offices';
+import PractitionerGrid from './pages/master_data/practitioners/index';
 import PracticeTMSDevicesGrid from './pages/master_data/practices_tms_devices';
 import PracticeTMSProtocolsGrid from './pages/master_data/practice_tms_protocols';
 

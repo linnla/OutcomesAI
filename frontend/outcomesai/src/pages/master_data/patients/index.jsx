@@ -1,42 +1,112 @@
 import * as React from 'react';
 import { useEffect, useState, useContext } from 'react';
-import ViewOnly from '../../components/datagrid/viewOnly';
-import DataEntry from '../../components/datagrid/dataEntry';
-import UserContext from '../../contexts/UserContext';
-import { getData, postData, putData, deleteData } from '../../utils/API';
+import Box from '@mui/material/Box';
+import ViewOnly from '../../../components/datagrid/viewOnly';
+import DataEntry from '../../../components/datagrid/dataEntry';
+import UserContext from '../../../contexts/UserContext';
+import { getData, postData, putData, deleteData } from '../../../utils/API';
 import {
   validatePostalCodeFormat,
   validatePostalCodeExists,
   validateRequiredAttributes,
-} from '../../utils/ValidationUtils';
-import { createErrorMessage } from '../../utils/ErrorMessage';
-import ErrorModal from '../../utils/ErrorModal';
+  validateDateObject,
+  validateEmail,
+} from '../../../utils/ValidationUtils';
+import { parseUTCDate, formatDateToMMDDYYYY } from '../../../utils/DateUtils';
+
+import { createErrorMessage } from '../../../utils/ErrorMessage';
+import ErrorModal from '../../../utils/ErrorModal';
 
 // *************** CUSTOMIZE ************** START
 
-export default function OfficeGrid() {
+export default function PatientGrid() {
   const { role, practiceId } = useContext(UserContext);
 
-  const title = 'Offices';
+  const title = 'Patients';
   let subtitle = `View ${title}`;
   if (role === 'manager' || role === 'admin' || role === 'super') {
     subtitle = 'Add, Edit, Delete';
   }
 
-  const table = 'offices';
-  const sort_1 = 'name';
-  const sort_2 = 'null';
-  const requiredAttributes = ['name', 'postal_code'];
-  const attributeNames = ['Office name', 'Postal Code'];
+  const table = 'patients';
+  const relatedTable = 'practice_patients';
+  const sort_1 = 'last_name';
+  const sort_2 = 'first_name';
+  const requiredAttributes = [
+    'last_name',
+    'first_name',
+    'email',
+    'postal_code',
+    'gender',
+    'birthdate',
+    'status',
+  ];
+  const attributeNames = [
+    'Last Name',
+    'First Name',
+    'Email',
+    'Postal Code',
+    'Birth Gender',
+    'Birth Date',
+    'Status',
+  ];
 
   const columns = [
     { field: 'id', headerName: 'ID', flex: 0.5 },
     {
-      field: 'name',
-      headerName: 'Name',
+      field: 'last_name',
+      headerName: 'Last',
+      editable: true,
+      cellClassName: 'name-column--cell',
+      flex: 1,
+    },
+    {
+      field: 'first_name',
+      headerName: 'First',
+      editable: true,
+      cellClassName: 'name-column--cell',
+      flex: 1,
+    },
+    {
+      field: 'birthdate',
+      type: 'date',
+      headerName: 'Birth Date',
+      flex: 1,
+      valueGetter: (params) => new Date(params.row.birthdate),
+      renderCell: (params) => {
+        if (params.value) {
+          // If it's already a Date object, use it directly
+          if (params.value instanceof Date) {
+            return <Box>{formatDateToMMDDYYYY(params.value)}</Box>;
+          }
+
+          // If it's a string, try to parse it using our function
+          if (typeof params.value === 'string') {
+            const date = parseUTCDate(params.value); // This is the function we defined previously
+            return <Box>{formatDateToMMDDYYYY(date)}</Box>;
+          }
+        }
+
+        return <Box></Box>; // Default empty box if no valid date was found
+      },
+      editable: true,
+    },
+    {
+      field: 'gender',
+      headerName: 'Birth Gender',
+      editable: true,
+      headerAlign: 'center',
+      align: 'center',
+      type: 'singleSelect',
+      valueOptions: ['M', 'F'],
+    },
+    {
+      field: 'email',
+      headerName: 'Email',
+      headerAlign: 'center',
+      align: 'center',
       editable: true,
       flex: 1,
-      cellClassName: 'name-column--cell',
     },
     {
       field: 'postal_code',
@@ -44,14 +114,6 @@ export default function OfficeGrid() {
       headerAlign: 'center',
       align: 'center',
       editable: true,
-      flex: 1,
-    },
-    {
-      field: 'virtual',
-      headerName: 'Telehealth',
-      editable: true,
-      type: 'boolean',
-      defaultValueGetter: () => false,
     },
     {
       field: 'city',
@@ -65,7 +127,6 @@ export default function OfficeGrid() {
       headerName: 'State',
       headerAlign: 'center',
       align: 'center',
-      flex: 1,
     },
     {
       field: 'status',
@@ -75,21 +136,22 @@ export default function OfficeGrid() {
       align: 'center',
       type: 'singleSelect',
       valueOptions: ['Active', 'Inactive'],
-      defaultValueGetter: () => 'Active',
-      flex: 1,
     },
   ];
 
-  function createRowData(rows) {
+  const createRowData = (rows) => {
     // IS THIS REDUNDANT, ITS ALSO IN DefaultToolBar
     const newId = Math.floor(100000 + Math.random() * 900000);
     return {
       id: newId,
-      name: '',
+      last_name: '',
+      first_name: '',
+      email: '',
+      birthdate: '',
+      gender: '',
       status: 'Active',
-      virtual: false,
     };
-  }
+  };
   // *************** CUSTOMIZE ************** END
 
   const [rows, setRawRows] = useState([]);
@@ -108,14 +170,13 @@ export default function OfficeGrid() {
 
   useEffect(() => {
     setLoading(true);
-    getData(table, { practice_id: practiceId })
+    getData(relatedTable, { practice_id: practiceId })
       .then((data) => {
-        //console.log('data:', data);
         const sortedItems = sortItems(data, sort_1, sort_2);
         setRows(sortedItems);
       })
       .catch((error) => {
-        const errorMessage = createErrorMessage(error, table);
+        const errorMessage = createErrorMessage(error, relatedTable);
         setErrorType('Data Fetch Error');
         setErrorMessage(errorMessage);
         setShowErrorModal(true);
@@ -127,12 +188,10 @@ export default function OfficeGrid() {
 
   function sortItems(items, sort_attribute_1, sort_attribute_2) {
     return items.sort((a, b) => {
-      // Primary criterion: sort_attribute_1
       const comparison_1 = a[sort_attribute_1].localeCompare(
         b[sort_attribute_1]
       );
 
-      // If the primary criteria are the same and sort_attribute_2 is provided, sort by sort_attribute_2
       if (comparison_1 === 0 && sort_attribute_2) {
         return a[sort_attribute_2].localeCompare(b[sort_attribute_2]); // Secondary criterion
       }
@@ -144,6 +203,8 @@ export default function OfficeGrid() {
   async function validateRow(newRow, oldRow) {
     try {
       validateRequiredAttributes(requiredAttributes, attributeNames, newRow);
+      validateEmail(newRow.email);
+      validateDateObject(newRow.birthdate);
       validatePostalCodeFormat(newRow.postal_code);
       const postalCodeInfo = await validatePostalCodeExists(newRow.postal_code);
       const updatedRow = { ...newRow, ...postalCodeInfo };
@@ -156,6 +217,10 @@ export default function OfficeGrid() {
 
   async function saveRow(id, row, oldRow, oldRows) {
     try {
+      // Convert the birthdate to the desired format
+      const dateString = row.birthdate.toISOString().slice(0, 10);
+      row.birthdate = dateString;
+
       if (row.isNew) {
         const rowToSave = { ...row, practice_id: practiceId };
         delete rowToSave.id;
@@ -163,9 +228,25 @@ export default function OfficeGrid() {
         // Add the id returned from the database
         rowToSave.id = data.data.id;
         setRows(oldRows.map((r) => (r.id === id ? { ...rowToSave } : r)));
+
+        // Create row in the related table
+        rowToSave.status = 'Active';
+        const relatedRow = {
+          practice_id: rowToSave.practice_id,
+          patient_id: rowToSave.id,
+        };
+        await postData(relatedTable, relatedRow);
         return rowToSave;
       } else {
         await putData(table, row);
+        if (row.status !== oldRow.status) {
+          const relatedRow = {
+            practice_id: row.practice_id,
+            patient_id: row.id,
+            status: row.status,
+          };
+          await putData(relatedTable, relatedRow);
+        }
         setRows(oldRows.map((r) => (r.id === id ? { ...row } : r)));
         return row;
       }
@@ -173,7 +254,8 @@ export default function OfficeGrid() {
       setRows(oldRows);
 
       // *************** CUSTOMIZE **************
-      const errorMessage = createErrorMessage(error, row.name);
+      let fullName = `${row.first_name} ${row.last_name}`;
+      const errorMessage = createErrorMessage(error, fullName);
       throw errorMessage;
     }
   }
@@ -182,7 +264,7 @@ export default function OfficeGrid() {
     try {
       const data = await getData('episodes_of_care', {
         practice_id: practiceId,
-        office_id: row.id,
+        patient_id: row.id,
       });
       return true;
     } catch (error) {
@@ -193,24 +275,31 @@ export default function OfficeGrid() {
   async function deleteRow(id, row, oldRows) {
     const episodeExists = await episodesOfCareExists(row);
     if (!episodeExists) {
-      const errorMessage = `The ${row.name} office has treated patients and cannot be deleted.\nSet the status to Inactive to hide the Office.`;
+      let fullName = `${row.first_name} ${row.last_name}`;
+      const errorMessage = `${fullName} has an episode of care and cannot be deleted.\nSet the status to Inactive to hide the Patient.`;
       throw errorMessage;
     }
 
-    const body = {
-      practice_id: row.practice_id,
-      id: row.id,
-    };
-
     try {
+      const relatedRow = {
+        practice_id: practiceId,
+        patient_id: row.id,
+      };
+      await deleteData(relatedTable, relatedRow);
+
+      // Delete from patients
+      const body = {
+        id: row.id,
+      };
       await deleteData(table, body);
+
+      // After both deletes have finished, update the rows
       setRows(oldRows.filter((r) => r.id !== id));
-      return 'Deleted';
+      return row;
     } catch (error) {
       setRows(oldRows);
-
-      // *************** CUSTOMIZE **************
-      const errorMessage = createErrorMessage(error, row.name);
+      let fullName = `${row.first_name} ${row.last_name}`;
+      const errorMessage = createErrorMessage(error, fullName);
       throw errorMessage;
     }
   }

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useEffect, useState, useContext } from 'react';
-import DataEntry from '../../components/datagrid/dataEntry';
+import DataEntry from '../../../components/datagrid/dataEntry';
 import ViewOnly from '../../../components/datagrid/viewOnly';
 import UserContext from '../../../contexts/UserContext';
 import { getData, postData, putData, deleteData } from '../../../utils/API';

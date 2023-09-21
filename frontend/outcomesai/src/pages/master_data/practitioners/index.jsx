@@ -1,15 +1,15 @@
 import * as React from 'react';
 import { useEffect, useState, useContext } from 'react';
-import ViewOnly from '../../components/datagrid/viewOnly';
-import DataEntry from '../../components/datagrid/dataEntry';
-import UserContext from '../../contexts/UserContext';
-import { getData, postData, putData, deleteData } from '../../utils/API';
+import ViewOnly from '../../../components/datagrid/viewOnly';
+import DataEntry from '../../../components/datagrid/dataEntry';
+import UserContext from '../../../contexts/UserContext';
+import { getData, postData, putData, deleteData } from '../../../utils/API';
 import {
   validateRequiredAttributes,
   validateEmail,
-} from '../../utils/ValidationUtils';
-import { createErrorMessage } from '../../utils/ErrorMessage';
-import ErrorModal from '../../utils/ErrorModal';
+} from '../../../utils/ValidationUtils';
+import { createErrorMessage } from '../../../utils/ErrorMessage';
+import ErrorModal from '../../../utils/ErrorModal';
 
 // *************** CUSTOMIZE ************** START
 export default function PractitionerGrid() {
