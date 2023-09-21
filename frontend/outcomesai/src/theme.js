@@ -193,6 +193,60 @@ export const themeSettings = (mode) => {
   };
 };
 
+const customSwitchStyleOverrides = {
+  MuiSwitch: {
+    styleOverrides: {
+      switchBase: {
+        // Controls default (unchecked) color for the thumb
+        color: '#ccc',
+      },
+      colorPrimary: {
+        '&.Mui-checked': {
+          // Controls checked color for the thumb
+          color: '#f2ff00',
+        },
+      },
+      track: {
+        // Controls default (unchecked) color for the track
+        opacity: 0.2,
+        backgroundColor: '#fff',
+        '.Mui-checked.Mui-checked + &': {
+          // Controls checked color for the track
+          opacity: 0.7,
+          backgroundColor: '#fff',
+        },
+      },
+    },
+  },
+};
+
+// context for color mode
+export const ColorModeContext = createContext({
+  toggleColorMode: () => {},
+});
+
+export const useMode = () => {
+  const [mode, setMode] = useState('dark');
+
+  const colorMode = useMemo(
+    () => ({
+      toggleColorMode: () =>
+        setMode((prev) => (prev === 'light' ? 'dark' : 'light')),
+    }),
+    []
+  );
+
+  const extendedThemeSettings = {
+    ...themeSettings(mode),
+    ...customSwitchStyleOverrides,
+  };
+
+  const theme = useMemo(() => createTheme(extendedThemeSettings), [mode]);
+
+  return [theme, colorMode];
+};
+
+/*
 // context for color mode
 export const ColorModeContext = createContext({
   toggleColorMode: () => {},
@@ -212,3 +266,4 @@ export const useMode = () => {
   const theme = useMemo(() => createTheme(themeSettings(mode)), [mode]);
   return [theme, colorMode];
 };
+*/

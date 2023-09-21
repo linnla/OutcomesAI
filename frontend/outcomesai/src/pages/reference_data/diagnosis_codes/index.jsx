@@ -9,9 +9,16 @@ import { validateRequiredAttributes } from '../../../utils/ValidationUtils';
 import { createErrorMessage } from '../../../utils/ErrorMessage';
 import ErrorModal from '../../../utils/ErrorModal';
 
-// *************** CUSTOMIZE **************
+// *************** CUSTOMIZE ************** START
 export default function DiagnosisCodesGrid() {
+  const { role } = useContext(UserContext);
+
   const title = 'Diagnosis Codes';
+  let subtitle = `View ${title}`;
+  if (role === 'super') {
+    subtitle = 'Add, Edit, Delete';
+  }
+
   const sort_1 = 'disorder_name';
   const sort_2 = 'code';
   const table = 'diagnosis_codes';
@@ -22,6 +29,42 @@ export default function DiagnosisCodesGrid() {
     'Disorder',
     'Description',
     'Status',
+  ];
+
+  const columns = [
+    { field: 'id', headerName: 'ID', flex: 0.5 },
+    {
+      field: 'code',
+      headerName: 'Diagnosis Code',
+      editable: true,
+      cellClassName: 'name-column--cell',
+    },
+    {
+      field: 'disorder_name',
+      headerName: 'Disorder',
+      type: 'singleSelect',
+      valueOptions: relatedData,
+      editable: true,
+      flex: 1,
+    },
+    {
+      field: 'description',
+      headerName: 'Description',
+      editable: true,
+      cellClassName: 'wrapText',
+      flex: 1,
+    },
+    {
+      field: 'status',
+      headerName: 'Status',
+      editable: true,
+      headerAlign: 'center',
+      align: 'center',
+      type: 'singleSelect',
+      valueOptions: ['Active', 'Inactive'],
+      defaultValueGetter: () => 'Active',
+      flex: 1,
+    },
   ];
 
   function createRowData(rows) {
@@ -36,10 +79,8 @@ export default function DiagnosisCodesGrid() {
       status: 'Active',
     };
   }
+  // *************** CUSTOMIZE ************** END
 
-  // *************** CUSTOMIZE **************
-
-  const { role } = useContext(UserContext);
   const [rows, setRawRows] = useState([]);
   const [errorType, setErrorType] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
@@ -53,27 +94,6 @@ export default function DiagnosisCodesGrid() {
     }
     setRawRows(rows.map((r, i) => ({ ...r, no: i + 1 })));
   };
-
-  function sortItems(items, sort_attribute_1, sort_attribute_2) {
-    return items.sort((a, b) => {
-      // Primary criterion: sort_attribute_1
-      const comparison_1 = a[sort_attribute_1].localeCompare(
-        b[sort_attribute_1]
-      );
-
-      // If the primary criteria are the same and sort_attribute_2 is provided, sort by sort_attribute_2
-      if (comparison_1 === 0 && sort_attribute_2) {
-        return a[sort_attribute_2].localeCompare(b[sort_attribute_2]); // Secondary criterion
-      }
-
-      return comparison_1;
-    });
-  }
-
-  let subtitle = `View ${title}`;
-  if (role === 'super') {
-    subtitle = 'Add, Edit, Delete, Inactivate';
-  }
 
   useEffect(() => {
     setLoading(true);
@@ -118,6 +138,22 @@ export default function DiagnosisCodesGrid() {
       });
   }, []);
 
+  function sortItems(items, sort_attribute_1, sort_attribute_2) {
+    return items.sort((a, b) => {
+      // Primary criterion: sort_attribute_1
+      const comparison_1 = a[sort_attribute_1].localeCompare(
+        b[sort_attribute_1]
+      );
+
+      // If the primary criteria are the same and sort_attribute_2 is provided, sort by sort_attribute_2
+      if (comparison_1 === 0 && sort_attribute_2) {
+        return a[sort_attribute_2].localeCompare(b[sort_attribute_2]); // Secondary criterion
+      }
+
+      return comparison_1;
+    });
+  }
+
   async function validateRow(newRow, oldRow) {
     try {
       validateRequiredAttributes(['disorder_name'], ['Disorder'], newRow);
@@ -136,42 +172,6 @@ export default function DiagnosisCodesGrid() {
       throw errorMessage;
     }
   }
-
-  const columns = [
-    { field: 'id', headerName: 'ID', flex: 0.5 },
-    {
-      field: 'code',
-      headerName: 'Diagnosis Code',
-      editable: true,
-      cellClassName: 'name-column--cell',
-    },
-    {
-      field: 'disorder_name',
-      headerName: 'Disorder',
-      type: 'singleSelect',
-      valueOptions: relatedData,
-      editable: true,
-      flex: 1,
-    },
-    {
-      field: 'description',
-      headerName: 'Description',
-      editable: true,
-      cellClassName: 'wrapText',
-      flex: 1,
-    },
-    {
-      field: 'status',
-      headerName: 'Status',
-      editable: true,
-      headerAlign: 'center',
-      align: 'center',
-      type: 'singleSelect',
-      valueOptions: ['Active', 'Inactive'],
-      defaultValueGetter: () => 'Active',
-      flex: 1,
-    },
-  ];
 
   async function saveRow(id, row, oldRow, oldRows) {
     try {
@@ -206,7 +206,7 @@ export default function DiagnosisCodesGrid() {
       return 'Deleted';
     } catch (error) {
       setRows(oldRows);
-      const errorMessage = createErrorMessage(error, row.name);
+      const errorMessage = createErrorMessage(error, row.code);
       throw errorMessage;
     }
   }

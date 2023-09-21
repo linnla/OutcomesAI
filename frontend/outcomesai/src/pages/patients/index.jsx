@@ -18,20 +18,19 @@ import { createErrorMessage } from '../../utils/ErrorMessage';
 import ErrorModal from '../../utils/ErrorModal';
 
 // *************** CUSTOMIZE ************** START
-
 export default function PatientGrid() {
   const { role, practiceId } = useContext(UserContext);
 
   const title = 'Patients';
   let subtitle = `View ${title}`;
-  if (role === 'super') {
-    subtitle = 'Add, Edit, Delete, Inactivate';
+  if (role === 'manager' || role === 'admin' || role === 'super') {
+    subtitle = 'Add, Edit, Delete';
   }
+
   const table = 'patients';
   const relatedTable = 'practice_patients';
   const sort_1 = 'last_name';
   const sort_2 = 'first_name';
-
   const requiredAttributes = [
     'last_name',
     'first_name',
@@ -152,7 +151,6 @@ export default function PatientGrid() {
       status: 'Active',
     };
   };
-
   // *************** CUSTOMIZE ************** END
 
   const [rows, setRawRows] = useState([]);
@@ -166,9 +164,26 @@ export default function PatientGrid() {
       console.error('setRows received non-array data:', rows);
       return;
     }
-    console.log('setRows:', rows);
     setRawRows(rows.map((r, i) => ({ ...r, no: i + 1 })));
   };
+
+  useEffect(() => {
+    setLoading(true);
+    getData(relatedTable, { practice_id: practiceId })
+      .then((data) => {
+        const sortedItems = sortItems(data, sort_1, sort_2);
+        setRows(sortedItems);
+      })
+      .catch((error) => {
+        const errorMessage = createErrorMessage(error, relatedTable);
+        setErrorType('Data Fetch Error');
+        setErrorMessage(errorMessage);
+        setShowErrorModal(true);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, [practiceId]);
 
   function sortItems(items, sort_attribute_1, sort_attribute_2) {
     return items.sort((a, b) => {
@@ -183,26 +198,6 @@ export default function PatientGrid() {
       return comparison_1;
     });
   }
-
-  useEffect(() => {
-    setLoading(true);
-    getData(relatedTable, { practice_id: practiceId })
-      .then((data) => {
-        //console.log('data:', data);
-        const sortedItems = sortItems(data, sort_1, sort_2);
-        console.log(sortedItems);
-        setRows(sortedItems);
-      })
-      .catch((error) => {
-        const errorMessage = createErrorMessage(error, relatedTable);
-        setErrorType('Data Fetch Error');
-        setErrorMessage(errorMessage);
-        setShowErrorModal(true);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  }, [practiceId]);
 
   async function validateRow(newRow, oldRow) {
     try {
@@ -264,26 +259,46 @@ export default function PatientGrid() {
     }
   }
 
+  async function episodesOfCareExists(row) {
+    try {
+      const data = await getData('episodes_of_care', {
+        practice_id: practiceId,
+        patient_id: row.id,
+      });
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }
+
   async function deleteRow(id, row, oldRows) {
-    const body = {
-      id: row.id,
-    };
+    const episodeExists = await episodesOfCareExists(row);
+    if (!episodeExists) {
+      let fullName = `${row.first_name} ${row.last_name}`;
+      const errorMessage = `${fullName} has an episode of care and cannot be deleted.\nSet the status to Inactive to hide the Patient.`;
+      throw errorMessage;
+    }
 
     try {
-      await deleteData(table, body);
-      setRows(oldRows.filter((r) => r.id !== id));
-
       const relatedRow = {
-        practice_id: row.practice_id,
+        practice_id: practiceId,
         patient_id: row.id,
       };
       await deleteData(relatedTable, relatedRow);
+
+      // Delete from patients
+      const body = {
+        id: row.id,
+      };
+      await deleteData(table, body);
+
+      // After both deletes have finished, update the rows
+      setRows(oldRows.filter((r) => r.id !== id));
       return row;
     } catch (error) {
       setRows(oldRows);
-
-      // *************** CUSTOMIZE **************
-      const errorMessage = createErrorMessage(error, row.name);
+      let fullName = `${row.first_name} ${row.last_name}`;
+      const errorMessage = createErrorMessage(error, fullName);
       throw errorMessage;
     }
   }

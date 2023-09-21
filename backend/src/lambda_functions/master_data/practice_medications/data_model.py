@@ -3,12 +3,17 @@ from sqlalchemy import (
     String,
     Integer,
     DateTime,
+    Date,
+    Boolean,
+    Numeric,
     ForeignKey,
 )
 from sqlalchemy.orm import relationship
+from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import mapped_column
 from sqlalchemy.orm import DeclarativeBase
+from datetime import datetime
 
 
 class Base(DeclarativeBase):
@@ -59,6 +64,7 @@ class PracticeUser(Base):
     create_allowed_fields = []
     update_required_fields = ["practice_id", "user_id"]
     update_allowed_fields = ["status", "role_id"]
+    update_required_fields = ["practice_id", "user_id", "role_id"]
     delete_required_fields = ["practice_id", "user_id"]
 
 

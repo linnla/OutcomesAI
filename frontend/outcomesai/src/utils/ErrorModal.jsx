@@ -37,8 +37,17 @@ function ErrorModal(props) {
           >
             {errorType}
           </Typography>
-          <Typography variant='h3' color={colors.grey[100]}>
-            {errorMessage}
+          <Typography
+            variant='h3'
+            color={colors.grey[100]}
+            component='div' // Render as a multiline text element
+          >
+            {errorMessage.split('\n').map((line, index) => (
+              <React.Fragment key={index}>
+                {line}
+                <br /> {/* Add a line break */}
+              </React.Fragment>
+            ))}
           </Typography>
         </Box>
         <button onClick={onClose}>Close</button>

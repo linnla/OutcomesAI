@@ -1,4 +1,4 @@
-from data_model import TMSProtocol
+from data_model import PracticeTMSProtocol
 from database_crud import select_reference_table, create, update, delete
 from json import dumps
 import logging
@@ -11,7 +11,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger()
 
-entity_class = TMSProtocol
+entity_class = PracticeTMSProtocol
 
 
 def lambda_handler(event, context):

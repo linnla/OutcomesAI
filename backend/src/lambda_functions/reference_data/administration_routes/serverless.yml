@@ -39,7 +39,7 @@ functions:
       - ${self:custom.config.sqlalchemy_layer}
     handler: http-administration-routes.lambda_handler
     description:
-      Handles HTTP requests for CRUD operations on RDS PostgreSQL biomarkers
-      table.
+      Handles HTTP requests for CRUD operations on RDS PostgreSQL
+      administration_routes table.
     memorySize: 512
     timeout: 5

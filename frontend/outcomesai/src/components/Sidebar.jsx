@@ -141,7 +141,7 @@ const Sidebar = () => {
               color={colors.grey[300]}
               sx={{ m: '15px 0 5px 20px' }}
             >
-              Pracrice Data
+              Patients Data
             </Typography>
             {/*<Item
               title='Form'
@@ -157,20 +157,6 @@ const Sidebar = () => {
               selected={selected}
               setSelected={setSelected}
             />
-            <Item
-              title='Manage Practitioners'
-              to='/practitioners'
-              icon={<Diversity3OutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <Item
-              title='Manage Offices'
-              to='/offices'
-              icon={<LocalHospitalOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
             <Typography
               variant='h6'
               color={colors.grey[300]}
@@ -178,9 +164,30 @@ const Sidebar = () => {
             ></Typography>
             <SubMenu prefix='Practice Data'>
               <Item
+                title='Practitioners'
+                to='/practitioners'
+                icon={<Diversity3OutlinedIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
+              <Item
+                title='Offices'
+                to='/offices'
+                icon={<LocalHospitalOutlinedIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
+              <Item
                 title='TMS Devices'
                 to='/practice/tms_devices'
                 icon={<CastOutlinedIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
+              <Item
+                title='TMS Protocols'
+                to='/practice/tms_protocols'
+                icon={<BallotOutlinedIcon />}
                 selected={selected}
                 setSelected={setSelected}
               />

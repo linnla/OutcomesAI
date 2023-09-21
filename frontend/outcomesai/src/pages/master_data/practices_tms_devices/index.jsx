@@ -9,14 +9,14 @@ import { validateRequiredAttributes } from '../../../utils/ValidationUtils';
 import { createErrorMessage } from '../../../utils/ErrorMessage';
 import ErrorModal from '../../../utils/ErrorModal';
 
-// *************** CUSTOMIZE **************
+// *************** CUSTOMIZE ************** START
 export default function PracticeTMSDevicesGrid() {
   const { role, practiceId } = useContext(UserContext);
 
   const title = 'Office TMS Devices';
   let subtitle = `View ${title}`;
-  if (role === 'super') {
-    subtitle = 'Add & Delete';
+  if (role === 'manager' || role === 'admin' || role === 'super') {
+    subtitle = 'Add, Edit, Delete';
   }
 
   const table = 'practice_tms_devices';
@@ -25,7 +25,36 @@ export default function PracticeTMSDevicesGrid() {
   const requiredAttributes = ['office_name', 'device_name', 'coil_name'];
   const attributeNames = ['Office', 'TMS Device', 'TMS Coil'];
 
-  // *************** CUSTOMIZE **************
+  const columns = [
+    { field: 'id', headerName: 'ID', flex: 0.5 },
+    {
+      field: 'office_name',
+      headerName: 'Office',
+      cellClassName: 'name-column--cell',
+      flex: 1,
+    },
+    {
+      field: 'device_mfg',
+      headerName: 'Device Mfg',
+      flex: 1,
+    },
+    {
+      field: 'device_name',
+      headerName: 'Device Name',
+      flex: 1,
+    },
+    {
+      field: 'coil_mfg',
+      headerName: 'Coil Mfg',
+      flex: 1,
+    },
+    {
+      field: 'coil_name',
+      headerName: 'Coil',
+      flex: 1,
+    },
+  ];
+  // *************** CUSTOMIZE ************** END
 
   const [rows, setRawRows] = useState([]);
   const [errorType, setErrorType] = useState('');
@@ -168,53 +197,6 @@ export default function PracticeTMSDevicesGrid() {
       });
   }, []);
 
-  const columns = [
-    { field: 'id', headerName: 'ID', flex: 0.5 },
-    {
-      field: 'office_name',
-      headerName: 'Office',
-      type: 'singleSelect',
-      valueOptions: officeNames,
-      editable: true,
-      cellClassName: 'name-column--cell',
-      flex: 1,
-    },
-    {
-      field: 'device_mfg',
-      headerName: 'Device Mfg',
-      type: 'singleSelect',
-      valueOptions: deviceMfgs,
-      editable: true,
-      flex: 1,
-    },
-    {
-      field: 'device_name',
-      headerName: 'Device Name',
-      type: 'singleSelect',
-      valueOptions: deviceNames,
-      editable: true,
-      flex: 1,
-    },
-    {
-      field: 'coil_mfg',
-      headerName: 'Coil Mfg',
-      editable: true,
-      type: 'singleSelect',
-      valueOptions: coilMfgs,
-      cellClassName: 'wrapText',
-      flex: 1,
-    },
-    {
-      field: 'coil_name',
-      headerName: 'Coil',
-      editable: true,
-      type: 'singleSelect',
-      valueOptions: coilNames,
-      cellClassName: 'wrapText',
-      flex: 1,
-    },
-  ];
-
   function getRandomInt(min, max) {
     min = Math.ceil(min);
     max = Math.floor(max);
@@ -291,7 +273,7 @@ export default function PracticeTMSDevicesGrid() {
     );
   }
 
-  if (role === 'super') {
+  if (role === 'manager' || role === 'admin' || role === 'super') {
     return (
       <div>
         <ManyToManyDataGrid

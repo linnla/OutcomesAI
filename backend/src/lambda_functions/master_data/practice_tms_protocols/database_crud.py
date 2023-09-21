@@ -241,14 +241,18 @@ def update(event, entity_class, required_fields, allowed_fields, non_null_fields
 
 
 def delete(event, entity_class, required_fields):
+    print("event:", event)
+    print("event[body]:", event["body"])
     try:
         request_body = loads(event["body"])
         print(request_body)
     except JSONDecodeError as e:
         error_message = f"InvalidJSON: {event['body']} is not valid JSON, {str(e)}."
+        print(error_message)
         return create_error_response(error_message)
     except Exception as e:
         error_message = f"Unexpected error occurred: {str(e)}"
+        print(error_message)
         return create_error_response(error_message)
 
     if not isinstance(request_body, dict):
@@ -286,4 +290,10 @@ def delete(event, entity_class, required_fields):
     return response
 
 
-__all__ = ["select", "select_reference_table", "create", "update", "delete"]
+__all__ = [
+    "select",
+    "select_reference_table",
+    "create",
+    "update",
+    "delete",
+]

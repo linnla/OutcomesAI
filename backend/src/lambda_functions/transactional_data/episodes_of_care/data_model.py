@@ -93,8 +93,13 @@ class EpisodeOfCare(Base):
             "updated": updated,
         }
 
-    all_params_select = True
-    select_required_params = ["practice_id", "patient_id"]
+    all_params_select = False
+    select_required_params = [
+        "practice_id",
+        "patient_id",
+        "practitioner_id",
+        "office_id",
+    ]
     create_required_fields = [
         "practice_id",
         "patient_id",

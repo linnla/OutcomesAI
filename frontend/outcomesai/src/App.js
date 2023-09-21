@@ -10,12 +10,14 @@ import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Team from './pages/Team';
 import Invoices from './pages/Invoices';
-import OfficeGrid from './pages/offices';
-import PractitionerGrid from './pages/practitioners/index';
+
 import PatientGrid from './pages/patients/index';
 
 // Master Data
+import OfficeGrid from './pages/offices';
+import PractitionerGrid from './pages/practitioners/index';
 import PracticeTMSDevicesGrid from './pages/master_data/practices_tms_devices';
+import PracticeTMSProtocolsGrid from './pages/master_data/practice_tms_protocols';
 
 // Reference Data
 import ActiveIngredientsGrid from './pages/reference_data/active_ingredients';
@@ -95,6 +97,14 @@ function App() {
           element={
             <RequireAuth>
               <PracticeTMSDevicesGrid />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path='/practice/tms_protocols'
+          element={
+            <RequireAuth>
+              <PracticeTMSProtocolsGrid />
             </RequireAuth>
           }
         />

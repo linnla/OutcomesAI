@@ -18,9 +18,9 @@ export default function OfficeGrid() {
   const { role, practiceId } = useContext(UserContext);
 
   const title = 'Offices';
-  let subtitle = 'View Offices';
+  let subtitle = `View ${title}`;
   if (role === 'manager' || role === 'admin' || role === 'super') {
-    subtitle = 'Manage Offices';
+    subtitle = 'Add, Edit, Delete';
   }
 
   const table = 'offices';
@@ -90,6 +90,7 @@ export default function OfficeGrid() {
       virtual: false,
     };
   }
+  // *************** CUSTOMIZE ************** END
 
   const [rows, setRawRows] = useState([]);
   const [errorType, setErrorType] = useState('');
@@ -104,22 +105,6 @@ export default function OfficeGrid() {
     }
     setRawRows(rows.map((r, i) => ({ ...r, no: i + 1 })));
   };
-
-  function sortItems(items, sort_attribute_1, sort_attribute_2) {
-    return items.sort((a, b) => {
-      // Primary criterion: sort_attribute_1
-      const comparison_1 = a[sort_attribute_1].localeCompare(
-        b[sort_attribute_1]
-      );
-
-      // If the primary criteria are the same and sort_attribute_2 is provided, sort by sort_attribute_2
-      if (comparison_1 === 0 && sort_attribute_2) {
-        return a[sort_attribute_2].localeCompare(b[sort_attribute_2]); // Secondary criterion
-      }
-
-      return comparison_1;
-    });
-  }
 
   useEffect(() => {
     setLoading(true);
@@ -140,6 +125,22 @@ export default function OfficeGrid() {
       });
   }, [practiceId]);
 
+  function sortItems(items, sort_attribute_1, sort_attribute_2) {
+    return items.sort((a, b) => {
+      // Primary criterion: sort_attribute_1
+      const comparison_1 = a[sort_attribute_1].localeCompare(
+        b[sort_attribute_1]
+      );
+
+      // If the primary criteria are the same and sort_attribute_2 is provided, sort by sort_attribute_2
+      if (comparison_1 === 0 && sort_attribute_2) {
+        return a[sort_attribute_2].localeCompare(b[sort_attribute_2]); // Secondary criterion
+      }
+
+      return comparison_1;
+    });
+  }
+
   async function validateRow(newRow, oldRow) {
     try {
       validateRequiredAttributes(requiredAttributes, attributeNames, newRow);
@@ -152,8 +153,6 @@ export default function OfficeGrid() {
       throw errorMessage;
     }
   }
-
-  // *************** CUSTOMIZE ************** END
 
   async function saveRow(id, row, oldRow, oldRows) {
     try {
@@ -179,7 +178,25 @@ export default function OfficeGrid() {
     }
   }
 
+  async function episodesOfCareExists(row) {
+    try {
+      const data = await getData('episodes_of_care', {
+        practice_id: practiceId,
+        office_id: row.id,
+      });
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }
+
   async function deleteRow(id, row, oldRows) {
+    const episodeExists = await episodesOfCareExists(row);
+    if (!episodeExists) {
+      const errorMessage = `The ${row.name} office has treated patients and cannot be deleted.\nSet the status to Inactive to hide the Office.`;
+      throw errorMessage;
+    }
+
     const body = {
       practice_id: row.practice_id,
       id: row.id,

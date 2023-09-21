@@ -17,9 +17,9 @@ export default function PractitionerGrid() {
   const { role, practiceId } = useContext(UserContext);
 
   const title = 'Practitioners';
-  let subtitle = 'View Practitioners';
+  let subtitle = `View ${title}`;
   if (role === 'manager' || role === 'admin' || role === 'super') {
-    subtitle = 'Manage Practitioners';
+    subtitle = 'Add, Edit, Delete';
   }
 
   const table = 'practitioners';
@@ -113,7 +113,6 @@ export default function PractitionerGrid() {
       status: 'Active',
     };
   };
-
   // *************** CUSTOMIZE ************** END
 
   const [rows, setRawRows] = useState([]);
@@ -129,6 +128,40 @@ export default function PractitionerGrid() {
     }
     setRawRows(rows.map((r, i) => ({ ...r, no: i + 1 })));
   };
+
+  useEffect(() => {
+    setLoading(true);
+    getData(relatedTable, { practice_id: practiceId })
+      .then((data) => {
+        const sortedItems = sortItems(data, sort_1, sort_2);
+        setRows(sortedItems);
+      })
+      .catch((error) => {
+        const errorMessage = createErrorMessage(error, relatedTable);
+        setErrorType('Data Fetch Error');
+        setErrorMessage(errorMessage);
+        setShowErrorModal(true);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, [practiceId]);
+
+  function formatFullName(row) {
+    let fullName = '';
+
+    if (row.prefix && row.prefix.trim() !== '') {
+      fullName += row.prefix + ' ';
+    }
+
+    fullName += `${row.first_name} ${row.last_name}`;
+
+    if (row.suffix && row.suffix.trim() !== '') {
+      fullName += ' ' + row.suffix;
+    }
+
+    return fullName;
+  }
 
   function sortItems(items, sort_attribute_1, sort_attribute_2) {
     return items.sort((a, b) => {
@@ -146,25 +179,6 @@ export default function PractitionerGrid() {
     });
   }
 
-  useEffect(() => {
-    setLoading(true);
-    getData(relatedTable, { practice_id: practiceId })
-      .then((data) => {
-        //console.log('data:', data);
-        const sortedItems = sortItems(data, sort_1, sort_2);
-        setRows(sortedItems);
-      })
-      .catch((error) => {
-        const errorMessage = createErrorMessage(error, relatedTable);
-        setErrorType('Data Fetch Error');
-        setErrorMessage(errorMessage);
-        setShowErrorModal(true);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  }, [practiceId]);
-
   async function validateRow(newRow, oldRow) {
     try {
       validateRequiredAttributes(requiredAttributes, attributeNames, newRow);
@@ -174,22 +188,6 @@ export default function PractitionerGrid() {
       const errorMessage = createErrorMessage(error, table);
       throw errorMessage;
     }
-  }
-
-  function formatFullName(row) {
-    let fullName = '';
-
-    if (row.prefix && row.prefix.trim() !== '') {
-      fullName += row.prefix + ' ';
-    }
-
-    fullName += `${row.first_name} ${row.last_name}`;
-
-    if (row.suffix && row.suffix.trim() !== '') {
-      fullName += ' ' + row.suffix;
-    }
-
-    return fullName;
   }
 
   async function saveRow(id, row, oldRow, oldRows) {
@@ -242,28 +240,46 @@ export default function PractitionerGrid() {
     }
   }
 
+  async function episodesOfCareExists(row) {
+    try {
+      const data = await getData('episodes_of_care', {
+        practice_id: practiceId,
+        practitioner_id: row.id,
+      });
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }
+
   async function deleteRow(id, row, oldRows) {
-    const body = {
-      id: row.id,
-    };
+    const episodeExists = await episodesOfCareExists(row);
+    if (!episodeExists) {
+      let fullName = formatFullName(row);
+      const errorMessage = `${fullName} has treated a patient and cannot be deleted.\nSet the status to Inactive to hide the Practitioner.`;
+      throw errorMessage;
+    }
 
     try {
-      await deleteData(table, body);
-      setRows(oldRows.filter((r) => r.id !== id));
-
       const relatedRow = {
-        practice_id: row.practice_id,
+        practice_id: practiceId,
         practitioner_id: row.id,
       };
       await deleteData(relatedTable, relatedRow);
-      return row;
 
-      return 'Deleted';
+      // Delete from patients
+      const body = {
+        id: row.id,
+      };
+      await deleteData(table, body);
+
+      // After both deletes have finished, update the rows
+      setRows(oldRows.filter((r) => r.id !== id));
+      return row;
     } catch (error) {
       setRows(oldRows);
-
-      // *************** CUSTOMIZE **************
-      const errorMessage = createErrorMessage(error, row.name);
+      let fullName = `${row.first_name} ${row.last_name}`;
+      const errorMessage = createErrorMessage(error, fullName);
       throw errorMessage;
     }
   }

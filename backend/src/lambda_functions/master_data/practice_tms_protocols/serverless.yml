@@ -1,4 +1,4 @@
-service: outcomesai-episodes-of-care-http
+service: outcomesai-practice-tms-protocols-http
 
 frameworkVersion: '3'
 
@@ -6,7 +6,7 @@ plugins:
   - serverless-prune-plugin
 
 custom:
-  config: ${file(../../lambda_config/outcomesai-${self:provider.stage}-config.json)}
+  config: ${file(../../../lambda_config/outcomesai-${self:provider.stage}-config.json)}
   prune:
     automatic: true
     number: 3
@@ -37,9 +37,9 @@ functions:
     layers:
       - ${self:custom.config.psycopg2_jetbridge_layer}
       - ${self:custom.config.sqlalchemy_layer}
-    handler: http-episodes-of-care.lambda_handler
+    handler: http-practice-tms-protocols.lambda_handler
     description:
-      Handles HTTP requests for CRUD operations on RDS PostgreSQL biomarkers
-      table.
+      Handles HTTP requests for CRUD operations on RDS PostgreSQL
+      practice_tms_protocols table.
     memorySize: 512
     timeout: 5

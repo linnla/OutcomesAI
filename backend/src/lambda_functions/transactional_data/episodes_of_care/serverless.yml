@@ -1,4 +1,4 @@
-service: outcomesai-diagnosis-codes-http
+service: outcomesai-episodes-of-care-http
 
 frameworkVersion: '3'
 
@@ -37,9 +37,9 @@ functions:
     layers:
       - ${self:custom.config.psycopg2_jetbridge_layer}
       - ${self:custom.config.sqlalchemy_layer}
-    handler: http-diagnosis-codes.lambda_handler
+    handler: http-episodes-of-care.lambda_handler
     description:
       Handles HTTP requests for CRUD operations on RDS PostgreSQL
-      diagnosis_codes table.
+      episodes_of_care table.
     memorySize: 512
     timeout: 5

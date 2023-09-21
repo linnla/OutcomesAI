@@ -8,50 +8,19 @@ import { validateRequiredAttributes } from '../../../utils/ValidationUtils';
 import { createErrorMessage } from '../../../utils/ErrorMessage';
 import ErrorModal from '../../../utils/ErrorModal';
 
-// *************** CUSTOMIZE **************
+// *************** CUSTOMIZE ************** START
 export default function TMSDevicesGrid() {
+  const { role } = useContext(UserContext);
+
   const title = 'TMS Devices';
+  let subtitle = `View ${title}`;
+  if (role === 'super') {
+    subtitle = 'Add, Edit, Delete';
+  }
+
   const table = 'tms_devices';
   const sort_1 = 'manufacturer';
   const sort_2 = 'name';
-  // *************** CUSTOMIZE **************
-
-  const { role } = useContext(UserContext);
-  const [rows, setRawRows] = useState([]);
-  const [errorType, setErrorType] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
-  const [showErrorModal, setShowErrorModal] = useState(false);
-  const [loading, setLoading] = useState(true);
-
-  const setRows = (rows) => {
-    if (!Array.isArray(rows)) {
-      console.error('setRows received non-array data:', rows);
-      return;
-    }
-    setRawRows(rows.map((r, i) => ({ ...r, no: i + 1 })));
-  };
-
-  function sortItems(items, sort_attribute_1, sort_attribute_2) {
-    return items.sort((a, b) => {
-      // Primary criterion: sort_attribute_1
-      const comparison_1 = a[sort_attribute_1].localeCompare(
-        b[sort_attribute_1]
-      );
-
-      // If the primary criteria are the same and sort_attribute_2 is provided, sort by sort_attribute_2
-      if (comparison_1 === 0 && sort_attribute_2) {
-        return a[sort_attribute_2].localeCompare(b[sort_attribute_2]); // Secondary criterion
-      }
-
-      return comparison_1;
-    });
-  }
-
-  let subtitle = `View ${title}`;
-  if (role === 'super') {
-    subtitle = 'Add, Edit, Delete, Inactivate';
-  }
-
   const requiredAttributes = ['manufacturer', 'name', 'status'];
   const attributeNames = ['Manufacturer', 'Device Name', 'Status'];
 
@@ -103,7 +72,35 @@ export default function TMSDevicesGrid() {
       width: 100,
     },
   ];
+
+  const createRowData = (rows) => {
+    // IS THIS REDUNDANT, ITS ALSO IN DefaultToolBar
+    const newId = Math.floor(100000 + Math.random() * 900000);
+    return {
+      id: newId,
+      manufacturer: '',
+      model_number: '',
+      name: '',
+      year: null,
+      description: '',
+      status: 'Active',
+    };
+  };
   // *************** CUSTOMIZE ************** END
+
+  const [rows, setRawRows] = useState([]);
+  const [errorType, setErrorType] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+  const [showErrorModal, setShowErrorModal] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  const setRows = (rows) => {
+    if (!Array.isArray(rows)) {
+      console.error('setRows received non-array data:', rows);
+      return;
+    }
+    setRawRows(rows.map((r, i) => ({ ...r, no: i + 1 })));
+  };
 
   useEffect(() => {
     setLoading(true);
@@ -124,6 +121,22 @@ export default function TMSDevicesGrid() {
       });
   }, []);
 
+  function sortItems(items, sort_attribute_1, sort_attribute_2) {
+    return items.sort((a, b) => {
+      // Primary criterion: sort_attribute_1
+      const comparison_1 = a[sort_attribute_1].localeCompare(
+        b[sort_attribute_1]
+      );
+
+      // If the primary criteria are the same and sort_attribute_2 is provided, sort by sort_attribute_2
+      if (comparison_1 === 0 && sort_attribute_2) {
+        return a[sort_attribute_2].localeCompare(b[sort_attribute_2]); // Secondary criterion
+      }
+
+      return comparison_1;
+    });
+  }
+
   async function validateRow(newRow, oldRow) {
     try {
       validateRequiredAttributes(requiredAttributes, attributeNames, newRow);
@@ -133,21 +146,6 @@ export default function TMSDevicesGrid() {
       throw errorMessage;
     }
   }
-
-  const createRowData = (rows) => {
-    // IS THIS REDUNDANT, ITS ALSO IN DefaultToolBar
-    const newId = Math.floor(100000 + Math.random() * 900000);
-    return {
-      id: newId,
-      manufacturer: '',
-      model_number: '',
-      name: '',
-      year: null,
-      description: '',
-      status: 'Active',
-    };
-  };
-  // *************** CUSTOMIZE ************** END
 
   async function saveRow(id, row, oldRow, oldRows) {
     try {
