@@ -1,7 +1,7 @@
 import * as React from 'react';
 import '../../../index.css';
 import { useEffect, useState, useContext } from 'react';
-import ManyToManyDataGrid from '../../../components/datagrid/manyToMany';
+import MultiSelectFieldsFilters from '../../../components/datagrid/multiSelectFieldsFilters';
 import ViewOnly from '../../../components/datagrid/viewOnly';
 import UserContext from '../../../contexts/UserContext';
 import { getData, postData, deleteData } from '../../../utils/API';
@@ -276,7 +276,7 @@ export default function PracticeTMSDevicesGrid() {
   if (role === 'manager' || role === 'admin' || role === 'super') {
     return (
       <div>
-        <ManyToManyDataGrid
+        <MultiSelectFieldsFilters
           title={title}
           subtitle={subtitle}
           columns={columns}

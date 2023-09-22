@@ -258,7 +258,7 @@ export default function TMSProtocolGrid() {
       headerAlign: 'center',
       valueOptions: frequencyNames,
       editable: true,
-      width: 120,
+      width: 100,
     },
     {
       field: 'train_time',
@@ -276,7 +276,7 @@ export default function TMSProtocolGrid() {
           }}
         />
       ),
-      width: 120,
+      width: 100,
     },
     {
       field: 'inter_train_time',
@@ -294,7 +294,7 @@ export default function TMSProtocolGrid() {
           }}
         />
       ),
-      width: 120,
+      width: 100,
     },
     {
       field: 'status',

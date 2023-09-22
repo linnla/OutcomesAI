@@ -39,56 +39,6 @@ export default function BiomarkersGrid() {
     'Status',
   ];
 
-  const columns = [
-    { field: 'id', headerName: 'ID', flex: 0.5 },
-    {
-      field: 'acronym',
-      headerName: 'Biomarker Code',
-      editable: true,
-      cellClassName: 'name-column--cell',
-    },
-    {
-      field: 'biomarker_type_name',
-      headerName: 'Biomarker Type',
-      type: 'singleSelect',
-      valueOptions: relatedData,
-      editable: true,
-      flex: 1,
-    },
-    {
-      field: 'name',
-      headerName: 'Biomarker Name',
-      editable: true,
-      flex: 1,
-    },
-    {
-      field: 'biomarker_values',
-      headerName: 'Biomarker Values',
-      editable: true,
-      flex: 1,
-      type: 'multipleSelect',
-      valueOptions: [...new Set(rows.map((o) => o.biomarker_values).flat())],
-      renderCell: (params) => (
-        <Stack direction='row' spacing={0.25}>
-          {params.row.biomarker_values.map((biomarker_value) => (
-            <Chip label={biomarker_value} />
-          ))}
-        </Stack>
-      ),
-    },
-    {
-      field: 'status',
-      headerName: 'Status',
-      editable: true,
-      headerAlign: 'center',
-      align: 'center',
-      type: 'singleSelect',
-      valueOptions: ['Active', 'Inactive'],
-      defaultValueGetter: () => 'Active',
-      flex: 1,
-    },
-  ];
-
   function createRowData(rows) {
     // IS THIS REDUNDANT, ITS ALSO IN DefaultToolBar
     const newId = Math.floor(100000 + Math.random() * 900000);
@@ -160,6 +110,57 @@ export default function BiomarkersGrid() {
         setLoading(false);
       });
   }, []);
+
+  // This has to load after related data useEffect
+  const columns = [
+    { field: 'id', headerName: 'ID', flex: 0.5 },
+    {
+      field: 'acronym',
+      headerName: 'Biomarker Code',
+      editable: true,
+      cellClassName: 'name-column--cell',
+    },
+    {
+      field: 'biomarker_type_name',
+      headerName: 'Biomarker Type',
+      type: 'singleSelect',
+      valueOptions: relatedData,
+      editable: true,
+      flex: 1,
+    },
+    {
+      field: 'name',
+      headerName: 'Biomarker Name',
+      editable: true,
+      flex: 1,
+    },
+    {
+      field: 'biomarker_values',
+      headerName: 'Biomarker Values',
+      editable: true,
+      flex: 1,
+      type: 'multipleSelect',
+      valueOptions: [...new Set(rows.map((o) => o.biomarker_values).flat())],
+      renderCell: (params) => (
+        <Stack direction='row' spacing={0.25}>
+          {params.row.biomarker_values.map((biomarker_value) => (
+            <Chip label={biomarker_value} />
+          ))}
+        </Stack>
+      ),
+    },
+    {
+      field: 'status',
+      headerName: 'Status',
+      editable: true,
+      headerAlign: 'center',
+      align: 'center',
+      type: 'singleSelect',
+      valueOptions: ['Active', 'Inactive'],
+      defaultValueGetter: () => 'Active',
+      flex: 1,
+    },
+  ];
 
   function sortItems(items, sort_attribute_1, sort_attribute_2) {
     return items.sort((a, b) => {

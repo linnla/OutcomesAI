@@ -40,53 +40,6 @@ export default function ProcedureCodesGrid() {
     'Status',
   ];
 
-  const columns = [
-    { field: 'id', headerName: 'ID', flex: 0.5 },
-    {
-      field: 'code',
-      headerName: 'Procedure Code',
-      editable: true,
-      cellClassName: 'name-column--cell',
-    },
-    {
-      field: 'procedure_category_name',
-      headerName: 'Procedure Name',
-      type: 'singleSelect',
-      valueOptions: relatedData,
-      editable: true,
-      flex: 1,
-    },
-    {
-      field: 'description',
-      headerName: 'Description',
-      editable: true,
-      cellClassName: 'wrapText',
-      flex: 1,
-    },
-    {
-      field: 'source',
-      headerName: 'Source',
-      editable: true,
-      headerAlign: 'center',
-      align: 'center',
-      type: 'singleSelect',
-      valueOptions: ['American Medical Associatio', 'Custom'],
-      defaultValueGetter: () => 'Active',
-      flex: 1,
-    },
-    {
-      field: 'status',
-      headerName: 'Status',
-      editable: true,
-      headerAlign: 'center',
-      align: 'center',
-      type: 'singleSelect',
-      valueOptions: ['Active', 'Inactive'],
-      defaultValueGetter: () => 'Active',
-      flex: 1,
-    },
-  ];
-
   function createRowData(rows) {
     // IS THIS REDUNDANT, ITS ALSO IN DefaultToolBar
     const newId = Math.floor(100000 + Math.random() * 900000);
@@ -158,6 +111,54 @@ export default function ProcedureCodesGrid() {
         setLoading(false);
       });
   }, []);
+
+  // These need to load after the related data useEffect
+  const columns = [
+    { field: 'id', headerName: 'ID', flex: 0.5 },
+    {
+      field: 'code',
+      headerName: 'Procedure Code',
+      editable: true,
+      cellClassName: 'name-column--cell',
+    },
+    {
+      field: 'procedure_category_name',
+      headerName: 'Procedure Name',
+      type: 'singleSelect',
+      valueOptions: relatedData,
+      editable: true,
+      flex: 1,
+    },
+    {
+      field: 'description',
+      headerName: 'Description',
+      editable: true,
+      cellClassName: 'wrapText',
+      flex: 1,
+    },
+    {
+      field: 'source',
+      headerName: 'Source',
+      editable: true,
+      headerAlign: 'center',
+      align: 'center',
+      type: 'singleSelect',
+      valueOptions: ['American Medical Associatio', 'Custom'],
+      defaultValueGetter: () => 'Active',
+      flex: 1,
+    },
+    {
+      field: 'status',
+      headerName: 'Status',
+      editable: true,
+      headerAlign: 'center',
+      align: 'center',
+      type: 'singleSelect',
+      valueOptions: ['Active', 'Inactive'],
+      defaultValueGetter: () => 'Active',
+      flex: 1,
+    },
+  ];
 
   function sortItems(items, sort_attribute_1, sort_attribute_2) {
     return items.sort((a, b) => {

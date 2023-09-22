@@ -1,4 +1,5 @@
-// translate to javascript and custom it by Blueberry 03/02/2023
+// This grid is read-only mode only.
+
 import { useEffect, useState } from 'react';
 import { Box } from '@mui/material';
 import { DataGridPremium } from '@mui/x-data-grid-premium';
@@ -13,6 +14,7 @@ function ViewOnly({
   subtitle,
   columns,
   rows,
+  handleRowClick,
   defaultPageSize,
   ...props
 }) {
@@ -66,6 +68,7 @@ function ViewOnly({
         <DataGridPremium
           rows={internalRows}
           columns={columns}
+          onRowClick={handleRowClick}
           slots={{
             toolbar: DefaultToolbar,
           }}

@@ -2,6 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 
+// Dashboards
+import PatientsDashboard from './pages/dashboards/patientsDashboard';
+import OutcomesDashboard from './pages/dashboards/outcomesDashboard';
+import PatientDashboard from './pages/dashboards/patientDashboard';
+
 // Components and pages
 import Topbar from './components/Topbar';
 import Sidebar from './components/Sidebar';
@@ -12,12 +17,13 @@ import Team from './pages/Team';
 import Invoices from './pages/Invoices';
 
 // Master Data
-import PatientsGrid from './pages/master_data/patients/index';
+import PatientsGrid from './pages/master_data/patients';
 import OfficesGrid from './pages/master_data/offices';
-import PractitionersGrid from './pages/master_data/practitioners/index';
+import PractitionersGrid from './pages/master_data/practitioners';
 import PracticeTMSDevicesGrid from './pages/master_data/practice_tms_devices';
 import PracticeTMSProtocolsGrid from './pages/master_data/practice_tms_protocols';
 import UsersGrid from './pages/master_data/users';
+import PatientSearch from './pages/patientSearch';
 
 // Reference Data
 import ActiveIngredientsGrid from './pages/reference_data/active_ingredients';
@@ -87,11 +93,43 @@ function App() {
   function AppRoutes() {
     return (
       <Routes>
-        <Route index element={<Home />} />
-        <Route path='/' element={<Home />} />
-        <Route path='home' element={<Home />} />
+        <Route index element={<OutcomesDashboard />} />
+        <Route path='/' element={<OutcomesDashboard />} />
+        <Route path='home' element={<OutcomesDashboard />} />
         <Route path='/login' element={<Login />} />
-        <Route path='/dashboard' element={<Dashboard />} />
+        <Route path='/dashboard' element={<OutcomesDashboard />} />
+        <Route
+          path='/dashboard/patients'
+          element={
+            <RequireAuth>
+              <PatientsDashboard />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path='/dashboard/patient'
+          element={
+            <RequireAuth>
+              <PatientDashboard />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path='/dashboard/outcomes'
+          element={
+            <RequireAuth>
+              <OutcomesDashboard />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path='/search/patients'
+          element={
+            <RequireAuth>
+              <PatientSearch />
+            </RequireAuth>
+          }
+        />
         <Route
           path='/practice/offices'
           element={

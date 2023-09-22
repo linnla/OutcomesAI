@@ -1,11 +1,13 @@
 // translate to javascript and custom it by Blueberry 03/02/2023
+
+// This grid is edit only.  Data can't be added or deleted.
+
 import * as React from 'react';
 import { Box } from '@mui/material';
 import { tokens } from '../../../theme';
 import Header from '../../Header';
 import { useTheme } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Close';
 import {

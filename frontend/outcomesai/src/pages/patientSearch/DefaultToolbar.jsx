@@ -3,13 +3,9 @@ import {
   GridToolbarColumnsButton,
   GridToolbarContainer,
   GridToolbarDensitySelector,
-  GridToolbarExportContainer,
-  GridCsvExportMenuItem,
-  // GridPrintExportMenuItem,
   GridToolbarFilterButton,
   GridToolbarQuickFilter,
 } from '@mui/x-data-grid-premium';
-import GridExcelExportMenuItem from '../GridExcelExportMenuItem';
 
 function DefaultToolbar(props) {
   const { columns } = props;
@@ -19,11 +15,6 @@ function DefaultToolbar(props) {
       <GridToolbarColumnsButton />
       <GridToolbarFilterButton />
       <GridToolbarDensitySelector />
-      <GridToolbarExportContainer>
-        <GridExcelExportMenuItem columns={columns} />
-        <GridCsvExportMenuItem />
-        {/*<GridPrintExportMenuItem />*/}
-      </GridToolbarExportContainer>
       <GridToolbarQuickFilter />
     </GridToolbarContainer>
   );

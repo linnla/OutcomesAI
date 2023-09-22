@@ -287,6 +287,57 @@ export const mockDataPractitioners = [
   },
 ];
 
+export const mockTMSTransactions = [
+  {
+    txId: 'Beverly Hills',
+    user: 'johndoe',
+    date: '2023-09-26',
+    outcome: 'Response',
+  },
+  {
+    txId: 'Westlake Village',
+    user: 'jackdower',
+    date: '2023-09-23',
+    outcome: 'Remission',
+  },
+  {
+    txId: 'Manhattan Beach',
+    user: 'aberdohnny',
+    date: '2023-09-22',
+    outcome: 'Response',
+  },
+  {
+    txId: 'S. Torrance',
+    user: 'goodmanave',
+    date: '2023-09-20',
+    outcome: 'Remission',
+  },
+  {
+    txId: 'N. Torrance',
+    user: 'stevebower',
+    date: '2023-09-18',
+    outcome: 'No Response',
+  },
+  {
+    txId: 'Santa Monica',
+    user: 'aberdohnny',
+    date: '2023-09-17',
+    outcome: 'Remission',
+  },
+  {
+    txId: 'Marina Del Rey',
+    user: 'wootzifer',
+    date: '2023-09-15',
+    outcome: 'Remission',
+  },
+  {
+    txId: 'Long Beach',
+    user: 'jackdower',
+    date: '2023-09-10',
+    outcome: 'Response',
+  },
+];
+
 export const mockDataInvoices = [
   {
     id: 1,
@@ -485,6 +536,72 @@ export const mockBarData = [
   },
 ];
 
+export const mockBarTMSOutcomes = [
+  {
+    office: 'ST',
+    response: 46,
+    //responseColor: 'hsl(50, 100%, 30%)',
+    remission: 72,
+    //remissionColor: 'green',
+    'no response': 14,
+    //'no responseColor': 'hsl(0, 100%, 50%)',
+  },
+  {
+    office: 'NT',
+    response: 28,
+    //responseColor: 'hsl(50, 100%, 30%)',
+    remission: 58,
+    //remissionColor: 'hsl(273, 70%, 50%)',
+    'no response': 19,
+    //'no responseColor': 'hsl(0, 100%, 50%)',
+  },
+  {
+    office: 'SM',
+    response: 23,
+    //responseColor: 'hsl(50, 100%, 30%)',
+    remission: 34,
+    //remissionColor: 'hsl(106, 70%, 50%)',
+    'no response': 20,
+    //'no responseColor': 'hsl(0, 100%, 50%)',
+  },
+  {
+    office: 'BH',
+    response: 52,
+    //responseColor: 'hsl(50, 100%, 30%)',
+    remission: 43,
+    //remissionColor: 'hsl(110, 70%, 50%)',
+    'no response': 15,
+    //'no responseColor': 'hsl(0, 100%, 50%)',
+  },
+  {
+    office: 'WV',
+    response: 80,
+    //responseColor: 'hsl(50, 100%, 30%)',
+    remission: 72,
+    //remissionColor: 'hsl(54, 70%, 50%)',
+    'no response': 35,
+    //'no responseColor': 'hsl(0, 100%, 50%)',
+  },
+  {
+    office: 'MD',
+    response: 85,
+    //responseColor: 'hsl(50, 100%, 30%)',
+    remission: 82,
+    //remissionColor: 'hsl(182, 70%, 50%)',
+    'no response': 18,
+    //'no responseColor': 'hsl(0, 100%, 50%)',
+  },
+  {
+    office: 'LB',
+    response: 47,
+    //responseColor: 'hsl(50, 100%, 30%)',
+    remission: 65,
+    //remissionColor: 'hsl(224, 70%, 50%)',
+    'no response': 49,
+    //'no responseColor': 'hsl(0, 100%, 50%)',
+  },
+];
+
 export const mockPieData = [
   {
     id: 'hack',
@@ -678,6 +795,117 @@ export const mockLineData = [
       {
         x: 'others',
         y: 170,
+      },
+    ],
+  },
+];
+
+export const mockPatientsLineData = [
+  {
+    id: 'new',
+    color: tokens('dark').greenAccent[500],
+    data: [
+      {
+        x: 'Sep 22',
+        y: 26,
+      },
+      {
+        x: 'Oct 22',
+        y: 32,
+      },
+      {
+        x: 'Nov 22',
+        y: 19,
+      },
+      {
+        x: 'Dec 22',
+        y: 16,
+      },
+      {
+        x: 'Jan 23',
+        y: 35,
+      },
+      {
+        x: 'Feb 23',
+        y: 32,
+      },
+      {
+        x: 'Mar 23',
+        y: 41,
+      },
+      {
+        x: 'Apr 23',
+        y: 38,
+      },
+      {
+        x: 'May 23',
+        y: 46,
+      },
+      {
+        x: 'Jun 23',
+        y: 53,
+      },
+      {
+        x: 'Jul 23',
+        y: 58,
+      },
+      {
+        x: 'Aug 23',
+        y: 62,
+      },
+    ],
+  },
+  {
+    id: 'returning',
+    color: tokens('dark').blueAccent[300],
+    data: [
+      {
+        x: 'Sep 22',
+        y: 126,
+      },
+      {
+        x: 'Oct 22',
+        y: 132,
+      },
+      {
+        x: 'Nov 22',
+        y: 119,
+      },
+      {
+        x: 'Dec 22',
+        y: 116,
+      },
+      {
+        x: 'Jan 23',
+        y: 135,
+      },
+      {
+        x: 'Feb 23',
+        y: 132,
+      },
+      {
+        x: 'Mar 23',
+        y: 141,
+      },
+      {
+        x: 'Apr 23',
+        y: 138,
+      },
+      {
+        x: 'May 23',
+        y: 146,
+      },
+      {
+        x: 'Jun 23',
+        y: 153,
+      },
+      {
+        x: 'Jul 23',
+        y: 158,
+      },
+      {
+        x: 'Aug 23',
+        y: 162,
       },
     ],
   },

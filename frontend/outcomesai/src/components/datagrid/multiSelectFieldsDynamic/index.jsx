@@ -1,5 +1,7 @@
-// translate to javascript and custom it by Blueberry 03/02/2023
-import * as React from 'react';
+// This grid takes an array of fields that get displayed at the top.
+// The field options have no filtering capabilities.
+
+import React, { useState, useEffect } from 'react';
 import AddIcon from '@mui/icons-material/Add';
 import {
   Box,
@@ -20,28 +22,39 @@ import {
 } from '@mui/x-data-grid-premium';
 
 import DefaultToolbar from './DefaultToolbar';
-import { useEffect, useState } from 'react';
 import ErrorModal from '../../../utils/ErrorModal';
 
-function ManyToManyDataGrid({
+// Custom hook for handling dynamic fields' state
+function useDynamicFieldsState(fields) {
+  const initialState = {};
+  fields.forEach((field) => {
+    initialState[field.attribute] = '';
+  });
+  const [fieldStates, setFieldStates] = useState(initialState);
+
+  // Handle change for a specific field
+  const handleFieldChange = (fieldAttribute, value) => {
+    setFieldStates((prevFieldStates) => ({
+      ...prevFieldStates,
+      [fieldAttribute]: value,
+    }));
+  };
+
+  // Reset all field values
+  const resetFieldStates = () => {
+    setFieldStates(initialState);
+  };
+
+  return [fieldStates, handleFieldChange, resetFieldStates];
+}
+
+function MultiSelectFieldsDynamic({
   title,
   subtitle,
   columns,
   rows,
   defaultPageSize,
-  field1Label,
-  field1Objects,
-  field1ValueAttribute,
-  attribute1,
-  field2Label,
-  field2Objects,
-  field2ValueAttribute,
-  attribute2,
-  matchAttribute,
-  field3Label,
-  field3Objects,
-  field3ValueAttribute,
-  attribute3,
+  fields,
   onValidateRow,
   onSaveRow,
   onDeleteRow,
@@ -49,15 +62,6 @@ function ManyToManyDataGrid({
 }) {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-
-  // States for the multi-select fields
-  const [field1, setField1] = useState('');
-  const [field2, setField2] = useState('');
-  const [field3, setField3] = useState('');
-
-  const [field1Options, setField1Options] = useState(['']);
-  const [field2Options, setField2Options] = useState(['']);
-  const [field3Options, setField3Options] = useState(['']);
 
   const apiRef = useGridApiRef();
   const [internalRows, setInternalRows] = useState(rows);
@@ -71,48 +75,28 @@ function ManyToManyDataGrid({
     setInternalRows(rows);
   }, [rows]);
 
-  useEffect(() => {
-    const names = field1Objects
-      .map((item) => item[field1ValueAttribute])
-      .sort();
-    setField1Options(names);
-  }, [field1Objects, field1ValueAttribute]);
-
-  useEffect(() => {
-    const names = field2Objects
-      .map((item) => item[field2ValueAttribute])
-      .sort();
-    setField2Options(names);
-  }, [field2Objects, field2ValueAttribute]);
-
-  useEffect(() => {
-    const names = field3Objects
-      .map((item) => item[field3ValueAttribute])
-      .sort();
-    setField3Options(names);
-  }, [field3Objects, field3ValueAttribute]);
+  // Custom hook to manage dynamic fields' state
+  const [fieldStates, handleFieldChange, resetFieldStates] =
+    useDynamicFieldsState(fields);
 
   const handleClick = async () => {
-    let row = {};
-    row[attribute1] = field1;
-    row[attribute2] = field2;
-    row[attribute3] = field3;
+    const newRow = {};
+    // Populate newRow object with selected values from fieldStates
+    fields.forEach((field) => {
+      newRow[field.attribute] = fieldStates[field.attribute];
+    });
 
     try {
-      const validatedRow = await onValidateRow(row, rows);
-      //console.log('validateRow manyToMany:', validatedRow);
+      const validatedRow = await onValidateRow(newRow, internalRows);
+      console.log('ValidatedRow:', validatedRow);
       await onSaveRow(validatedRow);
-      setInternalRows((rows) => {
-        return [...rows, validatedRow];
-      });
+
+      setInternalRows((rows) => [...rows, validatedRow]);
+      resetFieldStates(); // Reset field values after successful save
     } catch (error) {
       setErrorType('Data Error');
       setErrorMessage(error || 'Unknown error');
       setShowErrorModal(true);
-    } finally {
-      setField1('');
-      setField2('');
-      setField3('');
     }
   };
 
@@ -154,93 +138,41 @@ function ManyToManyDataGrid({
     },
   ];
 
-  //pagination
+  // Pagination
   const [pageSize, setPageSize] = useState(defaultPageSize);
+
   return (
     <Box m='20px'>
       <Header title={title} subtitle={subtitle} />
 
-      {/* Single-select data fields */}
+      {/* Multi-select data fields */}
       <Box display='flex' gap='20px' my='20px'>
-        <FormControl
-          variant='outlined'
-          style={{ flex: '1 0 calc(30% - 10px)' }}
-        >
-          <InputLabel>{field1Label}</InputLabel>
-          <Select
-            value={field1}
-            onChange={(event) => setField1(event.target.value)}
-            label={field1Label}
+        {fields.map((field, index) => (
+          <FormControl
+            key={field.label}
+            variant='outlined'
+            style={{ flex: `1 0 calc(30% - 10px)` }}
           >
-            <MenuItem value='' disabled>
-              <em>Select {field1Label}</em>
-            </MenuItem>
-            {field1Options.map((option) => (
-              <MenuItem key={option} value={option}>
-                {option}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-
-        <FormControl
-          variant='outlined'
-          style={{ flex: '1 0 calc(30% - 10px)' }}
-        >
-          <InputLabel>{field2Label}</InputLabel>
-          <Select
-            value={field2}
-            onChange={(event) => {
-              const selectedValue = event.target.value;
-              setField2(selectedValue);
-              const matchedItem = field2Objects.find(
-                (item) => item.name === selectedValue
-              );
-
-              // Field 3 values presented are dependent on value selected in Field 2
-              if (matchedItem) {
-                const matchValue = matchedItem[matchAttribute];
-                const matchedItems = field3Objects.filter(
-                  (item) => item[matchValue] === matchValue
-                );
-                const matchedNames = matchedItems.map((option) => option.name);
-                setField3Options(matchedNames);
+            <InputLabel>{field.label}</InputLabel>
+            <Select
+              value={fieldStates[field.attribute] || '#####'}
+              onChange={(event) =>
+                handleFieldChange(field.attribute, event.target.value)
               }
-            }}
-            label={field2Label}
-          >
-            <MenuItem value='' disabled>
-              <em>Select {field2Label}</em>
-            </MenuItem>
-            {field2Options.map((option) => (
-              <MenuItem key={option} value={option}>
-                {option}
+              label={field.label}
+              disabled={index > 0 && !fieldStates[fields[index - 1].attribute]}
+            >
+              <MenuItem value='' disabled>
+                <em>Select {field.label}</em>
               </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-
-        <FormControl
-          variant='outlined'
-          style={{ flex: '1 0 calc(30% - 10px)' }}
-        >
-          <InputLabel>{field3Label}</InputLabel>
-          <Select
-            value={field3}
-            onChange={(event) => setField3(event.target.value)}
-            label={field3Label}
-            disabled={!field2}
-          >
-            <MenuItem value='' disabled>
-              <em>Select {field3Label}</em>
-            </MenuItem>
-            {field3Options.map((option) => (
-              <MenuItem key={option} value={option}>
-                {option}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+              {field.options.map((option) => (
+                <MenuItem key={option} value={option}>
+                  {option}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        ))}
 
         <Button
           color='secondary'
@@ -296,7 +228,7 @@ function ManyToManyDataGrid({
             },
           }}
           experimentalFeatures={{ newEditingApi: true }}
-          //pagination
+          // Pagination
           pageSize={pageSize}
           onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
           {...props}
@@ -313,7 +245,7 @@ function ManyToManyDataGrid({
   );
 }
 
-ManyToManyDataGrid.defaultProps = {
+MultiSelectFieldsDynamic.defaultProps = {
   initialState: {
     columns: {
       columnVisibilityModel: {
@@ -323,10 +255,10 @@ ManyToManyDataGrid.defaultProps = {
   },
   autoHeight: true,
 
-  //pagination
+  // Pagination
   pagination: true,
   defaultPageSize: 25,
   rowsPerPageOptions: [5, 10, 25, 50, 100],
 };
 
-export default ManyToManyDataGrid;
+export default MultiSelectFieldsDynamic;

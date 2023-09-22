@@ -1,7 +1,7 @@
 import * as React from 'react';
 import '../../../index.css';
 import { useEffect, useState, useContext } from 'react';
-import DynamicMultiSelectFields from '../../../components/datagrid/dynamicMultiSelectFields';
+import MultiSelectFieldsDynamic from '../../../components/datagrid/multiSelectFieldsDynamic';
 import ViewOnly from '../../../components/datagrid/viewOnly';
 import UserContext from '../../../contexts/UserContext';
 import { getData, postData, deleteData } from '../../../utils/API';
@@ -242,7 +242,7 @@ export default function PracticeTMSProtocolsGrid() {
   if (role === 'manager' || role === 'admin' || role === 'super') {
     return (
       <div>
-        <DynamicMultiSelectFields
+        <MultiSelectFieldsDynamic
           title={title}
           subtitle={subtitle}
           columns={columns}

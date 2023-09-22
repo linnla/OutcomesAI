@@ -31,42 +31,6 @@ export default function DiagnosisCodesGrid() {
     'Status',
   ];
 
-  const columns = [
-    { field: 'id', headerName: 'ID', flex: 0.5 },
-    {
-      field: 'code',
-      headerName: 'Diagnosis Code',
-      editable: true,
-      cellClassName: 'name-column--cell',
-    },
-    {
-      field: 'disorder_name',
-      headerName: 'Disorder',
-      type: 'singleSelect',
-      valueOptions: relatedData,
-      editable: true,
-      flex: 1,
-    },
-    {
-      field: 'description',
-      headerName: 'Description',
-      editable: true,
-      cellClassName: 'wrapText',
-      flex: 1,
-    },
-    {
-      field: 'status',
-      headerName: 'Status',
-      editable: true,
-      headerAlign: 'center',
-      align: 'center',
-      type: 'singleSelect',
-      valueOptions: ['Active', 'Inactive'],
-      defaultValueGetter: () => 'Active',
-      flex: 1,
-    },
-  ];
-
   function createRowData(rows) {
     // IS THIS REDUNDANT, ITS ALSO IN DefaultToolBar
     const newId = Math.floor(100000 + Math.random() * 900000);
@@ -137,6 +101,43 @@ export default function DiagnosisCodesGrid() {
         setLoading(false);
       });
   }, []);
+
+  // This needs to load after related data useEffect
+  const columns = [
+    { field: 'id', headerName: 'ID', flex: 0.5 },
+    {
+      field: 'code',
+      headerName: 'Diagnosis Code',
+      editable: true,
+      cellClassName: 'name-column--cell',
+    },
+    {
+      field: 'disorder_name',
+      headerName: 'Disorder',
+      type: 'singleSelect',
+      valueOptions: relatedData,
+      editable: true,
+      flex: 1,
+    },
+    {
+      field: 'description',
+      headerName: 'Description',
+      editable: true,
+      cellClassName: 'wrapText',
+      flex: 1,
+    },
+    {
+      field: 'status',
+      headerName: 'Status',
+      editable: true,
+      headerAlign: 'center',
+      align: 'center',
+      type: 'singleSelect',
+      valueOptions: ['Active', 'Inactive'],
+      defaultValueGetter: () => 'Active',
+      flex: 1,
+    },
+  ];
 
   function sortItems(items, sort_attribute_1, sort_attribute_2) {
     return items.sort((a, b) => {

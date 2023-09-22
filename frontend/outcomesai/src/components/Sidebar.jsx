@@ -38,6 +38,7 @@ import BloodtypeOutlinedIcon from '@mui/icons-material/BloodtypeOutlined';
 import LocalHospitalOutlinedIcon from '@mui/icons-material/LocalHospitalOutlined';
 import Diversity3OutlinedIcon from '@mui/icons-material/Diversity3Outlined';
 import BallotOutlinedIcon from '@mui/icons-material/BallotOutlined';
+import PersonSearchOutlinedIcon from '@mui/icons-material/PersonSearchOutlined';
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme();
@@ -130,18 +131,25 @@ const Sidebar = () => {
           </MenuItem>
           <Box paddingLeft={isCollapsed ? undefined : '5%'}>
             <Item
-              title='Dashboard'
-              to='/dashboard'
+              title='Outcomes Dashboard'
+              to='/dashboard/outcomes'
               icon={<HomeOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
+            {/*//<Item
+              title='Patients Dashboard'
+              to='/dashboard/patients'
+              icon={<HomeOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />*/}
             <Typography
               variant='h6'
               color={colors.grey[300]}
               sx={{ m: '15px 0 5px 20px' }}
             >
-              Patients Data
+              Patient Data
             </Typography>
             {/*<Item
               title='Form'
@@ -151,22 +159,36 @@ const Sidebar = () => {
               setSelected={setSelected}
             />*/}
             <Item
-              title='Manage Patients'
-              to='/patients'
-              icon={<PeopleOutlinedIcon />}
+              title='Patient Search'
+              to='/search/patients'
+              icon={<PersonSearchOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
+            {/*<Item
+              title='Patient Dashboard'
+              to='/dashboard/patient'
+              icon={<PeopleOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+          />*/}
             <Typography
               variant='h6'
               color={colors.grey[300]}
               sx={{ m: '15px 0 5px 20px' }}
             ></Typography>
-            <SubMenu prefix='Practice Data'>
+            <SubMenu prefix='Manage Practice Data'>
               <Item
                 title='Offices'
                 to='/practice/offices'
                 icon={<LocalHospitalOutlinedIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
+              <Item
+                title='Patients'
+                to='/practice/patients'
+                icon={<PeopleOutlinedIcon />}
                 selected={selected}
                 setSelected={setSelected}
               />
