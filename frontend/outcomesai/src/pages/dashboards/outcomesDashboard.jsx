@@ -1,6 +1,8 @@
 import { Box, Button, IconButton, Typography, useTheme } from '@mui/material';
 import { tokens } from '../../theme';
-import { mockTMSTransactions } from '../../data/mockData';
+import { mockMissingTestScores } from '../../data/mockData';
+import { mockRecentlyCompletedTreament } from '../../data/mockData';
+import { mockMissingTMSProtocols } from '../../data/mockData';
 import DownloadOutlinedIcon from '@mui/icons-material/DownloadOutlined';
 import EmailIcon from '@mui/icons-material/Email';
 import PointOfSaleIcon from '@mui/icons-material/PointOfSale';
@@ -24,7 +26,7 @@ const OutcomesDashboard = () => {
   const colors = tokens(theme.palette.mode);
 
   return (
-    <Box m='20px'>
+    <Box m='20px' height='75%'>
       {/* HEADER */}
       <Box display='flex' justifyContent='space-between' alignItems='center'>
         <Header title='OUTCOMES DASHBOARD' subtitle='Your Behaviorial Health' />
@@ -44,167 +46,141 @@ const OutcomesDashboard = () => {
           </Button>
         </Box>
       </Box>
-
-      <Box display='flex' alignItems='center'>
-        {/* BOX 1 */}
-        <Box flex='1 1 50%'>
-          {/* HEADING - NEW PATIENTS */}
-          <Typography
-            variant='h4'
-            fontWeight='600'
-            color={colors.grey[100]}
-            mt='20px'
-            mb='10px'
-            mr='20px' // Add some right margin for spacing
-          >
-            NEW PATIENTS
-          </Typography>
-        </Box>
-
-        {/* BOX 2 */}
-        <Box flex='1 1 50%'>
-          {/* HEADING - RETURNING PATIENTS */}
-          <Typography
-            variant='h4'
-            fontWeight='600'
-            color={colors.grey[100]}
-            mt='20px'
-            mb='10px'
-            ml='10px' // Add some left margin for spacing
-          >
-            RETURNING PATIENTS
-          </Typography>
-        </Box>
-      </Box>
-
       {/* GRID & CHARTS */}
       <Box
         display='grid'
         gridTemplateColumns='repeat(12, 1fr)'
-        gridAutoRows='140px'
+        gridAutoRows='300px'
         gap='20px'
       >
         {/* ROW 1 */}
-        <Box
-          gridColumn='span 3'
-          backgroundColor={colors.primary[400]}
-          display='flex'
-          alignItems='center'
-          justifyContent='center'
-        >
-          <StatBox
-            title='15'
-            subtitle='This Week'
-            progress='0.75'
-            increase='+14%'
-            icon={
-              <DateRangeOutlinedIcon
-                sx={{ color: colors.greenAccent[600], fontSize: '26px' }}
-              />
-            }
-          />
-        </Box>
-        <Box
-          gridColumn='span 3'
-          backgroundColor={colors.primary[400]}
-          display='flex'
-          alignItems='center'
-          justifyContent='center'
-        >
-          <StatBox
-            title='63'
-            subtitle='This Month'
-            progress='0.50'
-            increase='+21%'
-            icon={
-              <CalendarMonthOutlinedIcon
-                sx={{ color: colors.greenAccent[600], fontSize: '26px' }}
-              />
-            }
-          />
-        </Box>
-        <Box
-          gridColumn='span 3'
-          backgroundColor={colors.primary[400]}
-          display='flex'
-          alignItems='center'
-          justifyContent='center'
-        >
-          <StatBox
-            title='76'
-            subtitle='This Week'
-            progress='0.30'
-            increase='+5%'
-            icon={
-              <DateRangeOutlinedIcon
-                sx={{ color: colors.greenAccent[600], fontSize: '26px' }}
-              />
-            }
-          />
-        </Box>
-        <Box
-          gridColumn='span 3'
-          backgroundColor={colors.primary[400]}
-          display='flex'
-          alignItems='center'
-          justifyContent='center'
-        >
-          <StatBox
-            title='225'
-            subtitle='This Month'
-            progress='0.80'
-            increase='+43%'
-            icon={
-              <CalendarMonthOutlinedIcon
-                sx={{ color: colors.greenAccent[600], fontSize: '26px' }}
-              />
-            }
-          />
-        </Box>
-
-        {/* ROW 2 */}
-        {/*************/}
+        {/***** 1 *****/}
         <Box
           gridColumn='span 4'
           gridRow='span 2'
           backgroundColor={colors.primary[400]}
-          p='30px'
+          overflow='auto'
         >
-          <Typography variant='h5' fontWeight='600'>
-            Outcomes
-          </Typography>
           <Box
             display='flex'
-            flexDirection='column'
+            justifyContent='space-between'
             alignItems='center'
-            mt='25px'
+            borderBottom={`4px solid ${colors.primary[500]}`}
+            colors={colors.grey[100]}
+            p='15px'
           >
-            <ProgressCircle size='175' />
-            <Typography
-              variant='h5'
-              color={colors.greenAccent[500]}
-              sx={{ mt: '15px' }}
-            >
-              Remission + Response
+            <Typography color={colors.grey[100]} variant='h5' fontWeight='600'>
+              Missing Test Scores
             </Typography>
           </Box>
+          {mockMissingTestScores.map((transaction, i) => (
+            <Box
+              key={`${transaction.txId}-${i}`}
+              display='flex'
+              justifyContent='space-between'
+              alignItems='center'
+              borderBottom={`4px solid ${colors.primary[500]}`}
+              p='15px'
+            >
+              <Box>
+                <Typography
+                  color={colors.greenAccent[500]}
+                  variant='h5'
+                  fontWeight='600'
+                >
+                  {transaction.txId}
+                </Typography>
+                <Typography color={colors.grey[100]}>
+                  {transaction.user}
+                </Typography>
+              </Box>
+              <Box color={colors.grey[100]}>{transaction.date}</Box>
+              <Box
+                backgroundColor={
+                  transaction.outcome === '2nd' || transaction.outcome === '3rd'
+                    ? '#FFA500' // Set the background color to blue for 'Response'
+                    : transaction.outcome === 'Baseline' ||
+                      transaction.outcome === 'Final'
+                    ? 'red' // Set the background color to yellow for 'No Response'
+                    : 'green' // Set the background color to greenAccent[500] for other cases
+                }
+                width='100px' // Set a fixed width
+                height='30px' // Set a fixed height
+                borderRadius='4px'
+                display='flex'
+                alignItems='center'
+                justifyContent='center'
+                p='5px 10px'
+              >
+                {transaction.outcome}
+              </Box>
+            </Box>
+          ))}
         </Box>
+        {/***** 2 *****/}
         <Box
           gridColumn='span 4'
           gridRow='span 2'
           backgroundColor={colors.primary[400]}
+          overflow='auto'
         >
-          <Typography
-            variant='h5'
-            fontWeight='600'
-            sx={{ padding: '30px 30px 0 30px' }}
+          <Box
+            display='flex'
+            justifyContent='space-between'
+            alignItems='center'
+            borderBottom={`4px solid ${colors.primary[500]}`}
+            colors={colors.grey[100]}
+            p='15px'
           >
-            Outcome By Office
-          </Typography>
-          <Box height='250px' mt='-20px'>
-            <OutcomesBarChart isDashboard={true} />
+            <Typography color={colors.grey[100]} variant='h5' fontWeight='600'>
+              Missing TMS Protocols
+            </Typography>
           </Box>
+          {mockMissingTMSProtocols.map((transaction, i) => (
+            <Box
+              key={`${transaction.txId}-${i}`}
+              display='flex'
+              justifyContent='space-between'
+              alignItems='center'
+              borderBottom={`4px solid ${colors.primary[500]}`}
+              p='15px'
+            >
+              <Box>
+                <Typography
+                  color={colors.greenAccent[500]}
+                  variant='h5'
+                  fontWeight='600'
+                >
+                  {transaction.txId}
+                </Typography>
+                <Typography color={colors.grey[100]}>
+                  {transaction.user}
+                </Typography>
+              </Box>
+              <Box color={colors.grey[100]}>{transaction.date}</Box>
+              <Box
+                backgroundColor={
+                  transaction.missing >= 20
+                    ? 'red' // Set the background color to red for missing >= 20
+                    : transaction.missing >= 10
+                    ? '#FFA500' // Set the background color to orange for missing >= 10
+                    : 'yellow' // Set the background color to dark yellow for other cases
+                }
+                width='100px' // Set a fixed width
+                height='30px' // Set a fixed height
+                borderRadius='4px'
+                display='flex'
+                alignItems='center'
+                justifyContent='center'
+                p='5px 10px'
+                color={transaction.missing >= 20 ? 'white' : 'black'} // Set text color based on background color
+              >
+                {transaction.missing}
+              </Box>
+            </Box>
+          ))}
         </Box>
+        {/***** 3 *****/}
         <Box
           gridColumn='span 4'
           gridRow='span 2'
@@ -223,7 +199,7 @@ const OutcomesDashboard = () => {
               Recently Completed Treatment
             </Typography>
           </Box>
-          {mockTMSTransactions.map((transaction, i) => (
+          {mockRecentlyCompletedTreament.map((transaction, i) => (
             <Box
               key={`${transaction.txId}-${i}`}
               display='flex'

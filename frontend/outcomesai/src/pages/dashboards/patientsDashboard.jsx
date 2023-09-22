@@ -1,6 +1,6 @@
 import { Box, Button, IconButton, Typography, useTheme } from '@mui/material';
 import { tokens } from '../../theme';
-import { mockTMSTransactions } from '../../data/mockData';
+import { mockRecentlyCompletedTreament } from '../../data/mockData';
 import DownloadOutlinedIcon from '@mui/icons-material/DownloadOutlined';
 import EmailIcon from '@mui/icons-material/Email';
 import PointOfSaleIcon from '@mui/icons-material/PointOfSale';
@@ -224,7 +224,7 @@ const PatientsDashboard = () => {
               Recently Completed Treatment
             </Typography>
           </Box>
-          {mockTMSTransactions.map((transaction, i) => (
+          {mockRecentlyCompletedTreament.map((transaction, i) => (
             <Box
               key={`${transaction.txId}-${i}`}
               display='flex'

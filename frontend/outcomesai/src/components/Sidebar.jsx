@@ -137,13 +137,13 @@ const Sidebar = () => {
               selected={selected}
               setSelected={setSelected}
             />
-            {/*//<Item
+            <Item
               title='Patients Dashboard'
               to='/dashboard/patients'
               icon={<HomeOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
-            />*/}
+            />
             <Typography
               variant='h6'
               color={colors.grey[300]}

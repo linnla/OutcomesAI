@@ -287,7 +287,7 @@ export const mockDataPractitioners = [
   },
 ];
 
-export const mockTMSTransactions = [
+export const mockRecentlyCompletedTreament = [
   {
     txId: 'Beverly Hills',
     user: 'johndoe',
@@ -335,6 +335,108 @@ export const mockTMSTransactions = [
     user: 'jackdower',
     date: '2023-09-10',
     outcome: 'Response',
+  },
+];
+
+export const mockMissingTMSProtocols = [
+  {
+    txId: 'Beverly Hills',
+    user: 'johndoe',
+    date: '2023-09-26',
+    missing: 14,
+  },
+  {
+    txId: 'Westlake Village',
+    user: 'jackdower',
+    date: '2023-09-23',
+    missing: 2,
+  },
+  {
+    txId: 'Manhattan Beach',
+    user: 'aberdohnny',
+    date: '2023-09-22',
+    missing: 6,
+  },
+  {
+    txId: 'S. Torrance',
+    user: 'goodmanave',
+    date: '2023-09-20',
+    missing: 1,
+  },
+  {
+    txId: 'N. Torrance',
+    user: 'stevebower',
+    date: '2023-09-18',
+    missing: 20,
+  },
+  {
+    txId: 'Santa Monica',
+    user: 'aberdohnny',
+    date: '2023-09-17',
+    missing: 2,
+  },
+  {
+    txId: 'Marina Del Rey',
+    user: 'wootzifer',
+    date: '2023-09-15',
+    missing: 5,
+  },
+  {
+    txId: 'Long Beach',
+    user: 'jackdower',
+    date: '2023-09-10',
+    missing: 30,
+  },
+];
+
+export const mockMissingTestScores = [
+  {
+    txId: 'Beverly Hills',
+    user: 'johndoe',
+    date: '2023-09-26',
+    outcome: 'Baseline',
+  },
+  {
+    txId: 'Westlake Village',
+    user: 'jackdower',
+    date: '2023-09-23',
+    outcome: 'Final',
+  },
+  {
+    txId: 'Manhattan Beach',
+    user: 'aberdohnny',
+    date: '2023-09-22',
+    outcome: '2nd',
+  },
+  {
+    txId: 'S. Torrance',
+    user: 'goodmanave',
+    date: '2023-09-20',
+    outcome: 'Baseline',
+  },
+  {
+    txId: 'N. Torrance',
+    user: 'stevebower',
+    date: '2023-09-18',
+    outcome: 'Final',
+  },
+  {
+    txId: 'Santa Monica',
+    user: 'aberdohnny',
+    date: '2023-09-17',
+    outcome: '3rd',
+  },
+  {
+    txId: 'Marina Del Rey',
+    user: 'wootzifer',
+    date: '2023-09-15',
+    outcome: 'Final',
+  },
+  {
+    txId: 'Long Beach',
+    user: 'jackdower',
+    date: '2023-09-10',
+    outcome: 'Final',
   },
 ];
 
