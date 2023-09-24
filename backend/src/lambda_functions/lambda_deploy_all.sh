@@ -4,10 +4,19 @@
 stage="dev"
 transactional_data="transactional_data"
 transactional_directories=("episodes_of_care" "episodes_of_care_diagnosis_codes")
+
 master_data="master_data"
-master_directories=("practice_tms_protocols" "offices" "patient_biomarkers" "patients" "practice_tms_devices" "practice_patients" "practice_practitioners" "practice_users" "practices" "practitioners" "users")
+master_directories=("offices" "patient_biomarkers" "patients" "practice_patients" 
+"practice_practitioners" "practice_tms_devices" "practice_tms_protocols" "practice_users" 
+"practices" "practitioners" "users")
+
 reference_data="reference_data"
-reference_directories=("acquisition_sources" "active_ingredients" "administration_routes" "appointment_types" "biomarker_types" "biomarkers" "countries" "tms_devices" "tms_coils" "tms_device_coils" "diagnosis_codes" "disorders" "dosage_forms" "dosage_units" "medication_types" "postal_codes" "procedure_categories" "procedure_codes" "roles" "tms_protocols" "tms_frequencies" "tms_pulse_types" "tms_stimulation_sites")
+reference_directories=("acquisition_sources" "active_ingredients" "administration_routes" 
+"appointment_types" "biomarker_types" "biomarkers" "countries" "country_code_utils" 
+"diagnosis_codes" "disorders" "dosage_forms" "dosage_units" "medication_types" 
+"postal_code_utils_us" "postal_codes" "procedure_categories" "procedure_codes" 
+"roles" "tms_coils" "tms_devices" "tms_frequencies" "tms_protocols" "tms_pulse_types" 
+"tms_stimulation_sites")
 
 lambda_libs_path="/Users/laurelinn/dev/OutcomesAI/backend/src/lambda_libs"
 
@@ -20,15 +29,6 @@ deploy_directory() {
     if [[ -d "$directory" ]]; then
         cd "$directory" || exit
         echo "Current directory: $(pwd)"
-
-        # Check if files exist before copying
-        if [[ ! -f "$lambda_libs_path/database_crud.py" ]]; then
-            echo "Error: ***** File database_crud.py not found! *****"
-            exit 1
-        fi
-
-        cp -v "$lambda_libs_path/database_crud.py" .
-        cp -v "$lambda_libs_path/database.py" .
 
         if [[ "$stage" == "dev" ]]; then
             echo "Deploying $(pwd) to stage dev"

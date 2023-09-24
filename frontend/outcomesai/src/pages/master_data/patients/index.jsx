@@ -35,6 +35,7 @@ export default function PatientsGrid() {
   const requiredAttributes = [
     'last_name',
     'first_name',
+    'ehr_id',
     'email',
     'postal_code',
     'gender',
@@ -44,6 +45,7 @@ export default function PatientsGrid() {
   const attributeNames = [
     'Last Name',
     'First Name',
+    'EHR ID',
     'Email',
     'Postal Code',
     'Birth Gender',
@@ -65,6 +67,12 @@ export default function PatientsGrid() {
       headerName: 'First',
       editable: true,
       cellClassName: 'name-column--cell',
+      flex: 1,
+    },
+    {
+      field: 'ehr_id',
+      headerName: 'EHR ID',
+      editable: true,
       flex: 1,
     },
     {
@@ -243,6 +251,7 @@ export default function PatientsGrid() {
           const relatedRow = {
             practice_id: row.practice_id,
             patient_id: row.id,
+            patient_ehr_id: row.ehr_id,
             status: row.status,
           };
           await putData(relatedTable, relatedRow);

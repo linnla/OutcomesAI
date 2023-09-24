@@ -31,13 +31,19 @@ provider:
     securityGroupIds: ${self:custom.config.securityGroupIds}
     subnetIds: ${self:custom.config.subnets}
 
+package:
+  include:
+    - ../../../data_models/__init__.py
+    - ../../../lambda_libs/*.py
+    - ../../../data_models/*.py
+
 functions:
   http:
     name: ${self:service}-${self:provider.stage}
     layers:
       - ${self:custom.config.psycopg2_jetbridge_layer}
       - ${self:custom.config.sqlalchemy_layer}
-    handler: http-patients.lambda_handler
+    handler: handler.lambda_handler
     description:
       Handles HTTP requests for CRUD operations on RDS PostgreSQL patients
       table.

@@ -1,5 +1,5 @@
 import logging
-from database import (
+from .database import (
     select_entity,
     select_reference_entity,
     create_entity,

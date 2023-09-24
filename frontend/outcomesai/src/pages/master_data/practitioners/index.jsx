@@ -25,8 +25,8 @@ export default function PractitionersGrid() {
   const relatedTable = 'practice_practitioners';
   const sort_1 = 'last_name';
   const sort_2 = 'first_name';
-  const requiredAttributes = ['last_name', 'first_name', 'email'];
-  const attributeNames = ['Last Name', 'First Name', 'Email'];
+  const requiredAttributes = ['last_name', 'first_name', 'ehr_id', 'email'];
+  const attributeNames = ['Last Name', 'First Name', 'EHR ID', 'Email'];
 
   const columns = [
     { field: 'id', headerName: 'ID', flex: 0.5 },
@@ -80,6 +80,12 @@ export default function PractitionersGrid() {
         '',
       ],
       defaultValueGetter: () => '',
+      flex: 1,
+    },
+    {
+      field: 'ehr_id',
+      headerName: 'EHR ID',
+      editable: true,
       flex: 1,
     },
     {
@@ -214,6 +220,7 @@ export default function PractitionersGrid() {
           const relatedRow = {
             practice_id: row.practice_id,
             practitioner_id: row.id,
+            practitioner_ehr_id: row.ehr_id,
             status: row.status,
           };
           await putData(relatedTable, relatedRow);

@@ -39,6 +39,14 @@ export default function OfficesGrid() {
       cellClassName: 'name-column--cell',
     },
     {
+      field: 'ehr_id',
+      headerName: 'EHR ID',
+      headerAlign: 'center',
+      align: 'center',
+      editable: true,
+      flex: 1,
+    },
+    {
       field: 'postal_code',
       headerName: 'Zip Code',
       headerAlign: 'center',

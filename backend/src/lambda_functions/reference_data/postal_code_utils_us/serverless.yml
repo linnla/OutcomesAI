@@ -1,4 +1,4 @@
-service: utils-postal-codes-us
+service: outcomesai-utils-postal-codes-us
 
 frameworkVersion: '3'
 
@@ -6,7 +6,7 @@ plugins:
   - serverless-prune-plugin
 
 custom:
-  config: ${file(../../lambda_config/outcomesai-${self:provider.stage}-config.json)}
+  config: ${file(../../../lambda_config/outcomesai-${self:provider.stage}-config.json)}
   prune:
     automatic: true
     number: 3
@@ -31,6 +31,12 @@ provider:
     securityGroupIds: ${self:custom.config.securityGroupIds}
     subnetIds: ${self:custom.config.subnets}
 
+package:
+  include:
+    - ../../../data_models/__init__.py
+    - ../../../lambda_libs/*.py
+    - ../../../data_models/*.py
+
 functions:
   load_data:
     name: ${self:service}-${self:provider.stage}
@@ -38,7 +44,7 @@ functions:
       - ${self:custom.config.psycopg2_jetbridge_layer}
       - ${self:custom.config.sqlalchemy_layer}
       - ${self:custom.config.pandas_3_8_layer}
-    handler: utils-postal-codes-us.lambda_handler
+    handler: handler.lambda_handler
     description: Load US postal codes into RDS PostgreSQL postal_codes table.
     memorySize: 512
     timeout: 300

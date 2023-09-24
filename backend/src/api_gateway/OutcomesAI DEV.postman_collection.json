@@ -1,0 +1,3555 @@
+{
+  "info": {
+    "_postman_id": "e4f37585-1e55-4eea-b60d-439d738ad607",
+    "name": "OutcomesAI DEV",
+    "description": "OutcomesAI application API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "792872",
+    "_collection_link": "https://red-rocket-601890.postman.co/workspace/OutcomesAI~3e078ef8-ea81-42cb-a6d4-5650c13486b0/collection/792872-e4f37585-1e55-4eea-b60d-439d738ad607?action=share&source=collection_link&creator=792872"
+  },
+  "item": [
+    {
+      "name": "acquisition_sources",
+      "item": [
+        {
+          "name": "acquisition_sources",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://{{baseUrl}}/acquisition_sources",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["acquisition_sources"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "acquisition_sources",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Pharmacy\",\n    \"description\": \"Pharmacy Description\",\n    \"status\": \"Active\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{baseUrl}}/acquisition_sources",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["acquisition_sources"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "acquisition_sources",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"id\": 1,\n    \"name\": \"Pharmacy\",\n    \"description\": \"Pharmacy Description\",\n    \"status\": \"Active\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{baseUrl}}/acquisition_sources",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["acquisition_sources"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "acquisition_sources",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"id\": 300\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{baseUrl}}/acquisition_sources",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["acquisition_sources"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "active_ingredients",
+      "item": [
+        {
+          "name": "active_ingredients",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://{{baseUrl}}/active_ingredients",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["active_ingredients"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "active_ingredients",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Soap\",\n    \"description\": \"Delete this row\",\n    \"status\": \"Active\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{baseUrl}}/active_ingredients",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["active_ingredients"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "active_ingredients",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Soap\",\n    \"description\": \"Delete this row\",\n    \"status\": \"Active\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{baseUrl}}/active_ingredients",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["active_ingredients"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "active_ingredients",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"id\": 300\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{baseUrl}}/active_ingredients",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["active_ingredients"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "administration_routes",
+      "item": [
+        {
+          "name": "administration_routes",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://{{baseUrl}}/administration_routes",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["administration_routes"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "administration_routes",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Soap\",\n    \"description\": \"Delete this row\",\n    \"status\": \"Active\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{baseUrl}}/administration_routes",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["administration_routes"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "administration_routes",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Soap\",\n    \"description\": \"Delete this row\",\n    \"status\": \"Active\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{baseUrl}}/administration_routes",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["administration_routes"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "administration_routes",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"id\": 300\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{baseUrl}}/administration_routes",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["administration_routes"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "appointment_types",
+      "item": [
+        {
+          "name": "appointment_types",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://{{baseUrl}}/appointment_types",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["appointment_types"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "appointment_types",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Soap\",\n    \"description\": \"Delete this row\",\n    \"status\": \"Active\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{baseUrl}}/appointment_types",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["appointment_types"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "appointment_types",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Soap\",\n    \"description\": \"Delete this row\",\n    \"status\": \"Active\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{baseUrl}}/appointment_types",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["appointment_types"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "appointment_types",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"id\": 300\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{baseUrl}}/appointment_types",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["appointment_types"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "biomarker_types",
+      "item": [
+        {
+          "name": "biomarker_types",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://{{baseUrl}}/biomarker_types",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["biomarker_types"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "biomarker_types",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Genetic\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{baseUrl}}/biomarker_types",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["biomarker_types"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "biomarker_types",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"id\": 2,\n    \"name\": \"Mole\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{baseUrl}}/biomarker_types",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["biomarker_types"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "biomarker_types",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"id\": 3\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{baseUrl}}/biomarker_types",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["biomarker_types"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "biomarkers",
+      "item": [
+        {
+          "name": "biomarkers",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://{{baseUrl}}/biomarkers",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["biomarkers"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "biomarkers BDNF",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"biomarker_type_id\": 1,\n    \"acronym\": \"BDNF\",\n    \"name\": \"Brain-derived neurotrophic factor\",\n    \"biomarker_values\": [\"TBD\"]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{baseUrl}}/biomarkers",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["biomarkers"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "biomarkers COMT",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"biomarker_type_id\": 1,\n    \"acronym\": \"COMT\",\n    \"name\": \"Catechol-O-Methyltransferase\",\n    \"biomarker_values\": [\"Val/Val\", \"Met/Met\", \"Val/Met\"]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{baseUrl}}/biomarkers",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["biomarkers"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "biomarkers",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"biomarker_type_id\": 1,\n    \"acronym\": \"COMT2\",\n    \"name\": \"Catechol-O-methyltransferase\",\n    \"biomarker_values\": [\"Val/Val\", \"Val/Met\", \"Met/Met\"]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{baseUrl}}/biomarkers",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["biomarkers"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "biomarkers",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"id\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{baseUrl}}/biomarkers",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["biomarkers"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "countries",
+      "item": [
+        {
+          "name": "countries",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://{{baseUrl}}/countries",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["countries"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "countries?country_code=",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://{{baseUrl}}/countries?country_code=US",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["countries"],
+              "query": [
+                {
+                  "key": "country_code",
+                  "value": "US"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "diagnosis_codes",
+      "item": [
+        {
+          "name": "diagnosis_codes",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://{{baseUrl}}/diagnosis_codes",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["diagnosis_codes"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "diagnosis_codes",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Soap\",\n    \"description\": \"Delete this row\",\n    \"status\": \"Active\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{baseUrl}}/diagnosis_codes",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["diagnosis_codes"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "diagnosis_codes",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Soap\",\n    \"description\": \"Delete this row\",\n    \"status\": \"Active\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{baseUrl}}/diagnosis_codes",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["diagnosis_codes"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "diagnosis_codes",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"id\": 300\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{baseUrl}}/diagnosis_codes",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["diagnosis_codes"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "disorders",
+      "item": [
+        {
+          "name": "disorders",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://{{baseUrl}}/disorders",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["disorders"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "disorders",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Soap\",\n    \"description\": \"Delete this row\",\n    \"status\": \"Active\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{baseUrl}}/disorders",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["disorders"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "disorders",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Soap\",\n    \"description\": \"Delete this row\",\n    \"status\": \"Active\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{baseUrl}}/disorders",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["disorders"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "disorders",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"id\": 300\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{baseUrl}}/disorders",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["disorders"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "dosage_forms",
+      "item": [
+        {
+          "name": "dosage_forms",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://{{baseUrl}}/dosage_forms",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["dosage_forms"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "dosage_forms",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Soap\",\n    \"description\": \"Delete this row\",\n    \"status\": \"Active\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{baseUrl}}/dosage_forms",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["dosage_forms"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "dosage_forms",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Soap\",\n    \"description\": \"Delete this row\",\n    \"status\": \"Active\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{baseUrl}}/dosage_forms",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["dosage_forms"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "dosage_forms",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"id\": 300\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{baseUrl}}/dosage_forms",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["dosage_forms"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "dosage_units",
+      "item": [
+        {
+          "name": "dosage_units",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://{{baseUrl}}/dosage_units",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["dosage_units"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "dosage_units",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Soap\",\n    \"description\": \"Delete this row\",\n    \"status\": \"Active\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{baseUrl}}/dosage_units",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["dosage_units"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "dosage_units",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Soap\",\n    \"description\": \"Delete this row\",\n    \"status\": \"Active\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{baseUrl}}/dosage_units",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["dosage_units"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "dosage_units",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"id\": 300\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{baseUrl}}/dosage_units",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["dosage_units"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "episodes_of_care",
+      "item": [
+        {
+          "name": "episodes_of_care",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://{{baseUrl}}/episodes_of_care",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["episodes_of_care"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "episodes_of_care",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Soap\",\n    \"description\": \"Delete this row\",\n    \"status\": \"Active\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{baseUrl}}/episodes_of_care",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["episodes_of_care"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "episodes_of_care",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Soap\",\n    \"description\": \"Delete this row\",\n    \"status\": \"Active\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{baseUrl}}/episodes_of_care",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["episodes_of_care"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "episodes_of_care",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"id\": 300\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{baseUrl}}/episodes_of_care",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["episodes_of_care"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "medication_types",
+      "item": [
+        {
+          "name": "medication_types",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://{{baseUrl}}/medication_types",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["medication_types"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "medication_types",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Soap\",\n    \"description\": \"Delete this row\",\n    \"status\": \"Active\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{baseUrl}}/medication_types",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["medication_types"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "medication_types",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Soap\",\n    \"description\": \"Delete this row\",\n    \"status\": \"Active\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{baseUrl}}/medication_types",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["medication_types"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "medication_types",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"id\": 300\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{baseUrl}}/medication_types",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["medication_types"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "offices",
+      "item": [
+        {
+          "name": "offices?practice_id=",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://{{baseUrl}}/offices?practice_id=1",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["offices"],
+              "query": [
+                {
+                  "key": "practice_id",
+                  "value": "1"
+                },
+                {
+                  "key": "id",
+                  "value": "6",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "offices",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"practice_id\": 12133,\n    \"virtual\": true,\n    \"postal_code\" : \"90266\",\n    \"city\": \"Manhattan Beach\",\n    \"name\": \"Manhattan Beach\",\n    \"state_code\": \"CA\",\n    \"state\": \"California\",\n    \"county\": \"Los Angeles\",\n    \"country_code\": \"US\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{baseUrl}}/offices",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["offices"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "offices",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"id\": 6,\n    \"practice_id\": 12133,\n    \"virtual\": true,\n    \"postal_code\" : \"90266\",\n    \"city\": \"Manhattan Beach\",\n    \"name\": \"Manhattan Beach\",\n    \"state_code\": \"CA\",\n    \"state\": \"California\",\n    \"county\": \"Los Angeles\",\n    \"country_code\": \"US\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{baseUrl}}/offices",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["offices"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "offices?practice_id=...",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"practice_id\": 100101,\n    \"id\": 91\n}"
+            },
+            "url": {
+              "raw": "https://{{baseUrl}}/offices",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["offices"],
+              "query": [
+                {
+                  "key": "practice_id",
+                  "value": "100102",
+                  "disabled": true
+                },
+                {
+                  "key": "id",
+                  "value": "2",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "patient_biomarkers",
+      "item": [
+        {
+          "name": "patient_biomarkers?patient_id=",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status Code\", function () {",
+                  "    // make as many assertions as you'd like as part of this test",
+                  "    // if any assertion throws an error, this test will fail",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"JSON Returned\", function () {",
+                  "    // make as many assertions as you'd like as part of this test",
+                  "    // if any assertion throws an error, this test will fail",
+                  "    pm.response.to.be.json;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://{{baseUrl}}/patient_biomarkers?patient_id=3&biomarker_id=2",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["patient_biomarkers"],
+              "query": [
+                {
+                  "key": "patient_id",
+                  "value": "3"
+                },
+                {
+                  "key": "biomarker_id",
+                  "value": "2"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "patient_biomarkers COMT",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"patient_id\": 3,\n    \"biomarker_id\": 3,\n    \"value\": \"Val/Val\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{baseUrl}}/patient_biomarkers",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["patient_biomarkers"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "patient_biomarkers BDNF",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"patient_id\": 3,\n    \"biomarker_id\": 2,\n    \"value\": \"TBD\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{baseUrl}}/patient_biomarkers",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["patient_biomarkers"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "patient_biomarkers",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"patient_id\": 3,\n    \"biomarker_id\": 2,\n    \"value\": \"TBD2\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{baseUrl}}/patient_biomarkers",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["patient_biomarkers"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "patient_biomarkers",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"patient_id\": 3,\n    \"biomarker_id\": 2,\n    \"value\": \"TBD\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{baseUrl}}/patient_biomarkers",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["patient_biomarkers"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "patients",
+      "item": [
+        {
+          "name": "patients?id=",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status Code\", function () {",
+                  "    // make as many assertions as you'd like as part of this test",
+                  "    // if any assertion throws an error, this test will fail",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"JSON Returned\", function () {",
+                  "    // make as many assertions as you'd like as part of this test",
+                  "    // if any assertion throws an error, this test will fail",
+                  "    pm.response.to.be.json;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://{{baseUrl}}/patients?id=20",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["patients"],
+              "query": [
+                {
+                  "key": "id",
+                  "value": "20"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "patients",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"last_name\": \"Linn\",\n    \"first_name\": \"Laure\",\n    \"email\": \"laure.linn@yahoo.com\",\n    \"postal_code\": \"90266\",\n    \"country_code\": \"US\",\n    \"city\": \"Manhattan Beach\",\n    \"county\": \"Los Angeles\",\n    \"state\": \"California\",\n    \"state_code\": \"CA\",\n    \"birthdate\": \"03/05/1962\",\n    \"gender\": \"F\",\n    \"status\": \"Active\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{baseUrl}}/patients",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["patients"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "patients",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"id\": 3,\n    \"last_name\": \"Linn\",\n    \"first_name\": \"Laure\",\n    \"email\": \"laure.linn@yahoo.com\",\n    \"postal_code\": \"90266\",\n    \"country_code\": \"US\",\n    \"city\": \"Manhattan Beach\",\n    \"county\": \"Los Angeles\",\n    \"state\": \"California\",\n    \"state_code\": \"CA\",\n    \"birthdate\": \"03/05/1962\",\n    \"gender\": \"F\",\n    \"status\": \"Active\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{baseUrl}}/patients",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["patients"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "patients?id=...",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status Code\", function () {",
+                  "    // make as many assertions as you'd like as part of this test",
+                  "    // if any assertion throws an error, this test will fail",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"JSON Returned\", function () {",
+                  "    // make as many assertions as you'd like as part of this test",
+                  "    // if any assertion throws an error, this test will fail",
+                  "    pm.response.to.be.json;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "https://{{baseUrl}}/patients?id=4",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["patients"],
+              "query": [
+                {
+                  "key": "id",
+                  "value": "4"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "postal_codes",
+      "item": [
+        {
+          "name": "postal_codes?postal_code=",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://{{baseUrl}}/postal_codes?postal_code=90266",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["postal_codes"],
+              "query": [
+                {
+                  "key": "postal_code",
+                  "value": "90266"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "practice_patients",
+      "item": [
+        {
+          "name": "practice_patients?practice_id=",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status Code\", function () {",
+                  "    // make as many assertions as you'd like as part of this test",
+                  "    // if any assertion throws an error, this test will fail",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"JSON Returned\", function () {",
+                  "    // make as many assertions as you'd like as part of this test",
+                  "    // if any assertion throws an error, this test will fail",
+                  "    pm.response.to.be.json;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://{{baseUrl}}/practice_patients?practice_id=100101",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["practice_patients"],
+              "query": [
+                {
+                  "key": "practice_id",
+                  "value": "100101"
+                },
+                {
+                  "key": "patient_id",
+                  "value": "7",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "practices_patients",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"practice_id\": 100101,\n    \"patient_id\": 7\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{baseUrl}}/practice_patients",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["practice_patients"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "practice_patients",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"practice_id\": 12133,\n    \"patient_id\": 7,\n    \"status\": \"Inactive\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{baseUrl}}/practice_patients",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["practice_patients"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "practice_patients",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"practice_id\": 1,\n    \"patient_id\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{baseUrl}}/practice_patients?practice_id=1&patient_id=1",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["practice_patients"],
+              "query": [
+                {
+                  "key": "practice_id",
+                  "value": "1"
+                },
+                {
+                  "key": "patient_id",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "practice_practitioners",
+      "item": [
+        {
+          "name": "practice_practitioner?practice_id=",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status Code\", function () {",
+                  "    // make as many assertions as you'd like as part of this test",
+                  "    // if any assertion throws an error, this test will fail",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"JSON Returned\", function () {",
+                  "    // make as many assertions as you'd like as part of this test",
+                  "    // if any assertion throws an error, this test will fail",
+                  "    pm.response.to.be.json;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://{{baseUrl}}/practice_practitioners?practice_id=100101",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["practice_practitioners"],
+              "query": [
+                {
+                  "key": "practice_id",
+                  "value": "100101"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "practices_practitioner",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"practice_id\": 100101,\n    \"practitioner_id\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{baseUrl}}/practice_practitioners",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["practice_practitioners"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "practice_practitioner",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"practice_id\": 12133,\n    \"practitioner_id\": 1,\n    \"status\": \"Inctive\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{baseUrl}}/practice_practitioners",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["practice_practitioners"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "practice_practitioner",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"practice_id\": 12133,\n    \"practitioner_id\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{baseUrl}}/practice_practitioners",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["practice_practitioners"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "practice_tms_devices",
+      "item": [
+        {
+          "name": "practice_tms_devices",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status Code\", function () {",
+                  "    // make as many assertions as you'd like as part of this test",
+                  "    // if any assertion throws an error, this test will fail",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"JSON Returned\", function () {",
+                  "    // make as many assertions as you'd like as part of this test",
+                  "    // if any assertion throws an error, this test will fail",
+                  "    pm.response.to.be.json;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://{{baseUrl}}/practice_tms_devices?practice_id=1",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["practice_tms_devices"],
+              "query": [
+                {
+                  "key": "practice_id",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "practice_tms_devices",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"practice_id\": 100101,\n    \"practitioner_id\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{baseUrl}}/practice_tms_protocols",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["practice_tms_protocols"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "practice_tms_devices",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"practice_id\": 12133,\n    \"practitioner_id\": 1,\n    \"status\": \"Inctive\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{baseUrl}}/practice_tms_protocols",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["practice_tms_protocols"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "practice_tms_protocols",
+      "item": [
+        {
+          "name": "practice_tms_protocols",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status Code\", function () {",
+                  "    // make as many assertions as you'd like as part of this test",
+                  "    // if any assertion throws an error, this test will fail",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"JSON Returned\", function () {",
+                  "    // make as many assertions as you'd like as part of this test",
+                  "    // if any assertion throws an error, this test will fail",
+                  "    pm.response.to.be.json;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://{{baseUrl}}/practice_tms_protocols?practice_id=1",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["practice_tms_protocols"],
+              "query": [
+                {
+                  "key": "practice_id",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "practice_tms_protocols",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"practice_id\": 100101,\n    \"practitioner_id\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{baseUrl}}/practice_tms_protocols",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["practice_tms_protocols"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "practice_tms_protocols",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"practice_id\": 12133,\n    \"tms_protocol_id\": 1,\n    \"status\": \"Inctive\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{baseUrl}}/practice_tms_protocols",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["practice_tms_protocols"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "practice_tms_protocols",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"practice_id\": 12133,\n    \"tms_protocol_id\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{baseUrl}}/practice_tms_protocols",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["practice_tms_protocols"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "practice_users",
+      "item": [
+        {
+          "name": "practice_users?practice_id=",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status Code\", function () {",
+                  "    // make as many assertions as you'd like as part of this test",
+                  "    // if any assertion throws an error, this test will fail",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"JSON Returned\", function () {",
+                  "    // make as many assertions as you'd like as part of this test",
+                  "    // if any assertion throws an error, this test will fail",
+                  "    pm.response.to.be.json;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://{{baseUrl}}/practice_users?practice_id=100101&status=Active",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["practice_users"],
+              "query": [
+                {
+                  "key": "practice_id",
+                  "value": "100101"
+                },
+                {
+                  "key": "status",
+                  "value": "Active"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "practice_users?user_id=",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status Code\", function () {",
+                  "    // make as many assertions as you'd like as part of this test",
+                  "    // if any assertion throws an error, this test will fail",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"JSON Returned\", function () {",
+                  "    // make as many assertions as you'd like as part of this test",
+                  "    // if any assertion throws an error, this test will fail",
+                  "    pm.response.to.be.json;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://{{baseUrl}}/practice_users?user_id=7",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["practice_users"],
+              "query": [
+                {
+                  "key": "user_id",
+                  "value": "7"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "practices_users",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"practice_id\": 100101,\n    \"user_id\": 7,\n    \"role_id\": 14\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{baseUrl}}/practice_users",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["practice_users"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "practice_users",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"practice_id\": 100101,\n    \"user_id\": 20,\n    \"role_id\": 8\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{baseUrl}}/practice_users",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["practice_users"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "practices",
+      "item": [
+        {
+          "name": "practices?id=",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status Code\", function () {",
+                  "    // make as many assertions as you'd like as part of this test",
+                  "    // if any assertion throws an error, this test will fail",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"JSON Returned\", function () {",
+                  "    // make as many assertions as you'd like as part of this test",
+                  "    // if any assertion throws an error, this test will fail",
+                  "    pm.response.to.be.json;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://{{baseUrl}}/practices?id=1",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["practices"],
+              "query": [
+                {
+                  "key": "id",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "practices",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Neuro Wellness Spa\",\n    \"postal_code\": \"90266\",\n    \"city\": \"Manhattan Beach\",\n    \"county\": \"Los Angeles\",\n    \"state_code\": \"CA\",\n    \"state\": \"California\",\n    \"country_code\": \"US\",\n    \"status\": \"Active\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{baseUrl}}/practices",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["practices"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "practices",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"id\": 12133,\n    \"name\": \"Neuro Wellness Spa\",\n    \"postal_code\": \"90266\",\n    \"city\": \"Manhattan Beach\",\n    \"county\": \"Los Angeles\",\n    \"state_code\": \"CA\",\n    \"state\": \"California\",\n    \"country_code\": \"US\",\n    \"status\": \"Active\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{baseUrl}}/practices",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["practices"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "practices",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"id\": 12133\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{baseUrl}}/practices?id=1",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["practices"],
+              "query": [
+                {
+                  "key": "id",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "practitioners",
+      "item": [
+        {
+          "name": "practitioners?id=",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://{{baseUrl}}/practitioners?id=1",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["practitioners"],
+              "query": [
+                {
+                  "key": "id",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "practitioners",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"last_name\": \"Koo\",\n    \"first_name\": \"Martha\",\n    \"prefix\": \"Dr.\",\n    \"suffix\": \"\",\n    \"email\": \"m.koo2@me.com\",\n    \"status\": \"Active\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{baseUrl}}/practitioners",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["practitioners"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "practitioners",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"id\": 1,\n    \"last_name\": \"Koo\",\n    \"first_name\": \"Martha\",\n    \"prefix\": \"Dr.\",\n    \"suffix\": \"M.D.\",\n    \"email\": \"m.koo2@me.com\",\n    \"status\": \"Active\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{baseUrl}}/practitioners",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["practitioners"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "procedure_categories",
+      "item": [
+        {
+          "name": "procedure_categories",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://{{baseUrl}}/procedure_categories",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["procedure_categories"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "procedure_categories",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Soap\",\n    \"description\": \"Delete this row\",\n    \"status\": \"Active\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{baseUrl}}/procedure_categories",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["procedure_categories"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "procedure_categories",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Soap\",\n    \"description\": \"Delete this row\",\n    \"status\": \"Active\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{baseUrl}}/procedure_categories",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["procedure_categories"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "procedure_categories",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"id\": 300\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{baseUrl}}/procedure_categories",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["procedure_categories"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "procedure_codes",
+      "item": [
+        {
+          "name": "procedure_codes",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://{{baseUrl}}/procedure_codes",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["procedure_codes"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "procedure_codes",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Soap\",\n    \"description\": \"Delete this row\",\n    \"status\": \"Active\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{baseUrl}}/procedure_categories",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["procedure_categories"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "procedure_codes",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Soap\",\n    \"description\": \"Delete this row\",\n    \"status\": \"Active\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{baseUrl}}/procedure_categories",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["procedure_categories"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "procedure_codes",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"id\": 300\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{baseUrl}}/procedure_codes",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["procedure_codes"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "roles",
+      "item": [
+        {
+          "name": "roles",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status Code\", function () {",
+                  "    // make as many assertions as you'd like as part of this test",
+                  "    // if any assertion throws an error, this test will fail",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"JSON Returned\", function () {",
+                  "    // make as many assertions as you'd like as part of this test",
+                  "    // if any assertion throws an error, this test will fail",
+                  "    pm.response.to.be.json;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://{{baseUrl}}/roles",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["roles"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "roles",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const postUrl = 'https://1q35lcvj4f.execute-api.us-west-2.amazonaws.com/dev/roles';",
+                  "const requestBody = {",
+                  "    \"name\": \"Admin\"",
+                  "};",
+                  "",
+                  "pm.sendRequest({",
+                  "    url: postUrl,",
+                  "    method: 'POST',",
+                  "    header: {",
+                  "        'Content-Type': 'application/json'",
+                  "    },",
+                  "    body: {",
+                  "        mode: 'raw',",
+                  "        raw: JSON.stringify(requestBody)",
+                  "    }",
+                  "}, (err, response) => {",
+                  "    if (err) {",
+                  "        console.error(err);",
+                  "        pm.test('Post Request - Error', () => {",
+                  "            pm.expect.fail('Failed to send POST request');",
+                  "        });",
+                  "    } else {",
+                  "        pm.test('Post Request - Status Code', () => {",
+                  "            pm.response.to.have.status(200);",
+                  "        });",
+                  "",
+                  "        const responseBody = pm.response.json();",
+                  "        const id = responseBody.id;",
+                  "",
+                  "        pm.test('Post Request - Response ID', () => {",
+                  "            pm.expect(id).to.be.a('number');",
+                  "            pm.environment.set('id', id);",
+                  "        });",
+                  "",
+                  "        // Use the id in the subsequent GET request",
+                  "        const getUrl = `https://1q35lcvj4f.execute-api.us-west-2.amazonaws.com/dev/roles/${id}`;",
+                  "",
+                  "        pm.sendRequest({",
+                  "            url: getUrl,",
+                  "            method: 'GET',",
+                  "            header: {",
+                  "                'Content-Type': 'application/json'",
+                  "            }",
+                  "        }, (err, response) => {",
+                  "            if (err) {",
+                  "                console.error(err);",
+                  "                pm.test('Get Request - Error', () => {",
+                  "                    pm.expect.fail('Failed to send GET request');",
+                  "                });",
+                  "            } else {",
+                  "                pm.test('Get Request - Status Code', () => {",
+                  "                    pm.response.to.have.status(200);",
+                  "                });",
+                  "",
+                  "                const responseBody = pm.response.json();",
+                  "                // Add your assertions for the GET response",
+                  "                // using responseBody",
+                  "            }",
+                  "        });",
+                  "    }",
+                  "});",
+                  "",
+                  "",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"admin\",\n    \"description\": \"Allows user to create, update and delete all practice data.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{baseUrl}}/roles",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["roles"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "roles",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var roleId = 20;",
+                  "",
+                  "// Update name from \"Read-Only\" to \"Only-Read\"",
+                  "pm.test(\"Update name from Read-Only to Only-Read\", function () {",
+                  "    var putUrl = `https://1q35lcvj4f.execute-api.us-west-2.amazonaws.com/dev/roles`;",
+                  "",
+                  "",
+                  "    var requestBody = {",
+                  "        \"id\": roleId,",
+                  "        \"name\": \"Only-Read\"",
+                  "    };",
+                  "",
+                  "    // Log the request body",
+                  "    console.log(requestBody);",
+                  "",
+                  "    pm.sendRequest({",
+                  "        url: putUrl,",
+                  "        method: 'PUT',",
+                  "        header: {",
+                  "            'Content-Type': 'application/json'",
+                  "        },",
+                  "        body: {",
+                  "            mode: 'raw',",
+                  "            raw: JSON.stringify(requestBody)",
+                  "        }",
+                  "    }, function (err, response) {",
+                  "        if (err) {",
+                  "            console.error(err);",
+                  "            pm.test('PUT Request - Error', function () {",
+                  "                pm.expect.fail('Failed to send PUT request');",
+                  "            });",
+                  "        } else {",
+                  "            pm.test('PUT Request - Status Code', function () {",
+                  "                pm.response.to.have.status(200);",
+                  "            });",
+                  "        }",
+                  "    });",
+                  "});",
+                  "",
+                  "// Verify the name change through a GET request",
+                  "pm.test(\"GET Request - Verify name change to Only-Read\", function () {",
+                  "    var getUrl = `https://1q35lcvj4f.execute-api.us-west-2.amazonaws.com/dev/roles?id=${roleId}`;",
+                  "",
+                  "    pm.sendRequest({",
+                  "        url: getUrl,",
+                  "        method: 'GET',",
+                  "        header: {",
+                  "            'Content-Type': 'application/json'",
+                  "        }",
+                  "    }, function (err, response) {",
+                  "        if (err) {",
+                  "            console.error(err);",
+                  "            pm.test('GET Request - Error', function () {",
+                  "                pm.expect.fail('Failed to send GET request');",
+                  "            });",
+                  "        } else {",
+                  "            pm.test('GET Request - Status Code', function () {",
+                  "                pm.response.to.have.status(200);",
+                  "            });",
+                  "        }",
+                  "    });",
+                  "});",
+                  "",
+                  "// Change name back to \"Read-Only\"",
+                  "pm.test(\"Update name from Only-Read to Read-Only\", function () {",
+                  "    var putUrl = `https://1q35lcvj4f.execute-api.us-west-2.amazonaws.com/dev/roles`;",
+                  "",
+                  "    var requestBody = {",
+                  "        \"id\": roleId,",
+                  "        \"name\": \"Read-Only2\"",
+                  "    };",
+                  "",
+                  "    pm.sendRequest({",
+                  "        url: putUrl,",
+                  "        method: 'PUT',",
+                  "        header: {",
+                  "            'Content-Type': 'application/json'",
+                  "        },",
+                  "        body: {",
+                  "            mode: 'raw',",
+                  "            raw: JSON.stringify(requestBody)",
+                  "        }",
+                  "    }, function (err, response) {",
+                  "        if (err) {",
+                  "            console.error(err);",
+                  "            pm.test('PUT Request - Error', function () {",
+                  "                pm.expect.fail('Failed to send PUT request');",
+                  "            });",
+                  "        } else {",
+                  "            pm.test('PUT Request - Status Code', function () {",
+                  "                pm.response.to.have.status(200);",
+                  "            });",
+                  "        }",
+                  "    });",
+                  "});",
+                  "",
+                  "// Verify the name change through a GET request",
+                  "pm.test(\"GET Request - Verify name change to Read-Only\", function () {",
+                  "    var getUrl = `https://1q35lcvj4f.execute-api.us-west-2.amazonaws.com/dev/roles?id=${roleId}`;",
+                  "",
+                  "    pm.sendRequest({",
+                  "        url: getUrl,",
+                  "        method: 'GET',",
+                  "        header: {",
+                  "            'Content-Type': 'application/json'",
+                  "        }",
+                  "    }, function (err, response) {",
+                  "        if (err) {",
+                  "            console.error(err);",
+                  "            pm.test('GET Request - Error', function () {",
+                  "                pm.expect.fail('Failed to send GET request');",
+                  "            });",
+                  "        } else {",
+                  "            pm.test('GET Request - Status Code', function () {",
+                  "                pm.response.to.have.status(200);",
+                  "            });",
+                  "        }",
+                  "    });",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"id\": 17,\n    \"name\": \"admin\",\n    \"description\": \"Allows user to create, update and delete all practice data.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{baseUrl}}/roles",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["roles"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "roles",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// Get the roles",
+                  "pm.sendRequest({",
+                  "    url: 'https://1q35lcvj4f.execute-api.us-west-2.amazonaws.com/dev/roles',",
+                  "    method: 'GET',",
+                  "    header: {",
+                  "        'Content-Type': 'application/json'",
+                  "    }",
+                  "}, function (err, response) {",
+                  "    if (err) {",
+                  "        console.error(err);",
+                  "        pm.test('GET Request - Error', function () {",
+                  "            pm.expect.fail('Failed to send GET request');",
+                  "        });",
+                  "    } else {",
+                  "        pm.test('GET Request - Status Code', function () {",
+                  "            pm.response.to.have.status(200);",
+                  "        });",
+                  "",
+                  "        var responseBody = pm.response.json();",
+                  "        var roles = responseBody.data;",
+                  "",
+                  "        // Delete each role",
+                  "        roles.forEach(function (role) {",
+                  "            pm.sendRequest({",
+                  "                url: `https://1q35lcvj4f.execute-api.us-west-2.amazonaws.com/dev/roles/${role.id}`,",
+                  "                method: 'DELETE',",
+                  "                header: {",
+                  "                    'Content-Type': 'application/json'",
+                  "                }",
+                  "            }, function (err, response) {",
+                  "                if (err) {",
+                  "                    console.error(err);",
+                  "                    pm.test('DELETE Request - Error', function () {",
+                  "                        pm.expect.fail('Failed to send DELETE request');",
+                  "                    });",
+                  "                } else {",
+                  "                    pm.test('DELETE Request - Status Code', function () {",
+                  "                        pm.response.to.have.status(200);",
+                  "                    });",
+                  "                }",
+                  "            });",
+                  "        });",
+                  "    }",
+                  "});",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"id\": 17\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{baseUrl}}/roles",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["roles"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "tms_coils",
+      "item": [
+        {
+          "name": "tms_coils",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://{{baseUrl}}/tms_coils",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["tms_coils"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "tms_coils",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"manfacturer\": \"Mag Venture\",\n    \"model_number\": \"R2D2\",\n    \"description\": \"Mag Venture R2D2\",\n    \"year\": 2010,\n    \"status\": \"Active\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{baseUrl}}/tms_coils",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["tms_coils"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "tms_coils",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"id\": 1,\n    \"manfacturer\": \"Mag Venture\",\n    \"model_number\": \"R2D2\",\n    \"description\": \"Mag Venture R2D2\",\n    \"year\": 2010,\n    \"status\": \"Active\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{baseUrl}}/tms_coils",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["tms_coils"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "tms_coils",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"id\": 3\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{baseUrl}}/tms_coils",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["tms_coils"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "tms_devices",
+      "item": [
+        {
+          "name": "tms_devices",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://{{baseUrl}}/devices",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["devices"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "tms_devices",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"manfacturer\": \"Mag Venture\",\n    \"model_number\": \"R2D2\",\n    \"description\": \"Mag Venture R2D2\",\n    \"year\": 2010,\n    \"status\": \"Active\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{baseUrl}}/tms_devices",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["tms_devices"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "tms_devices",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"id\": 1,\n    \"manfacturer\": \"Mag Venture\",\n    \"model_number\": \"R2D2\",\n    \"description\": \"Mag Venture R2D2\",\n    \"year\": 2010,\n    \"status\": \"Active\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{baseUrl}}/tms_devices",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["tms_devices"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "tms_devices",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"id\": 3\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{baseUrl}}/tms_devices",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["tms_devices"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "tms_frequencies",
+      "item": [
+        {
+          "name": "tms_frequencies",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://{{baseUrl}}/tms_frequencies",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["tms_frequencies"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "tms_frequencies",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Soap\",\n    \"description\": \"Delete this row\",\n    \"status\": \"Active\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{baseUrl}}/tms_frequencies",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["tms_frequencies"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "tms_frequencies",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Soap\",\n    \"description\": \"Delete this row\",\n    \"status\": \"Active\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{baseUrl}}/tms_frequencies",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["tms_frequencies"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "tms_frequencies",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"id\": 300\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{baseUrl}}/tms_frequencies",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["tms_frequencies"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "tms_protocols",
+      "item": [
+        {
+          "name": "tms_protocols",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://{{baseUrl}}/tms_protocols",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["tms_protocols"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "tms_protocols",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Soap\",\n    \"description\": \"Delete this row\",\n    \"status\": \"Active\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{baseUrl}}/tms_protocols",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["tms_protocols"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "tms_protocols",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Soap\",\n    \"description\": \"Delete this row\",\n    \"status\": \"Active\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{baseUrl}}/tms_protocols",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["tms_protocols"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "tms_protocols",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"id\": 300\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{baseUrl}}/tms_protocols",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["tms_protocols"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "tms_pulse_types",
+      "item": [
+        {
+          "name": "tms_pulse_types",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://{{baseUrl}}/tms_pulse_types",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["tms_pulse_types"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "tms_pulse_types",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Soap\",\n    \"description\": \"Delete this row\",\n    \"status\": \"Active\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{baseUrl}}/tms_pulse_types",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["tms_pulse_types"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "tms_pulse_types",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Soap\",\n    \"description\": \"Delete this row\",\n    \"status\": \"Active\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{baseUrl}}/tms_pulse_types",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["tms_pulse_types"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "tms_pulse_types",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"id\": 300\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{baseUrl}}/tms_pulse_types",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["tms_pulse_types"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "tms_stimulation_sites",
+      "item": [
+        {
+          "name": "tms_stimulation_sites",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://{{baseUrl}}/tms_stimulation_sites",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["tms_stimulation_sites"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "tms_stimulation_sites",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Soap\",\n    \"description\": \"Delete this row\",\n    \"status\": \"Active\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{baseUrl}}/tms_stimulation_sites",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["tms_stimulation_sites"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "tms_stimulation_sites",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Soap\",\n    \"description\": \"Delete this row\",\n    \"status\": \"Active\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{baseUrl}}/tms_stimulation_sites",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["tms_stimulation_sites"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "tms_stimulation_sites",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"id\": 300\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{baseUrl}}/tms_stimulation_sites",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["tms_stimulation_sites"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "users",
+      "item": [
+        {
+          "name": "users?id=",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status Code\", function () {",
+                  "    // make as many assertions as you'd like as part of this test",
+                  "    // if any assertion throws an error, this test will fail",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test(\"JSON Returned\", function () {",
+                  "    // make as many assertions as you'd like as part of this test",
+                  "    // if any assertion throws an error, this test will fail",
+                  "    pm.response.to.be.json;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://{{baseUrl}}/users?id=1",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["users"],
+              "query": [
+                {
+                  "key": "id",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "users",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"cognito_id\": \"e861a340-2051-7038-0a1d-4955e99b27e1\",\n    \"first_name\": \"Laure\",\n    \"last_name\": \"Linn\",\n    \"email\": \"laure.linn@yahoo.com\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{baseUrl}}/users",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["users"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "users",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"id\": 9,\n    \"last_name\": \"Inactive\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://{{baseUrl}}/users",
+              "protocol": "https",
+              "host": ["{{baseUrl}}"],
+              "path": ["users"]
+            }
+          },
+          "response": []
+        }
+      ],
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [""]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [""]
+          }
+        }
+      ]
+    }
+  ],
+  "auth": {
+    "type": "oauth2",
+    "oauth2": [
+      {
+        "key": "scope",
+        "value": "",
+        "type": "string"
+      },
+      {
+        "key": "authUrl",
+        "value": "https://outcomesai-api.auth.us-west-2.amazoncognito.com/login",
+        "type": "string"
+      },
+      {
+        "key": "clientId",
+        "value": "uh5cd9hjpuvp48sbkgpd5ls4b",
+        "type": "string"
+      },
+      {
+        "key": "grant_type",
+        "value": "implicit",
+        "type": "string"
+      },
+      {
+        "key": "accessTokenUrl",
+        "value": "https://outcomesai-api-pool.auth.us-west-2.amazoncognito.com/oauth/accesstoekn",
+        "type": "string"
+      },
+      {
+        "key": "tokenName",
+        "value": "code",
+        "type": "string"
+      },
+      {
+        "key": "headerPrefix",
+        "value": "",
+        "type": "string"
+      },
+      {
+        "key": "addTokenTo",
+        "value": "header",
+        "type": "string"
+      }
+    ]
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [""]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [""]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "api.outcomesai.com/dev"
+    },
+    {
+      "value": "",
+      "type": "string"
+    }
+  ]
+}
