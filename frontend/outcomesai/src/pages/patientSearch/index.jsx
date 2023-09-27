@@ -49,7 +49,14 @@ function PatientSearch({ defaultPageSize, ...props }) {
 
   useEffect(() => {
     setLoading(true);
-    console.log('practiceId:', practiceId);
+    if (typeof practiceId === 'string') {
+      console.log('practiceId is a string:', practiceId);
+    } else if (typeof practiceId === 'number') {
+      console.log('practiceId is a number:', practiceId);
+    } else {
+      console.log('practiceId is a number:', practiceId);
+    }
+
     getData(table, { practice_id: practiceId })
       .then((data) => {
         const sortedItems = sortItems(data, sort_1, sort_2);

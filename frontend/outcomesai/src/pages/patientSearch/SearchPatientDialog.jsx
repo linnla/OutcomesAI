@@ -26,6 +26,8 @@ export function SearchPatientDialog({ open, onClose }) {
   const [lastName, setLastName] = useState('');
   const [firstName, setFirstName] = useState('');
   const [chartID, setChartID] = useState('');
+  const [searchAttempted, setSearchAttempted] = useState(false);
+  const [isSearching, setIsSearching] = useState(false);
 
   const [patientData, setPatientData] = useState([]); // State for patient data
 
@@ -65,7 +67,8 @@ export function SearchPatientDialog({ open, onClose }) {
 
   const handleSearchClick = async () => {
     console.log('handleClickSearch:', lastName, firstName);
-
+    setSearchAttempted(false);
+    setIsSearching(true);
     let fields = {};
 
     // Search by Chart ID OR Last Name and/or First Name
@@ -84,7 +87,9 @@ export function SearchPatientDialog({ open, onClose }) {
 
     if (Object.keys(fields).length > 0) {
       console.log('fields contains data');
-      drchronoPatient(fields); // Fetch patient data
+      await drchronoPatient(fields); // Fetch patient data
+      setSearchAttempted(true);
+      setIsSearching(false);
     } else {
       // fields is empty
       console.log('fields is empty');
@@ -139,7 +144,7 @@ export function SearchPatientDialog({ open, onClose }) {
       patient.id = data.data.id;
 
       const practicePatient = {
-        practice_id: 1,
+        practice_id: practiceId,
         patient_id: patient.id,
         chart_id: patient['chart_id'],
         ehr_id: patient['ehr_id'],
@@ -281,6 +286,34 @@ export function SearchPatientDialog({ open, onClose }) {
         >
           Search
         </Button>
+        {/* Flashing "searching..." text */}
+        {isSearching && (
+          <span
+            className='flashing-text'
+            style={{
+              marginLeft: '25px',
+              color: colors.greenAccent[500], // Access the primary color from the theme
+              fontSize: '16px',
+              fontWeight: 'bold',
+            }}
+          >
+            searching...
+          </span>
+        )}
+        {/* No data found message */}
+        {searchAttempted && patientData.length === 0 && (
+          <div
+            style={{
+              color: colors.redAccent[500],
+              marginTop: '15px',
+              fontSize: '14px',
+              fontWeight: 'bold',
+            }}
+          >
+            No patient found with the provided details.
+          </div>
+        )}
+
         {patientData.length > 0 && (
           <div>
             <h2>Patient Data</h2>

@@ -35,7 +35,7 @@ function DefaultToolbar(props) {
         startIcon={<AddIcon />}
         onClick={handleOpenDialog}
       >
-        Add Patient
+        Search for DrChrono Patient
       </Button>
       <SearchPatientDialog open={openDialog} onClose={handleCloseDialog} />
     </GridToolbarContainer>
