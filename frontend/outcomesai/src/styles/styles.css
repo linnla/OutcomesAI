@@ -17,3 +17,10 @@
   ); /* Use the primary color from the root */
   color: 'white';
 }
+
+.shared-button {
+  font-size: 14px;
+  font-weight: bold;
+  margin-top: 16px;
+  padding: 10px 20px;
+}

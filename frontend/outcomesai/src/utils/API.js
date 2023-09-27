@@ -45,6 +45,22 @@ export async function getOne(table, query_params) {
   }
 }
 
+export async function getDrchronoData(table, body) {
+  try {
+    const response = await makeRequest('post', table, { body });
+    console.log('getDrchronoData:', response);
+
+    if (response.data.length === 0) {
+      return [];
+    }
+
+    return response.data;
+  } catch (error) {
+    console.error('getOne error fetching data:', error);
+    throw error;
+  }
+}
+
 export async function getData(table, query_params) {
   try {
     const response = await makeRequest('get', table, { query_params });

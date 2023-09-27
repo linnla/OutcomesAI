@@ -11,13 +11,13 @@ class Patient(ModelBase):
     last_name = mapped_column(String(85), nullable=False)
     first_name = mapped_column(String(85), nullable=False)
     birthdate = mapped_column(Date, nullable=False)
-    gender_birth = mapped_column(String(1), nullable=False)
-    gender_identity = mapped_column(String(85), nullable=False)
-    race = mapped_column(String(85), nullable=False)
-    ethnicity = mapped_column(String(85), nullable=False)
+    gender_birth = mapped_column(String(1), nullable=True)
+    gender_identity = mapped_column(String(85), nullable=True)
+    race = mapped_column(String(85), nullable=True)
+    ethnicity = mapped_column(String(85), nullable=True)
     email = mapped_column(String(85), nullable=False, unique=True)
     cell_phone = mapped_column(String(12), nullable=True)
-    postal_code = mapped_column(String(12), nullable=False)
+    postal_code = mapped_column(String(12), nullable=True)
     city = mapped_column(String(85), nullable=True)
     county = mapped_column(String(85), nullable=True)
     state = mapped_column(String(85), nullable=True)
@@ -36,15 +36,19 @@ class Patient(ModelBase):
             "user_id": self.user_id,
             "last_name": self.last_name,
             "first_name": self.first_name,
+            "birthdate": str(self.birthdate),
+            "gender_birth": self.gender_birth,
+            "gender_identity": self.gender_identity,
+            "race": self.race,
+            "ethnicity": self.ethnicity,
             "email": self.email,
+            "cell_phone": self.cell_phone,
             "postal_code": self.postal_code,
             "city": self.city,
             "county": self.county,
             "state": self.state,
             "state_code": self.state_code,
             "country_code": self.country_code,
-            "birthdate": str(self.birthdate),
-            "gender": self.gender,
             "created": created,
             "updated": updated,
         }
@@ -54,30 +58,45 @@ class Patient(ModelBase):
     create_required_fields = [
         "last_name",
         "first_name",
-        "email",
-        "postal_code",
-        "city",
-        "county",
-        "state_code",
-        "country_code",
         "birthdate",
-        "gender",
     ]
-    create_allowed_fields = ["user_id", "state"]
-
-    update_required_fields = ["id"]
-    update_allowed_fields = [
+    create_allowed_fields = [
         "user_id",
-        "last_name",
-        "first_name",
+        "state",
         "email",
+        "gender_birth",
+        "gender_identity",
+        "race",
+        "ethnicity",
+        "email",
+        "cell_phone",
         "postal_code",
         "city",
         "county",
         "state_code",
         "state",
         "country_code",
+    ]
+
+    update_required_fields = ["id"]
+    update_allowed_fields = [
+        "last_name",
+        "first_name",
         "birthdate",
-        "gender",
+        "user_id",
+        "state",
+        "email",
+        "gender_birth",
+        "gender_identity",
+        "race",
+        "ethnicity",
+        "email",
+        "cell_phone",
+        "postal_code",
+        "city",
+        "county",
+        "state_code",
+        "state",
+        "country_code",
     ]
     delete_required_fields = ["id"]

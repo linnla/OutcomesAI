@@ -30,25 +30,6 @@ function PatientSearch({ defaultPageSize, ...props }) {
   const sort_1 = 'last_name';
   const sort_2 = 'first_name';
 
-  const requiredAttributes = [
-    'last_name',
-    'first_name',
-    'email',
-    'postal_code',
-    'gender',
-    'birthdate',
-    'status',
-  ];
-  const attributeNames = [
-    'Last Name',
-    'First Name',
-    'Email',
-    'Postal Code',
-    'Birth Gender',
-    'Birth Date',
-    'Status',
-  ];
-
   const [rows, setRawRows] = useState([]);
   const [errorType, setErrorType] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
@@ -68,6 +49,7 @@ function PatientSearch({ defaultPageSize, ...props }) {
 
   useEffect(() => {
     setLoading(true);
+    console.log('practiceId:', practiceId);
     getData(table, { practice_id: practiceId })
       .then((data) => {
         const sortedItems = sortItems(data, sort_1, sort_2);
@@ -150,7 +132,7 @@ function PatientSearch({ defaultPageSize, ...props }) {
       },
     },
     {
-      field: 'gender',
+      field: 'gender_birth',
       headerName: 'Birth Gender',
       headerAlign: 'center',
       align: 'center',

@@ -37,28 +37,34 @@ class PracticePatient(ModelBase):
         return {
             "practice_id": self.practice_id,
             "id": self.patient_id,
-            "ehr_id": self.patient_ehr_id,
-            "chart_id": self.chart_id,
-            "status": self.status,
-            "practice_name": practice["name"],
+            "user_id": patient["user_id"],
             "full_name": full_name,
             "last_name": patient["last_name"],
             "first_name": patient["first_name"],
+            "birthdate": patient["birthdate"],
+            "gender_birth": patient["gender_birth"],
+            "gender_identity": patient["gender_identity"],
+            "race": patient["race"],
+            "ethnicity": patient["ethnicity"],
             "email": patient["email"],
+            "cell_phone": patient["cell_phone"],
             "postal_code": patient["postal_code"],
             "city": patient["city"],
+            "county": patient["county"],
             "state": patient["state"],
+            "state_code": patient["state_code"],
             "country_code": patient["country_code"],
-            "birthdate": patient["birthdate"],
-            "gender": patient["gender"],
+            "ehr_id": self.ehr_id,
+            "chart_id": self.chart_id,
+            "status": self.status,
             "created": created,
-            "updated": updated,
+            "updated": patient["updated"],
         }
 
     all_params_select = True
     select_required_params = ["practice_id"]
-    create_required_fields = ["practice_id", "patient_id", "ehr_id", "chart_id"]
-    create_allowed_fields = []
+    create_required_fields = ["practice_id", "patient_id"]
+    create_allowed_fields = ["ehr_id", "chart_id"]
     update_required_fields = ["practice_id", "patient_id"]
-    update_allowed_fields = ["ehr_id", "status"]
+    update_allowed_fields = ["ehr_id", "chart_id", "status"]
     delete_required_fields = ["practice_id", "patient_id"]
