@@ -7,8 +7,12 @@ export function createErrorMessage(error, data) {
 
   // Handling Axios-like error responses
   if (error?.response?.data) {
-    if (error.response.data.errorType === 'DuplicateKeyError') {
-      errorMessage = `${data} already exists`;
+    if (error.response.data.errorType === 'IntegrityError') {
+      //errorMessage = `${data} passed null value in a not null attribute`;
+      errorMessage = error.response.data.errorDescription;
+    } else if (error.response.data.errorType === 'DuplicateKeyError') {
+      //errorMessage = `${data} already exists`;
+      errorMessage = error.response.data.errorDescription;
     } else if (error.response.data.message) {
       errorMessage = error.response.data.message;
     } else if (error.response.data.errorMessage) {

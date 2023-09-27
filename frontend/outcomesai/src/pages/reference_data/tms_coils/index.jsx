@@ -57,7 +57,7 @@ export default function TMSCoilsGrid() {
       headerAlign: 'left',
       align: 'left',
       editable: true,
-      cellClassName: 'wrapText',
+      cellClassName: 'wrapWord',
       flex: 1,
     },
     {

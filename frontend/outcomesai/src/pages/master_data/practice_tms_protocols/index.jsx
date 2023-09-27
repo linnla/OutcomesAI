@@ -89,7 +89,7 @@ export default function PracticeTMSProtocolsGrid() {
   // Generate an id key for the datagrid to use
   useEffect(() => {
     setLoading(true);
-    getData(table)
+    getData(table, { practice_id: practiceId })
       .then((data) => {
         console.log('data:', data);
         const sortedItems = sortItems(data, sort_1, sort_2);

@@ -200,7 +200,7 @@ export default function OfficesGrid() {
 
   async function deleteRow(id, row, oldRows) {
     const episodeExists = await episodesOfCareExists(row);
-    if (!episodeExists) {
+    if (episodeExists) {
       const errorMessage = `The ${row.name} office has treated patients and cannot be deleted.\nSet the status to Inactive to hide the Office.`;
       throw errorMessage;
     }

@@ -56,7 +56,6 @@ class Office(ModelBase):
         "state",
         "state_code",
         "county",
-        "country",
         "country_code",
     ]
     update_required_fields = ["id"]
@@ -69,7 +68,6 @@ class Office(ModelBase):
         "state",
         "state_code",
         "county",
-        "country",
         "country_code",
         "status",
     ]

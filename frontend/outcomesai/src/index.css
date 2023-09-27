@@ -34,7 +34,7 @@ body,
   background: #555;
 }
 
-.wrapText {
+.wrapWord {
   white-space: normal !important;
   overflow: hidden;
   text-overflow: clip;

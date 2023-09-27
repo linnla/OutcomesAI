@@ -44,14 +44,6 @@ class EpisodeOfCare(ModelBase):
         patient_full_name = f"{patient['first_name']} {patient['last_name']}"
         office = self.office.to_dict()
         practitioner = self.practitioner.to_dict()
-        practitioner_full_name = ""
-        if practitioner["prefix"] is not None:
-            practitioner_full_name += practitioner["prefix"] + " "
-        practitioner_full_name += (
-            practitioner["first_name"] + " " + practitioner["last_name"]
-        )
-        if practitioner["suffix"] is not None:
-            practitioner_full_name += ", " + practitioner["suffix"]
         start_date = self.start_date.strftime("%Y-%m-%d")
         if self.end_date is not None:
             end_date = self.end_date.strftime("%Y-%m-%d")
@@ -68,7 +60,7 @@ class EpisodeOfCare(ModelBase):
             "office_id": self.office_id,
             "office_name": office["name"],
             "practitioner_id": self.practitioner_id,
-            "practitioner_full_name": practitioner_full_name,
+            "practitioner_full_name": practitioner["full_name"],
             "care_status": self.care_status,
             "start_date": start_date,
             "end_date": end_date,

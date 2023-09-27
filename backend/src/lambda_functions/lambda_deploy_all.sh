@@ -5,20 +5,21 @@ stage="dev"
 transactional_data="transactional_data"
 transactional_directories=("episodes_of_care" "episodes_of_care_diagnosis_codes")
 
+drchrono_data="drchrono_api"
+drchrono_directories=("patient")
+
 master_data="master_data"
-master_directories=("offices" "patient_biomarkers" "patients" "practice_patients" 
+master_directories=("offices" "patient_biomarkers" "patients" "practice_integrations" "practice_patients" 
 "practice_practitioners" "practice_tms_devices" "practice_tms_protocols" "practice_users" 
 "practices" "practitioners" "users")
 
 reference_data="reference_data"
 reference_directories=("acquisition_sources" "active_ingredients" "administration_routes" 
 "appointment_types" "biomarker_types" "biomarkers" "countries" "country_code_utils" 
-"diagnosis_codes" "disorders" "dosage_forms" "dosage_units" "medication_types" 
-"postal_code_utils_us" "postal_codes" "procedure_categories" "procedure_codes" 
+"diagnosis_codes" "disorders" "dosage_forms" "dosage_units" "integration_types" "integration_vendors"
+"medication_types" "postal_code_utils_us" "postal_codes" "procedure_categories" "procedure_codes" 
 "roles" "tms_coils" "tms_devices" "tms_frequencies" "tms_protocols" "tms_pulse_types" 
 "tms_stimulation_sites")
-
-lambda_libs_path="/Users/laurelinn/dev/OutcomesAI/backend/src/lambda_libs"
 
 # Functions
 deploy_directory() {
@@ -62,6 +63,14 @@ cd ..
 cd "$transactional_data" || exit
 echo "Transactional Data Directory: $(pwd)"
 for directory in "${transactional_directories[@]}"; do
+    deploy_directory "$directory"
+done
+cd ..
+
+# drchrono Data
+cd "$drchrono_data" || exit
+echo "drchrono Data Directory: $(pwd)"
+for directory in "${drchrono_directories[@]}"; do
     deploy_directory "$directory"
 done
 cd ..

@@ -64,8 +64,8 @@ export default function PractitionersGrid() {
       editable: true,
       type: 'singleSelect',
       valueOptions: [
-        'MD',
-        'DO',
+        'M.D.',
+        'D.O.',
         'PMHNP',
         'AGNP',
         'ANP',
@@ -254,7 +254,7 @@ export default function PractitionersGrid() {
 
   async function deleteRow(id, row, oldRows) {
     const episodeExists = await episodesOfCareExists(row);
-    if (!episodeExists) {
+    if (episodeExists) {
       let fullName = formatFullName(row);
       const errorMessage = `${fullName} has treated a patient and cannot be deleted.\nSet the status to Inactive to hide the Practitioner.`;
       throw errorMessage;

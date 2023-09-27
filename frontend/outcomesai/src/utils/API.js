@@ -5,6 +5,10 @@ import { HandleTokenError } from './TokenError';
 
 async function makeRequest(method, table, options = {}) {
   const url = `${config.baseUrl}${config.stage}/${table}`;
+  console.log('url:', url);
+  console.log('body:', options.body);
+  console.log('query params:', options.query_params);
+
   const token = await getToken();
   if (token instanceof Error) {
     return <HandleTokenError error={token} />;
@@ -55,7 +59,7 @@ export async function getData(table, query_params) {
 export async function postData(table, body) {
   try {
     const response = await makeRequest('post', table, { body });
-    //console.log('postData:', response);
+    console.log('postData:', response);
     return response;
   } catch (error) {
     console.error('postData error creating data:', error);

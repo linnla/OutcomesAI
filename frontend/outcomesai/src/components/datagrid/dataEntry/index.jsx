@@ -229,6 +229,10 @@ function DataEntry({
           '& .name-column--cell': {
             color: colors.greenAccent[300],
           },
+          '& .wrap-column--cell': {
+            overflowwrap: 'break-all',
+            wordwrap: 'break-all',
+          },
           '& .MuiDataGrid-columnHeaders': {
             backgroundColor: colors.blueAccent[700],
             borderBottom: 'none',
@@ -251,6 +255,7 @@ function DataEntry({
         <DataGridPremium
           rows={internalRows}
           columns={appendedColumns}
+          autoHeight
           editMode='row'
           apiRef={apiRef}
           rowModesModel={rowModesModel}

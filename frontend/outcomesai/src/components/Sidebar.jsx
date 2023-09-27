@@ -39,6 +39,8 @@ import LocalHospitalOutlinedIcon from '@mui/icons-material/LocalHospitalOutlined
 import Diversity3OutlinedIcon from '@mui/icons-material/Diversity3Outlined';
 import BallotOutlinedIcon from '@mui/icons-material/BallotOutlined';
 import PersonSearchOutlinedIcon from '@mui/icons-material/PersonSearchOutlined';
+import IntegrationInstructionsOutlinedIcon from '@mui/icons-material/IntegrationInstructionsOutlined';
+import SettingsSystemDaydreamOutlinedIcon from '@mui/icons-material/SettingsSystemDaydreamOutlined';
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme();
@@ -220,6 +222,13 @@ const Sidebar = () => {
                 selected={selected}
                 setSelected={setSelected}
               />
+              <Item
+                title='EHR Integration'
+                to='/practice/integrations'
+                icon={<SettingsSystemDaydreamOutlinedIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
             </SubMenu>
             <SubMenu prefix='Reference Data'>
               <Typography
@@ -310,6 +319,27 @@ const Sidebar = () => {
                 title='Procedure Codes'
                 to='/reference_data/procedure_codes'
                 icon={<MedicationOutlinedIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
+              <Typography
+                variant='h6'
+                color={colors.grey[300]}
+                sx={{ m: '15px 0 5px 20px' }}
+              >
+                Data Integrations
+              </Typography>
+              <Item
+                title='Integration Types'
+                to='/reference_data/integration_types'
+                icon={<IntegrationInstructionsOutlinedIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
+              <Item
+                title='Integration Vendors'
+                to='/reference_data/integration_vendors'
+                icon={<SettingsSystemDaydreamOutlinedIcon />}
                 selected={selected}
                 setSelected={setSelected}
               />

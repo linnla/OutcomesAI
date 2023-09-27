@@ -38,7 +38,7 @@ export default function TMSPulseTypesGrid() {
       field: 'name',
       headerName: 'Name',
       editable: true,
-      cellClassName: 'wrapText',
+      cellClassName: 'wrapWord',
       width: 200,
     },
     {
@@ -47,7 +47,7 @@ export default function TMSPulseTypesGrid() {
       headerAlign: 'left',
       align: 'left',
       editable: true,
-      cellClassName: 'wrapText',
+      cellClassName: 'wrapWord',
       flex: 1,
     },
     {

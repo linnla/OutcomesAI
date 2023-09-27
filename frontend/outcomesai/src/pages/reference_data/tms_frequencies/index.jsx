@@ -40,7 +40,7 @@ export default function TMSFrequenciesGrid() {
       headerAlign: 'left',
       align: 'left',
       editable: true,
-      cellClassName: 'wrapText',
+      cellClassName: 'wrapWord',
       flex: 1,
     },
     {

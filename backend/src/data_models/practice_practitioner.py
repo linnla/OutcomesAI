@@ -32,15 +32,14 @@ class PracticePractitioner(ModelBase):
         updated = self.updated_at.strftime("%Y-%m-%d %H:%M")
         practice = self.practice.to_dict()
         practitioner = self.practitioner.to_dict()
-        full_name = f"{practitioner['prefix']} {practitioner['first_name']} {practitioner['last_name']} {practitioner['suffix']}"
 
         return {
             "practice_id": self.practice_id,
             "id": self.practitioner_id,
-            "ehr_id": self.practitioner_ehr_id,
+            "ehr_id": self.ehr_id,
             "status": self.status,
             "practice_name": practice["name"],
-            "full_name": full_name,
+            "full_name": practitioner["full_name"],
             "last_name": practitioner["last_name"],
             "first_name": practitioner["first_name"],
             "prefix": practitioner["prefix"],

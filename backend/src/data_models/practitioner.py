@@ -20,9 +20,19 @@ class Practitioner(ModelBase):
         created = self.created_at.strftime("%Y-%m-%d %H:%M")
         updated = self.updated_at.strftime("%Y-%m-%d %H:%M")
 
+        full_name = ""
+        if self.prefix and self.prefix.strip() != "":
+            full_name += self.prefix + " "
+
+        full_name += f"{self.first_name} {self.last_name}"
+
+        if self.suffix and self.suffix.strip() != "":
+            full_name += ", " + self.suffix
+
         return {
             "id": self.id,
             "user_id": self.user_id,
+            "full_name": full_name,
             "last_name": self.last_name,
             "first_name": self.first_name,
             "prefix": self.prefix,

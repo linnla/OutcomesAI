@@ -18,11 +18,14 @@ from .dosage_form import DosageForm
 from .dosage_unit import DosageUnit
 from .episode_of_care import EpisodeOfCare
 from .episode_of_care_diagnosis_codes import EpisodeOfCareDiagnosisCode
+from .integration_type import IntegrationType
+from .integration_vendor import IntegrationVendor
 from .medication_type import MedicationType
 from .office import Office
 from .patient_biomarker import PatientBiomarker
 from .patient import Patient
 from .postal_code import PostalCode
+from .practice_integration import PracticeIntegration
 from .practice_medication import PracticeMedications
 from .practice_patient import PracticePatient
 from .practice_practitioner import PracticePractitioner

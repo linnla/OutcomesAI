@@ -24,6 +24,7 @@ import PracticeTMSDevicesGrid from './pages/master_data/practice_tms_devices';
 import PracticeTMSProtocolsGrid from './pages/master_data/practice_tms_protocols';
 import UsersGrid from './pages/master_data/users';
 import PatientSearch from './pages/patientSearch';
+import PracticeIntegrationsGrid from './pages/master_data/practice_integrations';
 
 // Reference Data
 import ActiveIngredientsGrid from './pages/reference_data/active_ingredients';
@@ -33,6 +34,8 @@ import DosageFormsGrid from './pages/reference_data/dosage_forms';
 import DosageUnitsGrid from './pages/reference_data/dosage_units';
 import MedicationTypesGrid from './pages/reference_data/medication_types';
 
+import IntegrationTypesGrid from './pages/reference_data/integration_types';
+import IntegrationVendorsGrid from './pages/reference_data/integration_vendors';
 import DiagnosisCodesGrid from './pages/reference_data/diagnosis_codes';
 import DisordersGrid from './pages/reference_data/disorders';
 
@@ -139,10 +142,26 @@ function App() {
           }
         />
         <Route
+          path='/practice/integrations'
+          element={
+            <RequireAuth>
+              <PracticeIntegrationsGrid />
+            </RequireAuth>
+          }
+        />
+        <Route
           path='/practice/practitioners'
           element={
             <RequireAuth>
               <PractitionersGrid />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path='/practice/patients'
+          element={
+            <RequireAuth>
+              <PatientsGrid />
             </RequireAuth>
           }
         />
@@ -191,6 +210,22 @@ function App() {
           element={
             <RequireAuth>
               <ActiveIngredientsGrid />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path='/reference_data/integration_types'
+          element={
+            <RequireAuth>
+              <IntegrationTypesGrid />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path='/reference_data/integration_vendors'
+          element={
+            <RequireAuth>
+              <IntegrationVendorsGrid />
             </RequireAuth>
           }
         />

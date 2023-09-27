@@ -123,7 +123,7 @@ export default function DiagnosisCodesGrid() {
       field: 'description',
       headerName: 'Description',
       editable: true,
-      cellClassName: 'wrapText',
+      cellClassName: 'wrapWord',
       flex: 1,
     },
     {

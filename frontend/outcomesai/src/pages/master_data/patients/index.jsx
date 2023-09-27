@@ -35,7 +35,6 @@ export default function PatientsGrid() {
   const requiredAttributes = [
     'last_name',
     'first_name',
-    'ehr_id',
     'email',
     'postal_code',
     'gender',
@@ -45,7 +44,6 @@ export default function PatientsGrid() {
   const attributeNames = [
     'Last Name',
     'First Name',
-    'EHR ID',
     'Email',
     'Postal Code',
     'Birth Gender',
@@ -72,6 +70,12 @@ export default function PatientsGrid() {
     {
       field: 'ehr_id',
       headerName: 'EHR ID',
+      editable: true,
+      flex: 1,
+    },
+    {
+      field: 'chart_id',
+      headerName: 'Chart ID',
       editable: true,
       flex: 1,
     },
@@ -124,19 +128,6 @@ export default function PatientsGrid() {
       editable: true,
     },
     {
-      field: 'city',
-      headerName: 'City',
-      headerAlign: 'center',
-      align: 'center',
-      flex: 1,
-    },
-    {
-      field: 'state',
-      headerName: 'State',
-      headerAlign: 'center',
-      align: 'center',
-    },
-    {
       field: 'status',
       headerName: 'Status',
       editable: true,
@@ -154,6 +145,7 @@ export default function PatientsGrid() {
       id: newId,
       last_name: '',
       first_name: '',
+      ehr_id: '',
       email: '',
       birthdate: '',
       gender: '',
@@ -283,7 +275,7 @@ export default function PatientsGrid() {
 
   async function deleteRow(id, row, oldRows) {
     const episodeExists = await episodesOfCareExists(row);
-    if (!episodeExists) {
+    if (episodeExists) {
       let fullName = `${row.first_name} ${row.last_name}`;
       const errorMessage = `${fullName} has an episode of care and cannot be deleted.\nSet the status to Inactive to hide the Patient.`;
       throw errorMessage;

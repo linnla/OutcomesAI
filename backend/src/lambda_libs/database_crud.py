@@ -151,7 +151,7 @@ def create(event, entity_class, required_fields, allowed_fields):
         error_message = f"InvalidJSON: {event['body']} is not valid JSON, {str(e)}."
         return create_error_response(error_message)
     except Exception as e:
-        error_message = f"Unexpected error occurred: {str(e)}"
+        error_message = f"Unexpected error occurred: {str(e), {request_body}}"
         return create_error_response(error_message)
 
     validation_error = validate_request_body(
@@ -192,7 +192,7 @@ def create(event, entity_class, required_fields, allowed_fields):
 def update(event, entity_class, required_fields, allowed_fields, non_null_fields):
     try:
         request_body = loads(event["body"])
-        print(request_body)
+        print("database_crud", request_body)
     except JSONDecodeError as e:
         error_message = f"InvalidJSON: {event['body']} is not valid JSON, {str(e)}."
         return create_error_response(error_message)
@@ -209,7 +209,7 @@ def update(event, entity_class, required_fields, allowed_fields, non_null_fields
     found_update_fields = [field for field in allowed_fields if field in request_body]
     if not found_update_fields:
         error_message = (
-            f"MissingUpdateField: No fields found in request body to update."
+            f"MissingUpdateField: No fields found in {request_body} to update."
         )
         return create_error_response(error_message)
 

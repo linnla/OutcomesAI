@@ -12,12 +12,13 @@ import UserContext from '../../contexts/UserContext';
 import { createErrorMessage } from '../../utils/ErrorMessage';
 import ErrorModal from '../../utils/ErrorModal';
 import { tokens } from '../../theme';
-import { getData } from '../../utils/API';
 import { parseUTCDate, formatDateToMMDDYYYY } from '../../utils/DateUtils';
-import { Link } from 'react-router-dom';
+import { getData } from '../../utils/API';
 
 function PatientSearch({ defaultPageSize, ...props }) {
   const { role, practiceId } = useContext(UserContext);
+  const ehrIntegration = true;
+
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
@@ -28,6 +29,25 @@ function PatientSearch({ defaultPageSize, ...props }) {
   const table = 'practice_patients';
   const sort_1 = 'last_name';
   const sort_2 = 'first_name';
+
+  const requiredAttributes = [
+    'last_name',
+    'first_name',
+    'email',
+    'postal_code',
+    'gender',
+    'birthdate',
+    'status',
+  ];
+  const attributeNames = [
+    'Last Name',
+    'First Name',
+    'Email',
+    'Postal Code',
+    'Birth Gender',
+    'Birth Date',
+    'Status',
+  ];
 
   const [rows, setRawRows] = useState([]);
   const [errorType, setErrorType] = useState('');
@@ -97,6 +117,12 @@ function PatientSearch({ defaultPageSize, ...props }) {
     {
       field: 'first_name',
       headerName: 'First',
+      cellClassName: 'name-column--cell',
+      flex: 1,
+    },
+    {
+      field: 'chart_id',
+      headerName: 'Chart ID',
       cellClassName: 'name-column--cell',
       flex: 1,
     },
@@ -203,11 +229,12 @@ function PatientSearch({ defaultPageSize, ...props }) {
           columns={columns}
           onRowClick={handleRowClick}
           slots={{
-            toolbar: DefaultToolbar,
+            toolbar: ehrIntegration ? DefaultToolbar : undefined, // Conditionally render DefaultToolbar
           }}
           slotProps={{
             toolbar: {
               columns,
+              ehrIntegration, // Pass ehrIntegration as a prop to DefaultToolbar
             },
           }}
           //pagination

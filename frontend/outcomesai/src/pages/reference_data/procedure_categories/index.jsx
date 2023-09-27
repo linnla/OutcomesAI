@@ -40,7 +40,7 @@ export default function ProcedureCategoriesGrid() {
       headerAlign: 'left',
       align: 'left',
       editable: true,
-      cellClassName: 'wrapText',
+      cellClassName: 'wrapWord',
       flex: 1,
     },
     {
