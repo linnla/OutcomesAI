@@ -11,6 +11,13 @@
   padding: 20px;
 }
 
+.dialogTitle {
+  background-color: var(
+    --primary-color
+  ); /* Use the primary color from the root */
+  padding: 20px;
+}
+
 .textField {
   background-color: var(
     --primary-color

@@ -44,6 +44,7 @@ function DefaultToolbar(props) {
       <SearchPatientDialog
         open={openDialog}
         onClose={handleCloseDialog}
+        reset={openDialog}
         rows={rows} // Pass the rows state as a prop
         setRows={setRows} // Pass the setRows function as a prop
       />

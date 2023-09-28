@@ -1,9 +1,12 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import Button from '@mui/material/Button';
 import AddIcon from '@mui/icons-material/Add';
+import IconButton from '@mui/material/IconButton';
+import CloseIcon from '@mui/icons-material/Close';
 import CheckOutlinedIcon from '@mui/icons-material/CheckOutlined';
 import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
 import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
 import { useTheme } from '@mui/material';
@@ -12,10 +15,21 @@ import '../../styles/styles.css';
 import { getDrchronoData, getOne, postData } from '../../utils/API';
 import UserContext from '../../contexts/UserContext';
 
-export function SearchPatientDialog({ open, onClose }) {
+export function SearchPatientDialog({ open, onClose, reset }) {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const { role, practiceId } = useContext(UserContext);
+
+  useEffect(() => {
+    setChartID('');
+    setLastName('');
+    setFirstName('');
+    setSearchAttempted(false);
+    setIsSearching(false);
+    setAddSuccessStates([]);
+    setSavingStates([]);
+    setPatientData([]);
+  }, []);
 
   // Dynamically set the --primary-color variable
   document.documentElement.style.setProperty(
@@ -34,9 +48,19 @@ export function SearchPatientDialog({ open, onClose }) {
   const [addSuccessStates, setAddSuccessStates] = useState([]);
 
   // Initialize an array to track the when patient is in adding state
-  const [addingStates, setAddingStates] = useState([]);
-
+  const [savingStates, setSavingStates] = useState([]);
   const [patientData, setPatientData] = useState([]); // State for patient data
+
+  useEffect(() => {
+    setChartID('');
+    setLastName('');
+    setFirstName('');
+    setSearchAttempted(false);
+    setIsSearching(false);
+    setAddSuccessStates([]);
+    setSavingStates([]);
+    setPatientData([]);
+  }, [reset]);
 
   const handleLastNameChange = (event) => {
     setLastName(event.target.value);
@@ -112,13 +136,13 @@ export function SearchPatientDialog({ open, onClose }) {
   // Function to add a patient
   const handleAddPatient = async (patient, index) => {
     // You can perform the add action here using patient data
-    console.log('Adding patient:', patient);
+    console.log('Saving patient:', patient);
 
     // This disables the add button and prevents user from repetitively
     // clicking the add button while the post operation is in progress
-    const updatedAddingStates = [...addingStates];
-    updatedAddingStates[index] = true;
-    setAddingStates(updatedAddingStates);
+    const updatedSavingStates = [...savingStates];
+    updatedSavingStates[index] = true;
+    setSavingStates(updatedSavingStates);
 
     if (patient['date_of_birth']) {
       patient.birthdate = patient['date_of_birth'];
@@ -171,7 +195,7 @@ export function SearchPatientDialog({ open, onClose }) {
     }
 
     try {
-      console.log('Adding patient:', patient);
+      console.log('Saving patient:', patient);
       const data = await postData('patients', patient);
 
       const updatedSuccessStates = [...addSuccessStates];
@@ -180,283 +204,299 @@ export function SearchPatientDialog({ open, onClose }) {
     } catch (error) {
       console.error(error);
     } finally {
-      const updatedAddingStates = [...addingStates];
-      updatedAddingStates[index] = false;
-      setAddingStates(updatedAddingStates);
+      const updatedSavingStates = [...savingStates];
+      updatedSavingStates[index] = false;
+      setSavingStates(updatedSavingStates);
     }
   };
 
   return (
     <Dialog open={open} onClose={onClose}>
-      <DialogContent className='dialogContent'>
-        <Box>
-          <div
-            style={{
-              fontSize: '24px',
-              fontWeight: 'bold',
-              color: colors.grey[200],
-              marginBottom: '10px',
-            }}
-          >
-            Search by Patient Name or DrChrono Chart ID
-          </div>
-        </Box>
-        <div style={{ display: 'flex', gap: '10px' }}>
-          <TextField
-            sx={{
-              backgroundColor: colors.grey[100],
-              fontSize: '20px',
-              fontWeight: 'bold',
-              marginRight: '0', // Remove right margin
-            }}
-            fullWidth
-            variant='filled'
-            type='text'
-            label='Last Name'
-            name='last_name'
-            value={lastName}
-            onChange={handleLastNameChange}
-            InputProps={{
-              style: {
-                color: colors.grey[500], // Change the text color here
-              },
-              inputProps: {
-                style: {
-                  fontSize: '16px',
-                  fontWeight: 'bold',
-                  color: colors.grey[800], // Change the input text color specifically for this input
-                },
-              },
-            }}
-            InputLabelProps={{
-              style: {
-                fontWeight: 'bold',
-                color: colors.grey[500], // Change the placeholder text color here
-              },
-            }}
-          />
-          <TextField
-            sx={{
-              backgroundColor: colors.grey[100],
-              fontSize: '20px',
-              fontWeight: 'bold',
-              marginRight: '0', // Remove right margin
-            }}
-            fullWidth
-            variant='filled'
-            type='text'
-            label='First Name'
-            name='first_name'
-            value={firstName}
-            onChange={handleFirstNameChange}
-            InputProps={{
-              style: {
-                color: colors.grey[500], // Change the text color here
-              },
-              inputProps: {
-                style: {
-                  fontSize: '16px',
-                  fontWeight: 'bold',
-                  color: colors.grey[800], // Change the input text color specifically for this input
-                },
-              },
-            }}
-            InputLabelProps={{
-              style: {
-                fontWeight: 'bold',
-                color: colors.grey[500], // Change the placeholder text color here
-              },
-            }}
-          />
-          <TextField
-            sx={{
-              backgroundColor: colors.grey[100],
-              fontSize: '20px',
-              fontWeight: 'bold',
-              marginRight: '0', // Remove right margin
-            }}
-            fullWidth
-            variant='filled'
-            type='text'
-            label='Chart ID'
-            name='chart_id'
-            value={chartID}
-            onChange={handleChartIDChange}
-            InputProps={{
-              style: {
-                color: colors.grey[500], // Change the text color here
-              },
-              inputProps: {
-                style: {
-                  fontSize: '16px',
-                  fontWeight: 'bold',
-                  color: colors.grey[800], // Change the input text color specifically for this input
-                },
-              },
-            }}
-            InputLabelProps={{
-              style: {
-                fontWeight: 'bold',
-                color: colors.grey[500], // Change the placeholder text color here
-              },
-            }}
-          />
-        </div>
-        <Button
-          sx={{
-            backgroundColor: colors.blueAccent[700],
-            color: colors.grey[100],
-            fontSize: '14px',
+      <DialogTitle className='dialogTitle'>
+        <div
+          style={{
+            fontSize: '24px',
             fontWeight: 'bold',
-            marginTop: '16px',
-            padding: '10px 20px',
+            color: colors.grey[200],
+            marginBottom: '10px',
           }}
-          variant='contained'
-          onClick={handleSearchClick}
-          disabled={
-            isSearching ||
-            (!searchAttempted &&
-              lastName === '' &&
-              firstName === '' &&
-              chartID === '')
-          }
         >
-          Search
-        </Button>
-        {/* Flashing "searching..." text */}
-        {isSearching && (
-          <span
-            className='flashing-text'
-            style={{
-              color: colors.greenAccent[500], // Access the primary color from the theme
-              marginLeft: '25px',
-              fontSize: '16px',
+          Search by Patient Name or DrChrono Chart ID
+        </div>
+        {/* Close button */}
+        <IconButton
+          edge='end'
+          color='inherit'
+          onClick={onClose} // Call the onClose prop to close the dialog
+          aria-label='close'
+          sx={{
+            position: 'absolute',
+            right: theme.spacing(1),
+            top: theme.spacing(1),
+            marginRight: '5px',
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+        <DialogContent className='dialogContent'>
+          <div style={{ display: 'flex', gap: '10px' }}>
+            <TextField
+              sx={{
+                backgroundColor: colors.grey[100],
+                fontSize: '20px',
+                fontWeight: 'bold',
+                marginRight: '0', // Remove right margin
+              }}
+              fullWidth
+              variant='filled'
+              type='text'
+              label='Last Name'
+              name='last_name'
+              value={lastName}
+              onChange={handleLastNameChange}
+              InputProps={{
+                style: {
+                  color: colors.grey[500], // Change the text color here
+                },
+                inputProps: {
+                  style: {
+                    fontSize: '16px',
+                    fontWeight: 'bold',
+                    color: colors.grey[800], // Change the input text color specifically for this input
+                  },
+                },
+              }}
+              InputLabelProps={{
+                style: {
+                  fontWeight: 'bold',
+                  color: colors.grey[500], // Change the placeholder text color here
+                },
+              }}
+            />
+            <TextField
+              sx={{
+                backgroundColor: colors.grey[100],
+                fontSize: '20px',
+                fontWeight: 'bold',
+                marginRight: '0', // Remove right margin
+              }}
+              fullWidth
+              variant='filled'
+              type='text'
+              label='First Name'
+              name='first_name'
+              value={firstName}
+              onChange={handleFirstNameChange}
+              InputProps={{
+                style: {
+                  color: colors.grey[500], // Change the text color here
+                },
+                inputProps: {
+                  style: {
+                    fontSize: '16px',
+                    fontWeight: 'bold',
+                    color: colors.grey[800], // Change the input text color specifically for this input
+                  },
+                },
+              }}
+              InputLabelProps={{
+                style: {
+                  fontWeight: 'bold',
+                  color: colors.grey[500], // Change the placeholder text color here
+                },
+              }}
+            />
+            <TextField
+              sx={{
+                backgroundColor: colors.grey[100],
+                fontSize: '20px',
+                fontWeight: 'bold',
+                marginRight: '0', // Remove right margin
+              }}
+              fullWidth
+              variant='filled'
+              type='text'
+              label='Chart ID'
+              name='chart_id'
+              value={chartID}
+              onChange={handleChartIDChange}
+              InputProps={{
+                style: {
+                  color: colors.grey[500], // Change the text color here
+                },
+                inputProps: {
+                  style: {
+                    fontSize: '16px',
+                    fontWeight: 'bold',
+                    color: colors.grey[800], // Change the input text color specifically for this input
+                  },
+                },
+              }}
+              InputLabelProps={{
+                style: {
+                  fontWeight: 'bold',
+                  color: colors.grey[500], // Change the placeholder text color here
+                },
+              }}
+            />
+          </div>
+          <Button
+            sx={{
+              backgroundColor: colors.blueAccent[700],
+              color: colors.grey[100],
+              fontSize: '14px',
               fontWeight: 'bold',
+              marginTop: '16px',
+              padding: '10px 20px',
             }}
+            variant='contained'
+            onClick={handleSearchClick}
+            disabled={
+              isSearching ||
+              (!searchAttempted &&
+                lastName === '' &&
+                firstName === '' &&
+                chartID === '')
+            }
           >
-            Searching...
-          </span>
-        )}
-        {/* No data found message */}
-        {searchAttempted && patientData.length === 0 && (
-          <span
-            style={{
-              color: colors.redAccent[500],
-              marginLeft: '25px',
-              fontSize: '16px',
-              fontWeight: 'bold',
-            }}
-          >
-            No patient found with the provided details
-          </span>
-        )}
-        {/* Search returned more than 100 rows */}
-        {searchAttempted && patientData.length > 100 && (
-          <span
-            style={{
-              color: colors.redAccent[500], // Change this to any appropriate color from your theme
-              marginLeft: '25px',
-              fontSize: '16px',
-              fontWeight: 'bold',
-            }}
-          >
-            Too many results found --- narrow down your search
-          </span>
-        )}
-        {/* Search returned number of rows */}
-        {searchAttempted &&
-          patientData.length > 0 &&
-          patientData.length <= 100 && (
+            Search
+          </Button>
+          {/* Flashing "searching..." text */}
+          {isSearching && (
             <span
+              className='flashing-text'
               style={{
-                color: colors.greenAccent[500],
+                color: colors.greenAccent[500], // Access the primary color from the theme
                 marginLeft: '25px',
                 fontSize: '16px',
                 fontWeight: 'bold',
               }}
             >
-              {patientData.length}{' '}
-              {patientData.length === 1 ? 'result' : 'results'} found
+              Searching...
             </span>
           )}
-
-        <div>
-          <h2>Patient Data</h2>
-          {patientData.map((patient, index) => (
-            <div
-              key={index}
+          {/* No data found message */}
+          {searchAttempted && patientData.length === 0 && (
+            <span
               style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '10px',
-                marginBottom: '10px',
+                color: colors.redAccent[500],
+                marginLeft: '25px',
+                fontSize: '16px',
+                fontWeight: 'bold',
               }}
             >
-              <TextField
-                label='Last Name'
-                fullWidth
-                variant='filled'
-                value={patient.last_name}
-                InputProps={{
-                  readOnly: true,
-                  style: {
-                    backgroundColor: colors.primary[400], // Background color same as search text fields
-                    marginRight: '0', // Remove right margin
-                  },
-                }}
-              />
-              <TextField
-                label='First Name'
-                fullWidth
-                variant='filled'
-                value={patient.first_name}
-                InputProps={{
-                  readOnly: true,
-                  style: {
-                    backgroundColor: colors.primary[400], // Background color same as search text fields
-                    marginRight: '0', // Remove right margin
-                  },
-                }}
-              />
-              <TextField
-                label='Date of Birth'
-                fullWidth
-                variant='filled'
-                value={patient.date_of_birth}
-                InputProps={{
-                  readOnly: true,
-                  style: {
-                    backgroundColor: colors.primary[400], // Background color same as search text fields
-                  },
-                }}
-              />
-              <Button
-                sx={{
-                  backgroundColor: addSuccessStates[index]
-                    ? colors.green
-                    : colors.greenAccent[700],
-                  color: colors.grey[100],
-                  fontSize: '14px',
+              No patient found with the provided details
+            </span>
+          )}
+          {/* Search returned more than 100 rows */}
+          {searchAttempted && patientData.length > 100 && (
+            <span
+              style={{
+                color: colors.redAccent[500], // Change this to any appropriate color from your theme
+                marginLeft: '25px',
+                fontSize: '16px',
+                fontWeight: 'bold',
+              }}
+            >
+              Too many results found --- narrow down your search
+            </span>
+          )}
+          {/* Search returned number of rows */}
+          {searchAttempted &&
+            patientData.length > 0 &&
+            patientData.length <= 100 && (
+              <span
+                style={{
+                  color: colors.greenAccent[500],
+                  marginLeft: '25px',
+                  fontSize: '16px',
                   fontWeight: 'bold',
-                  marginTop: '16px',
-                  minWidth: '100px',
-                  padding: '5px 10px',
                 }}
-                variant='contained'
-                onClick={() => handleAddPatient(patient, index)} // Pass the index to identify which button was pressed
-                startIcon={addSuccessStates[index] && <CheckOutlinedIcon />} // Add the check icon when addSuccessStates[index] is true
-                disabled={addingStates[index] || addSuccessStates[index]} // Disable the button while patient is being created or has been added
               >
-                {addingStates[index]
-                  ? 'Adding...'
-                  : addSuccessStates[index]
-                  ? 'Added'
-                  : 'Add'}
-              </Button>
+                {patientData.length}{' '}
+                {patientData.length === 1 ? 'result' : 'results'} found
+              </span>
+            )}
+          {patientData.length > 0 && (
+            <div>
+              <h2>Patient Data</h2>
+              {patientData.map((patient, index) => (
+                <div
+                  key={index}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '10px',
+                    marginBottom: '10px',
+                  }}
+                >
+                  <TextField
+                    label='Last Name'
+                    fullWidth
+                    variant='filled'
+                    value={patient.last_name}
+                    InputProps={{
+                      readOnly: true,
+                      style: {
+                        backgroundColor: colors.primary[400], // Background color same as search text fields
+                        marginRight: '0', // Remove right margin
+                      },
+                    }}
+                  />
+                  <TextField
+                    label='First Name'
+                    fullWidth
+                    variant='filled'
+                    value={patient.first_name}
+                    InputProps={{
+                      readOnly: true,
+                      style: {
+                        backgroundColor: colors.primary[400], // Background color same as search text fields
+                        marginRight: '0', // Remove right margin
+                      },
+                    }}
+                  />
+                  <TextField
+                    label='Date of Birth'
+                    fullWidth
+                    variant='filled'
+                    value={patient.date_of_birth}
+                    InputProps={{
+                      readOnly: true,
+                      style: {
+                        backgroundColor: colors.primary[400], // Background color same as search text fields
+                      },
+                    }}
+                  />
+                  <Button
+                    sx={{
+                      backgroundColor: addSuccessStates[index]
+                        ? colors.green
+                        : colors.greenAccent[700],
+                      color: colors.grey[100],
+                      fontSize: '14px',
+                      fontWeight: 'bold',
+                      marginTop: '16px',
+                      minWidth: '100px',
+                      padding: '5px 10px',
+                    }}
+                    variant='contained'
+                    onClick={() => handleAddPatient(patient, index)} // Pass the index to identify which button was pressed
+                    startIcon={addSuccessStates[index] && <CheckOutlinedIcon />} // Add the check icon when addSuccessStates[index] is true
+                    disabled={savingStates[index] || addSuccessStates[index]} // Disable the button while patient is being created or has been added
+                  >
+                    {savingStates[index]
+                      ? 'Adding...'
+                      : addSuccessStates[index]
+                      ? 'Added'
+                      : 'Add'}
+                  </Button>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
-      </DialogContent>
+          )}
+        </DialogContent>
+      </DialogTitle>
     </Dialog>
   );
 }
