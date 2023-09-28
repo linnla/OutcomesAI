@@ -49,6 +49,11 @@ function PatientSearch({ defaultPageSize, ...props }) {
   };
 
   useEffect(() => {
+    if (!practiceId || practiceId === '') {
+      // Exit early if practiceId is empty or falsy
+      return;
+    }
+
     setLoading(true);
     if (typeof practiceId === 'string') {
       console.log('practiceId is a string:', practiceId);
@@ -224,6 +229,7 @@ function PatientSearch({ defaultPageSize, ...props }) {
           slotProps={{
             toolbar: {
               columns,
+              rows,
               ehrIntegration, // Pass ehrIntegration as a prop to DefaultToolbar
             },
           }}

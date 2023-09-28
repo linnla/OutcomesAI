@@ -98,6 +98,11 @@ export default function PracticeTMSDevicesGrid() {
   // The table has multiple foriegn keys that generate the primary key,
   // Generate an id key for the datagrid to use
   useEffect(() => {
+    if (!practiceId || practiceId === '') {
+      // Exit early if practiceId is empty or falsy
+      return;
+    }
+
     setLoading(true);
     getData(table, { practice_id: practiceId })
       .then((data) => {

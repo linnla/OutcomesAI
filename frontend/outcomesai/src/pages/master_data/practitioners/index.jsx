@@ -135,6 +135,11 @@ export default function PractitionersGrid() {
   };
 
   useEffect(() => {
+    if (!practiceId || practiceId === '') {
+      // Exit early if practiceId is empty or falsy
+      return;
+    }
+
     setLoading(true);
     getData(relatedTable, { practice_id: practiceId })
       .then((data) => {

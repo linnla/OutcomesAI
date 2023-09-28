@@ -15,7 +15,7 @@ import '../../styles/styles.css';
 import { getDrchronoData, getOne, postData } from '../../utils/API';
 import UserContext from '../../contexts/UserContext';
 
-export function SearchPatientDialog({ open, onClose, reset }) {
+export function SearchPatientDialog({ open, onClose, reset, rows }) {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const { role, practiceId } = useContext(UserContext);
@@ -79,6 +79,7 @@ export function SearchPatientDialog({ open, onClose, reset }) {
   };
 
   async function drchronoPatient(fields) {
+    console.log('SearchPatientDialog rows:', rows);
     try {
       const response = await getDrchronoData('drchrono_patient', fields);
       if (Array.isArray(response)) {
@@ -88,7 +89,32 @@ export function SearchPatientDialog({ open, onClose, reset }) {
 
           return fullNameA.localeCompare(fullNameB);
         });
+
+        // Loop through sortedPatientData and if one of the patients is already in the datagrid
+        const updatedSuccessStates = [...addSuccessStates];
+        console.log('sorted drchrono patients:', sortedPatientData);
+        sortedPatientData.forEach((obj1, index1) => {
+          // Check if there's a matching object in array2
+          const matchingObj2 = rows.find((obj2) => obj1.id === obj2.ehr_id);
+
+          // Log the values for debugging
+          console.log('obj1.ehr_id:', obj1.ehr_id);
+          console.log(
+            'obj2.id:',
+            matchingObj2 ? matchingObj2.id : 'No match found'
+          );
+
+          if (matchingObj2) {
+            // If a match is found, set the corresponding index in updatedSuccessStates to true
+            updatedSuccessStates[index1] = true;
+            console.log('matched object:', matchingObj2);
+          }
+        });
+
+        //const updatedSuccessStates = [...addSuccessStates];
+        //updatedSuccessStates[index] = true;
         setPatientData(sortedPatientData);
+        setAddSuccessStates(updatedSuccessStates);
       } else {
         setPatientData([]);
         setLastName(''); // Reset last name field
@@ -104,6 +130,7 @@ export function SearchPatientDialog({ open, onClose, reset }) {
 
   const handleSearchClick = async () => {
     console.log('handleClickSearch:', lastName, firstName);
+    setPatientData([]);
     setSearchAttempted(false);
     setIsSearching(true);
     let fields = {};
@@ -211,7 +238,7 @@ export function SearchPatientDialog({ open, onClose, reset }) {
   };
 
   return (
-    <Dialog open={open} onClose={onClose}>
+    <Dialog open={open} onClose={onClose} maxWidth='lg'>
       <DialogTitle className='dialogTitle'>
         <div
           style={{
@@ -438,8 +465,8 @@ export function SearchPatientDialog({ open, onClose, reset }) {
                     InputProps={{
                       readOnly: true,
                       style: {
-                        backgroundColor: colors.primary[400], // Background color same as search text fields
-                        marginRight: '0', // Remove right margin
+                        backgroundColor: colors.primary[400],
+                        marginRight: '0',
                       },
                     }}
                   />
@@ -451,8 +478,8 @@ export function SearchPatientDialog({ open, onClose, reset }) {
                     InputProps={{
                       readOnly: true,
                       style: {
-                        backgroundColor: colors.primary[400], // Background color same as search text fields
-                        marginRight: '0', // Remove right margin
+                        backgroundColor: colors.primary[400],
+                        marginRight: '0',
                       },
                     }}
                   />
@@ -464,7 +491,7 @@ export function SearchPatientDialog({ open, onClose, reset }) {
                     InputProps={{
                       readOnly: true,
                       style: {
-                        backgroundColor: colors.primary[400], // Background color same as search text fields
+                        backgroundColor: colors.primary[400],
                       },
                     }}
                   />
@@ -481,9 +508,9 @@ export function SearchPatientDialog({ open, onClose, reset }) {
                       padding: '5px 10px',
                     }}
                     variant='contained'
-                    onClick={() => handleAddPatient(patient, index)} // Pass the index to identify which button was pressed
-                    startIcon={addSuccessStates[index] && <CheckOutlinedIcon />} // Add the check icon when addSuccessStates[index] is true
-                    disabled={savingStates[index] || addSuccessStates[index]} // Disable the button while patient is being created or has been added
+                    onClick={() => handleAddPatient(patient, index)}
+                    startIcon={addSuccessStates[index] && <CheckOutlinedIcon />}
+                    disabled={savingStates[index] || addSuccessStates[index]}
                   >
                     {savingStates[index]
                       ? 'Adding...'

@@ -115,6 +115,11 @@ export default function OfficesGrid() {
   };
 
   useEffect(() => {
+    if (!practiceId || practiceId === '') {
+      // Exit early if practiceId is empty or falsy
+      return;
+    }
+
     setLoading(true);
     getData(table, { practice_id: practiceId })
       .then((data) => {

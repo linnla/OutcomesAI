@@ -68,6 +68,11 @@ export default function PracticeIntegrationsGrid() {
   };
 
   useEffect(() => {
+    if (!practiceId || practiceId === '') {
+      // Exit early if practiceId is empty or falsy
+      return;
+    }
+
     setLoading(true);
     console.log('practiceId:', practiceId);
     getData(table, { practice_id: practiceId })
