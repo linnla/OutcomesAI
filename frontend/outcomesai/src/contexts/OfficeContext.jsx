@@ -2,7 +2,24 @@ import { createContext, useState, useContext, useEffect, useRef } from 'react';
 import CallApiPromise from '../api/CallApi';
 import UserContext from './UserContext';
 
-const OfficeContext = createContext();
+const staticDefaultOffice = {
+  id: '',
+  ehr_id: '',
+  practice_id: '',
+  name: '',
+  virtual: '',
+  postal_code: '',
+  city: '',
+  state: '',
+  county: '',
+  state_code: '',
+  country_code: '',
+  status: '',
+  created_at: '',
+  updated_at: '',
+};
+
+const OfficeContext = createContext(staticDefaultOffice);
 
 function OfficeProvider({ children }) {
   const { practiceId } = useContext(UserContext);
@@ -39,7 +56,7 @@ function OfficeProvider({ children }) {
   };
   */
 
-  const fetchAll = async (practiceId) => {
+  const fetchAllOffices = async (practiceId) => {
     // Exit if practiceId is undefined, already fetching, or data for this practiceId was fetched
     if (
       !practiceId ||
@@ -74,12 +91,12 @@ function OfficeProvider({ children }) {
   useEffect(() => {
     if (practiceId) {
       // Only fetch if practiceId is available
-      fetchAll(practiceId);
+      fetchAllOffices(practiceId);
     }
   }, [practiceId]);
 
   return (
-    <OfficeContext.Provider value={{ offices, fetchAll }}>
+    <OfficeContext.Provider value={{ offices, fetchAllOffices }}>
       {children}
     </OfficeContext.Provider>
   );

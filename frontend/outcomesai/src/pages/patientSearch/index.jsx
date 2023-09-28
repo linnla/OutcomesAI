@@ -8,15 +8,16 @@ import Header from '../../components/Header';
 import { useTheme } from '@mui/material';
 import React from 'react';
 import DefaultToolbar from './DefaultToolbar.jsx';
-import UserContext from '../../contexts/UserContext';
 import { createErrorMessage } from '../../utils/ErrorMessage';
 import ErrorModal from '../../utils/ErrorModal';
 import { tokens } from '../../theme';
 import { parseUTCDate, formatDateToMMDDYYYY } from '../../utils/DateUtils';
 import { getData } from '../../utils/API';
+import UserContext from '../../contexts/UserContext';
 
 function PatientSearch({ defaultPageSize, ...props }) {
   const { role, practiceId } = useContext(UserContext);
+
   const ehrIntegration = true;
 
   const theme = useTheme();

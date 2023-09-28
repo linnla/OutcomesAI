@@ -1,6 +1,7 @@
 import React, { useState, useContext } from 'react';
 import Button from '@mui/material/Button';
 import AddIcon from '@mui/icons-material/Add';
+import CheckOutlinedIcon from '@mui/icons-material/CheckOutlined';
 import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
 import TextField from '@mui/material/TextField';
@@ -29,6 +30,12 @@ export function SearchPatientDialog({ open, onClose }) {
   const [searchAttempted, setSearchAttempted] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
 
+  // Initialize an array to track the success state for each patient
+  const [addSuccessStates, setAddSuccessStates] = useState([]);
+
+  // Initialize an array to track the when patient is in adding state
+  const [addingStates, setAddingStates] = useState([]);
+
   const [patientData, setPatientData] = useState([]); // State for patient data
 
   const handleLastNameChange = (event) => {
@@ -51,7 +58,13 @@ export function SearchPatientDialog({ open, onClose }) {
     try {
       const response = await getDrchronoData('drchrono_patient', fields);
       if (Array.isArray(response)) {
-        setPatientData(response);
+        const sortedPatientData = [...response].sort((a, b) => {
+          const fullNameA = a.last_name + a.first_name;
+          const fullNameB = b.last_name + b.first_name;
+
+          return fullNameA.localeCompare(fullNameB);
+        });
+        setPatientData(sortedPatientData);
       } else {
         setPatientData([]);
         setLastName(''); // Reset last name field
@@ -97,9 +110,15 @@ export function SearchPatientDialog({ open, onClose }) {
   };
 
   // Function to add a patient
-  const handleAddPatient = async (patient) => {
+  const handleAddPatient = async (patient, index) => {
     // You can perform the add action here using patient data
     console.log('Adding patient:', patient);
+
+    // This disables the add button and prevents user from repetitively
+    // clicking the add button while the post operation is in progress
+    const updatedAddingStates = [...addingStates];
+    updatedAddingStates[index] = true;
+    setAddingStates(updatedAddingStates);
 
     if (patient['date_of_birth']) {
       patient.birthdate = patient['date_of_birth'];
@@ -112,6 +131,20 @@ export function SearchPatientDialog({ open, onClose }) {
         patient.gender_birth = 'F';
       }
     } // Added closing brace for the first if
+
+    if (patient['race']) {
+      //const inputString = "blank,white,other";
+      const arrayOfWords = patient['race'].split(',');
+
+      // Use the filter method to remove the 'blank' element
+      const filteredArray = arrayOfWords.filter(
+        (word) => word.trim() !== 'blank'
+      );
+
+      // Use the join method to join the remaining elements with a comma
+      const resultString = filteredArray.join(',');
+      patient['race'] = resultString;
+    }
 
     if (patient['zip_code']) {
       patient.postal_code = patient['zip_code'];
@@ -129,6 +162,7 @@ export function SearchPatientDialog({ open, onClose }) {
       }
     } // Added closing brace for the second if
 
+    patient.practice_id = practiceId;
     patient.ehr_id = patient['id'];
     delete patient.id;
 
@@ -140,19 +174,15 @@ export function SearchPatientDialog({ open, onClose }) {
       console.log('Adding patient:', patient);
       const data = await postData('patients', patient);
 
-      // Add the id returned from the database
-      patient.id = data.data.id;
-
-      const practicePatient = {
-        practice_id: practiceId,
-        patient_id: patient.id,
-        chart_id: patient['chart_id'],
-        ehr_id: patient['ehr_id'],
-        status: 'Active',
-      };
-      await postData('practice_patients', practicePatient);
+      const updatedSuccessStates = [...addSuccessStates];
+      updatedSuccessStates[index] = true;
+      setAddSuccessStates(updatedSuccessStates);
     } catch (error) {
       console.error(error);
+    } finally {
+      const updatedAddingStates = [...addingStates];
+      updatedAddingStates[index] = false;
+      setAddingStates(updatedAddingStates);
     }
   };
 
@@ -283,6 +313,13 @@ export function SearchPatientDialog({ open, onClose }) {
           }}
           variant='contained'
           onClick={handleSearchClick}
+          disabled={
+            isSearching ||
+            (!searchAttempted &&
+              lastName === '' &&
+              firstName === '' &&
+              chartID === '')
+          }
         >
           Search
         </Button>
@@ -291,99 +328,134 @@ export function SearchPatientDialog({ open, onClose }) {
           <span
             className='flashing-text'
             style={{
-              marginLeft: '25px',
               color: colors.greenAccent[500], // Access the primary color from the theme
+              marginLeft: '25px',
               fontSize: '16px',
               fontWeight: 'bold',
             }}
           >
-            searching...
+            Searching...
           </span>
         )}
         {/* No data found message */}
         {searchAttempted && patientData.length === 0 && (
-          <div
+          <span
             style={{
               color: colors.redAccent[500],
-              marginTop: '15px',
-              fontSize: '14px',
+              marginLeft: '25px',
+              fontSize: '16px',
               fontWeight: 'bold',
             }}
           >
-            No patient found with the provided details.
-          </div>
+            No patient found with the provided details
+          </span>
         )}
+        {/* Search returned more than 100 rows */}
+        {searchAttempted && patientData.length > 100 && (
+          <span
+            style={{
+              color: colors.redAccent[500], // Change this to any appropriate color from your theme
+              marginLeft: '25px',
+              fontSize: '16px',
+              fontWeight: 'bold',
+            }}
+          >
+            Too many results found --- narrow down your search
+          </span>
+        )}
+        {/* Search returned number of rows */}
+        {searchAttempted &&
+          patientData.length > 0 &&
+          patientData.length <= 100 && (
+            <span
+              style={{
+                color: colors.greenAccent[500],
+                marginLeft: '25px',
+                fontSize: '16px',
+                fontWeight: 'bold',
+              }}
+            >
+              {patientData.length}{' '}
+              {patientData.length === 1 ? 'result' : 'results'} found
+            </span>
+          )}
 
-        {patientData.length > 0 && (
-          <div>
-            <h2>Patient Data</h2>
-            {patientData.map((patient, index) => (
-              <div
-                key={index}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '10px',
-                  marginBottom: '10px',
+        <div>
+          <h2>Patient Data</h2>
+          {patientData.map((patient, index) => (
+            <div
+              key={index}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '10px',
+                marginBottom: '10px',
+              }}
+            >
+              <TextField
+                label='Last Name'
+                fullWidth
+                variant='filled'
+                value={patient.last_name}
+                InputProps={{
+                  readOnly: true,
+                  style: {
+                    backgroundColor: colors.primary[400], // Background color same as search text fields
+                    marginRight: '0', // Remove right margin
+                  },
                 }}
+              />
+              <TextField
+                label='First Name'
+                fullWidth
+                variant='filled'
+                value={patient.first_name}
+                InputProps={{
+                  readOnly: true,
+                  style: {
+                    backgroundColor: colors.primary[400], // Background color same as search text fields
+                    marginRight: '0', // Remove right margin
+                  },
+                }}
+              />
+              <TextField
+                label='Date of Birth'
+                fullWidth
+                variant='filled'
+                value={patient.date_of_birth}
+                InputProps={{
+                  readOnly: true,
+                  style: {
+                    backgroundColor: colors.primary[400], // Background color same as search text fields
+                  },
+                }}
+              />
+              <Button
+                sx={{
+                  backgroundColor: addSuccessStates[index]
+                    ? colors.green
+                    : colors.greenAccent[700],
+                  color: colors.grey[100],
+                  fontSize: '14px',
+                  fontWeight: 'bold',
+                  marginTop: '16px',
+                  minWidth: '100px',
+                  padding: '5px 10px',
+                }}
+                variant='contained'
+                onClick={() => handleAddPatient(patient, index)} // Pass the index to identify which button was pressed
+                startIcon={addSuccessStates[index] && <CheckOutlinedIcon />} // Add the check icon when addSuccessStates[index] is true
+                disabled={addingStates[index] || addSuccessStates[index]} // Disable the button while patient is being created or has been added
               >
-                <TextField
-                  label='Last Name'
-                  fullWidth
-                  variant='filled'
-                  value={patient.last_name}
-                  InputProps={{
-                    readOnly: true,
-                    style: {
-                      backgroundColor: colors.primary[400], // Background color same as search text fields
-                      marginRight: '0', // Remove right margin
-                    },
-                  }}
-                />
-                <TextField
-                  label='First Name'
-                  fullWidth
-                  variant='filled'
-                  value={patient.first_name}
-                  InputProps={{
-                    readOnly: true,
-                    style: {
-                      backgroundColor: colors.primary[400], // Background color same as search text fields
-                      marginRight: '0', // Remove right margin
-                    },
-                  }}
-                />
-                <TextField
-                  label='Date of Birth'
-                  fullWidth
-                  variant='filled'
-                  value={patient.date_of_birth}
-                  InputProps={{
-                    readOnly: true,
-                    style: {
-                      backgroundColor: colors.primary[400], // Background color same as search text fields
-                    },
-                  }}
-                />
-                <Button
-                  sx={{
-                    backgroundColor: colors.blueAccent[700], // Same color as the search button
-                    color: colors.grey[100],
-                    fontSize: '14px',
-                    fontWeight: 'bold',
-                    marginTop: '16px',
-                    minWidth: '100px', // Wider button
-                    padding: '5px 10px', // Adjust padding for button height
-                  }}
-                  variant='contained'
-                  onClick={() => handleAddPatient(patient)}
-                >
-                  Add
-                </Button>
-              </div>
-            ))}
-          </div>
-        )}
+                {addingStates[index]
+                  ? 'Adding...'
+                  : addSuccessStates[index]
+                  ? 'Added'
+                  : 'Add'}
+              </Button>
+            </div>
+          ))}
+        </div>
       </DialogContent>
     </Dialog>
   );

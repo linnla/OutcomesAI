@@ -11,11 +11,15 @@ import AddIcon from '@mui/icons-material/Add';
 import { SearchPatientDialog } from './SearchPatientDialog';
 
 function DefaultToolbar(props) {
+  console.log('DefaultToolBar props:', props);
   const { columns } = props;
   const [openDialog, setOpenDialog] = useState(false);
+  const [rows, setRows] = useState([]); // State to manage rows
 
   // Function to handle opening the dialog
   const handleOpenDialog = () => {
+    const initialRows = props.rows || []; // Use props.rows if available, or an empty array
+    setRows(initialRows);
     setOpenDialog(true);
   };
 
@@ -37,7 +41,12 @@ function DefaultToolbar(props) {
       >
         Search for DrChrono Patient
       </Button>
-      <SearchPatientDialog open={openDialog} onClose={handleCloseDialog} />
+      <SearchPatientDialog
+        open={openDialog}
+        onClose={handleCloseDialog}
+        rows={rows} // Pass the rows state as a prop
+        setRows={setRows} // Pass the setRows function as a prop
+      />
     </GridToolbarContainer>
   );
 }

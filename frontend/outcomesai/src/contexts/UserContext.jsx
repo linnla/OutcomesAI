@@ -20,16 +20,15 @@ const UserContext = createContext(staticDefaultUserValue);
 function UserProvider({ children }) {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const [error, setError] = useState(null);
+  const [errorType, setErrorType] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+  const [showErrorModal, setShowErrorModal] = useState(false);
 
   const [user, setUser] = useState(staticDefaultUserValue);
   const [defaultUserData, setDefaultUserData] = useState(
     staticDefaultUserValue
   );
-  const [error, setError] = useState(null);
-
-  const [errorType, setErrorType] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
-  const [showErrorModal, setShowErrorModal] = useState(false);
 
   const setUserData = async () => {
     try {
@@ -62,6 +61,8 @@ function UserProvider({ children }) {
         setUser(userDataValues);
         setDefaultUserData(userDataValues);
       }
+
+      return user;
     } catch (err) {
       console.error('Error getting user data:', err);
       const errorMessage = createErrorMessage(err, 'user');

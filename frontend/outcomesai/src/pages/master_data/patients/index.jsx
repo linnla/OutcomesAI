@@ -4,6 +4,7 @@ import Box from '@mui/material/Box';
 import ViewOnly from '../../../components/datagrid/viewOnly';
 import DataEntry from '../../../components/datagrid/dataEntry';
 import UserContext from '../../../contexts/UserContext';
+import OfficeContext from '../../../contexts/OfficeContext';
 import { getData, postData, putData, deleteData } from '../../../utils/API';
 import {
   validatePostalCodeFormat,
@@ -21,6 +22,7 @@ import ErrorModal from '../../../utils/ErrorModal';
 
 export default function PatientsGrid() {
   const { role, practiceId } = useContext(UserContext);
+  const { offices } = useContext(OfficeContext);
 
   const title = 'Patients';
   let subtitle = `View ${title}`;
@@ -228,27 +230,9 @@ export default function PatientsGrid() {
         // Add the id returned from the database
         rowToSave.id = data.data.id;
         setRows(oldRows.map((r) => (r.id === id ? { ...rowToSave } : r)));
-
-        // Create row in the related table
-        rowToSave.status = 'Active';
-        const relatedRow = {
-          practice_id: rowToSave.practice_id,
-          patient_id: rowToSave.id,
-        };
-        await postData(relatedTable, relatedRow);
         return rowToSave;
       } else {
         await putData(table, row);
-        if (row.status !== oldRow.status) {
-          const relatedRow = {
-            practice_id: row.practice_id,
-            patient_id: row.id,
-            patient_ehr_id: row.ehr_id,
-            status: row.status,
-          };
-          await putData(relatedTable, relatedRow);
-        }
-        setRows(oldRows.map((r) => (r.id === id ? { ...row } : r)));
         return row;
       }
     } catch (error) {
@@ -281,18 +265,31 @@ export default function PatientsGrid() {
       throw errorMessage;
     }
 
+    // ADD BACK FOR MULTI-TENANT
+    // If episode exists an error is thrown, otherwise execution continues and
+    // patient is deleted from the practice_patients and patients table
+    /*
     try {
       const relatedRow = {
         practice_id: practiceId,
         patient_id: row.id,
       };
       await deleteData(relatedTable, relatedRow);
+    */
 
-      // Delete from patients
-      const body = {
+    // MAKE CHANGE HERE FOR MULTI-TENANT --- ONLY WORKS FOR SINGLE TENANT
+    // If any episode of care exists for any practice, don't delete the patient
+    try {
+      const practice_patients_body = {
+        patient_id: row.id,
+        practice_id: practiceId,
+      };
+      await deleteData(relatedTable, practice_patients_body);
+
+      const patients_body = {
         id: row.id,
       };
-      await deleteData(table, body);
+      await deleteData(table, patients_body);
 
       // After both deletes have finished, update the rows
       setRows(oldRows.filter((r) => r.id !== id));
