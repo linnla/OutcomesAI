@@ -6,13 +6,14 @@ import ViewOnly from '../../../components/datagrid/viewOnly';
 import UserContext from '../../../contexts/UserContext';
 import { getData, postData, putData, deleteData } from '../../../utils/API';
 import { validateRequiredAttributes } from '../../../utils/ValidationUtils';
-import ErrorAlert from '../../../utils/ErrorAlert';
-import { useErrorHandling } from '../../../utils/ErrorHandling';
+import ShowAlert from '../../../utils/ShowAlert';
+import { useNotificationHandling } from '../../../utils/NotificationHandling';
 
 // *************** CUSTOMIZE ************** START
 export default function PracticeIntegrationsGrid() {
   const { role, practiceId } = useContext(UserContext);
-  const { errorState, handleError, handleClose } = useErrorHandling();
+  const { notificationState, handleErrorNotification, handleClose } =
+    useNotificationHandling();
 
   const title = 'EHR Integrations';
   let subtitle = `View ${title}`;
@@ -83,12 +84,12 @@ export default function PracticeIntegrationsGrid() {
         setRows(rowsWithId);
       })
       .catch((error) => {
-        handleError(error);
+        handleErrorNotification(error);
       })
       .finally(() => {
         setLoading(false);
       });
-  }, [practiceId, handleError]);
+  }, [practiceId, handleErrorNotification]);
 
   const [integrationTypeData, setIntegrationTypeData] = useState([]);
   const [integrationTypeObjects, setIntegrationTypeObjects] = useState([]);
@@ -104,12 +105,12 @@ export default function PracticeIntegrationsGrid() {
         setIntegrationTypeObjects(data);
       })
       .catch((error) => {
-        handleError(error);
+        handleErrorNotification(error);
       })
       .finally(() => {
         setLoading(false);
       });
-  }, [handleError]);
+  }, [handleErrorNotification]);
 
   const [integrationVendorData, setIntegrationVendorData] = useState([]);
   const [integrationVendorObjects, setIntegrationVendorObjects] = useState([]);
@@ -125,12 +126,12 @@ export default function PracticeIntegrationsGrid() {
         setIntegrationVendorObjects(data);
       })
       .catch((error) => {
-        handleError(error);
+        handleErrorNotification(error);
       })
       .finally(() => {
         setLoading(false);
       });
-  }, [handleError]);
+  }, [handleErrorNotification]);
 
   // These need to load after the related data useEffect
   const columns = [
@@ -259,13 +260,13 @@ export default function PracticeIntegrationsGrid() {
     }
   }
 
-  if (errorState.showError) {
+  if (notificationState.showNotification) {
     return (
-      <ErrorAlert
-        severity={errorState.errorSeverity}
-        errorType={errorState.errorType}
-        errorMessage={errorState.errorMessage}
-        errorDescription={errorState.errorDescription}
+      <ShowAlert
+        severity={notificationState.severity}
+        title={notificationState.title}
+        message={notificationState.message}
+        description={notificationState.description}
         onClose={handleClose}
       />
     );

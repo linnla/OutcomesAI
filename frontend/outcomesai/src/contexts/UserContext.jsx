@@ -1,8 +1,8 @@
 import { createContext, useState } from 'react';
 import { Auth } from 'aws-amplify';
 import { getOne } from '../utils/API';
-import ErrorAlert from '../utils/ErrorAlert';
-import { useErrorHandling } from '../utils/ErrorHandling';
+import ShowAlert from '../utils/ShowAlert';
+import { useNotificationHandling } from '../utils/NotificationHandling';
 
 const staticDefaultUserValue = {
   role: '',
@@ -15,7 +15,8 @@ const staticDefaultUserValue = {
 const UserContext = createContext(staticDefaultUserValue);
 
 function UserProvider({ children }) {
-  const { errorState, handleError, handleClose } = useErrorHandling();
+  const { notificationState, handleErrorNotification, handleClose } =
+    useNotificationHandling();
 
   const [user, setUser] = useState(staticDefaultUserValue);
   const [defaultUserData, setDefaultUserData] = useState(
@@ -36,7 +37,7 @@ function UserProvider({ children }) {
         customError.name = 'Your account has been inactivated.';
         customError.message =
           'Contract your system administrator to regain access.';
-        handleError(customError);
+        handleErrorNotification(customError);
         await signOut();
       }
 
@@ -58,7 +59,7 @@ function UserProvider({ children }) {
 
       return user;
     } catch (error) {
-      handleError(error);
+      handleErrorNotification(error);
     }
   };
 
@@ -67,7 +68,7 @@ function UserProvider({ children }) {
       const result = await Auth.deleteUser();
       console.log(result);
     } catch (error) {
-      handleError(error);
+      handleErrorNotification(error);
     }
   }
 
@@ -75,7 +76,7 @@ function UserProvider({ children }) {
     try {
       await Auth.signOut();
     } catch (error) {
-      handleError(error);
+      handleErrorNotification(error);
     }
   }
 
@@ -86,12 +87,12 @@ function UserProvider({ children }) {
 
   return (
     <UserContext.Provider value={userInfo}>
-      {errorState.showError && (
-        <ErrorAlert
-          severity={errorState.errorSeverity}
-          errorType={errorState.errorType}
-          errorMessage={errorState.errorMessage}
-          errorDescription={errorState.errorDescription}
+      {notificationState.showNotification && (
+        <ShowAlert
+          severity={notificationState.severity}
+          title={notificationState.title}
+          message={notificationState.message}
+          description={notificationState.description}
           onClose={handleClose}
         />
       )}

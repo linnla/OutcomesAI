@@ -164,30 +164,30 @@ export const themeSettings = (mode) => {
     },
     typography: {
       fontFamily: ['Source Sans Pro', 'sans-serif'].join(','),
-      fontSize: 12,
+      fontSize: 14,
       h1: {
         fontFamily: ['Source Sans Pro', 'sans-serif'].join(','),
-        fontSize: 40,
+        fontSize: 42,
       },
       h2: {
         fontFamily: ['Source Sans Pro', 'sans-serif'].join(','),
-        fontSize: 32,
+        fontSize: 34,
       },
       h3: {
         fontFamily: ['Source Sans Pro', 'sans-serif'].join(','),
-        fontSize: 24,
+        fontSize: 26,
       },
       h4: {
         fontFamily: ['Source Sans Pro', 'sans-serif'].join(','),
-        fontSize: 20,
+        fontSize: 22,
       },
       h5: {
         fontFamily: ['Source Sans Pro', 'sans-serif'].join(','),
-        fontSize: 16,
+        fontSize: 18,
       },
       h6: {
         fontFamily: ['Source Sans Pro', 'sans-serif'].join(','),
-        fontSize: 14,
+        fontSize: 16,
       },
     },
   };
@@ -245,25 +245,3 @@ export const useMode = () => {
 
   return [theme, colorMode];
 };
-
-/*
-// context for color mode
-export const ColorModeContext = createContext({
-  toggleColorMode: () => {},
-});
-
-export const useMode = () => {
-  const [mode, setMode] = useState('dark');
-
-  const colorMode = useMemo(
-    () => ({
-      toggleColorMode: () =>
-        setMode((prev) => (prev === 'light' ? 'dark' : 'light')),
-    }),
-    []
-  );
-
-  const theme = useMemo(() => createTheme(themeSettings(mode)), [mode]);
-  return [theme, colorMode];
-};
-*/

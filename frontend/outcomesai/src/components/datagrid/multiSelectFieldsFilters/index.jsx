@@ -25,8 +25,8 @@ import {
 
 import DefaultToolbar from './DefaultToolbar';
 import { useEffect, useState } from 'react';
-import ErrorAlert from '../../../utils/ErrorAlert';
-import { useErrorHandling } from '../../../utils/ErrorHandling';
+import ShowAlert from '../../../utils/ShowAlert';
+import { useNotificationHandling } from '../../../utils/NotificationHandling';
 
 function MultiSelectFieldsFilters({
   title,
@@ -54,7 +54,12 @@ function MultiSelectFieldsFilters({
 }) {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const { errorState, handleError, handleClose } = useErrorHandling();
+  const {
+    notificationState,
+    handleErrorNotification,
+    handleSuccessNotification,
+    handleClose,
+  } = useNotificationHandling();
 
   // States for the multi-select fields
   const [field1, setField1] = useState('');
@@ -103,11 +108,12 @@ function MultiSelectFieldsFilters({
     try {
       const validatedRow = await onValidateRow(row, rows);
       await onSaveRow(validatedRow);
+      handleSuccessNotification('Saved');
       setInternalRows((rows) => {
         return [...rows, validatedRow];
       });
     } catch (error) {
-      handleError(error);
+      handleErrorNotification(error);
     } finally {
       setField1('');
       setField2('');
@@ -124,8 +130,9 @@ function MultiSelectFieldsFilters({
       if (deleteResponse === 'Deleted') {
         setInternalRows(internalRows.filter((row) => row.id !== id));
       }
+      handleSuccessNotification('Deleted');
     } catch (error) {
-      handleError(error);
+      handleErrorNotification(error);
     }
   };
 
@@ -153,13 +160,13 @@ function MultiSelectFieldsFilters({
   //pagination
   const [pageSize, setPageSize] = useState(defaultPageSize);
 
-  if (errorState.showError) {
+  if (notificationState.showNotification) {
     return (
-      <ErrorAlert
-        severity={errorState.errorSeverity}
-        errorType={errorState.errorType}
-        errorMessage={errorState.errorMessage}
-        errorDescription={errorState.errorDescription}
+      <ShowAlert
+        severity={notificationState.severity}
+        title={notificationState.title}
+        message={notificationState.message}
+        description={notificationState.description}
         onClose={handleClose}
       />
     );

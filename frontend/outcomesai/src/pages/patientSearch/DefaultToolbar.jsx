@@ -5,14 +5,14 @@ import {
   GridToolbarDensitySelector,
   GridToolbarQuickFilter,
 } from '@mui/x-data-grid-premium';
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import Button from '@mui/material/Button';
 import AddIcon from '@mui/icons-material/Add';
 import { SearchPatientDialog } from './SearchPatientDialog';
 
 function DefaultToolbar(props) {
   console.log('DefaultToolBar props:', props);
-  const { columns } = props;
+  const { refreshData } = props;
   const [openDialog, setOpenDialog] = useState(false);
   const [rows, setRows] = useState([]); // State to manage rows
 
@@ -25,6 +25,8 @@ function DefaultToolbar(props) {
 
   // Function to handle closing the dialog
   const handleCloseDialog = () => {
+    console.log('Close Dialog');
+    refreshData();
     setOpenDialog(false);
   };
 

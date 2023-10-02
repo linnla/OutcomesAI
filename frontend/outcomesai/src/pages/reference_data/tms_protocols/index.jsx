@@ -7,13 +7,14 @@ import UserContext from '../../../contexts/UserContext';
 import { getData, postData, putData, deleteData } from '../../../utils/API';
 import { validateRequiredAttributes } from '../../../utils/ValidationUtils';
 import { GridEditInputCell } from '@mui/x-data-grid-premium';
-import ErrorAlert from '../../../utils/ErrorAlert';
-import { useErrorHandling } from '../../../utils/ErrorHandling';
+import ShowAlert from '../../../utils/ShowAlert';
+import { useNotificationHandling } from '../../../utils/NotificationHandling';
 
 // *************** CUSTOMIZE **************
 export default function TMSProtocolGrid() {
   const { role } = useContext(UserContext);
-  const { errorState, handleError, handleClose } = useErrorHandling();
+  const { notificationState, handleErrorNotification, handleClose } =
+    useNotificationHandling();
 
   const title = 'TMS Protocols';
   let subtitle = `View ${title}`;
@@ -107,13 +108,13 @@ export default function TMSProtocolGrid() {
         setRows(sortedItems);
       })
       .catch((error) => {
-        handleError(error);
+        handleErrorNotification(error);
       })
       .finally(() => {
         setLoading(false);
       });
   }, [
-    handleError,
+    handleErrorNotification,
     pulseTypeObjects,
     stimulationSitesObjects,
     frequencyObjects,
@@ -131,12 +132,12 @@ export default function TMSProtocolGrid() {
         setPulseTypeObjects(activeData);
       })
       .catch((error) => {
-        handleError(error);
+        handleErrorNotification(error);
       })
       .finally(() => {
         setLoading(false);
       });
-  }, [handleError]);
+  }, [handleErrorNotification]);
 
   // TMS Stimulation Sites
   useEffect(() => {
@@ -150,12 +151,12 @@ export default function TMSProtocolGrid() {
         setStimulationSiteObjects(activeData);
       })
       .catch((error) => {
-        handleError(error);
+        handleErrorNotification(error);
       })
       .finally(() => {
         setLoading(false);
       });
-  }, [handleError]);
+  }, [handleErrorNotification]);
 
   // TMS Frequencies
   useEffect(() => {
@@ -169,12 +170,12 @@ export default function TMSProtocolGrid() {
         setFrequencyObjects(activeData);
       })
       .catch((error) => {
-        handleError(error);
+        handleErrorNotification(error);
       })
       .finally(() => {
         setLoading(false);
       });
-  }, [handleError]);
+  }, [handleErrorNotification]);
 
   async function validateRow(newRow, oldRow) {
     try {
@@ -334,13 +335,13 @@ export default function TMSProtocolGrid() {
     }
   }
 
-  if (errorState.showError) {
+  if (notificationState.showNotification) {
     return (
-      <ErrorAlert
-        severity={errorState.errorSeverity}
-        errorType={errorState.errorType}
-        errorMessage={errorState.errorMessage}
-        errorDescription={errorState.errorDescription}
+      <ShowAlert
+        severity={notificationState.severity}
+        title={notificationState.title}
+        message={notificationState.message}
+        description={notificationState.description}
         onClose={handleClose}
       />
     );

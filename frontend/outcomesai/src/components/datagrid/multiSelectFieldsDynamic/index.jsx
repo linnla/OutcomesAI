@@ -22,8 +22,8 @@ import {
 } from '@mui/x-data-grid-premium';
 
 import DefaultToolbar from './DefaultToolbar';
-import ErrorAlert from '../../../utils/ErrorAlert';
-import { useErrorHandling } from '../../../utils/ErrorHandling';
+import ShowAlert from '../../../utils/ShowAlert';
+import { useNotificationHandling } from '../../../utils/NotificationHandling';
 
 // Custom hook for handling dynamic fields' state
 function useDynamicFieldsState(fields) {
@@ -68,7 +68,12 @@ function MultiSelectFieldsDynamic({
 }) {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const { errorState, handleError, handleClose } = useErrorHandling();
+  const {
+    notificationState,
+    handleErrorNotification,
+    handleSuccessNotification,
+    handleClose,
+  } = useNotificationHandling();
 
   const apiRef = useGridApiRef();
   const [internalRows, setInternalRows] = useState(rows);
@@ -94,11 +99,12 @@ function MultiSelectFieldsDynamic({
       const validatedRow = await onValidateRow(newRow, internalRows);
       console.log('ValidatedRow:', validatedRow);
       await onSaveRow(validatedRow);
+      handleSuccessNotification('Saved');
 
       setInternalRows((rows) => [...rows, validatedRow]);
       resetFieldStates(); // Reset field values after successful save
     } catch (error) {
-      handleError(error);
+      handleErrorNotification(error);
     }
   };
 
@@ -110,9 +116,10 @@ function MultiSelectFieldsDynamic({
       const deleteResponse = await onDeleteRow(id, row, internalRows);
       if (deleteResponse === 'Deleted') {
         setInternalRows(internalRows.filter((row) => row.id !== id));
+        handleSuccessNotification('Deleted');
       }
     } catch (error) {
-      handleError(error);
+      handleErrorNotification(error);
     }
   };
 
@@ -140,13 +147,13 @@ function MultiSelectFieldsDynamic({
   // Pagination
   const [pageSize, setPageSize] = useState(defaultPageSize);
 
-  if (errorState.showError) {
+  if (notificationState.showNotification) {
     return (
-      <ErrorAlert
-        severity={errorState.errorSeverity}
-        errorType={errorState.errorType}
-        errorMessage={errorState.errorMessage}
-        errorDescription={errorState.errorDescription}
+      <ShowAlert
+        severity={notificationState.severity}
+        title={notificationState.title}
+        message={notificationState.message}
+        description={notificationState.description}
         onClose={handleClose}
       />
     );

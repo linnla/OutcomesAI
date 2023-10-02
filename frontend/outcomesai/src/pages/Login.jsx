@@ -5,14 +5,15 @@ import '@aws-amplify/ui-react/styles.css';
 import CallApi from '../api/CallApi';
 import { Auth } from 'aws-amplify';
 import UserContext from '../contexts/UserContext';
-import ErrorAlert from '../utils/ErrorAlert';
-import { useErrorHandling } from '../utils/ErrorHandling';
+import ShowAlert from '../utils/ShowAlert';
+import { useNotificationHandling } from '../utils/NotificationHandling';
 
 function Login({ onSuccessfulLogin }) {
   const { route } = useAuthenticator((context) => [context.route]);
   const location = useLocation();
   const navigate = useNavigate();
-  const { errorState, handleError, handleClose } = useErrorHandling();
+  const { notificationState, handleErrorNotification, handleClose } =
+    useNotificationHandling();
 
   const { setUserData } = useContext(UserContext);
   const [loadingUserData, setLoadingUserData] = useState(false);
@@ -27,7 +28,7 @@ function Login({ onSuccessfulLogin }) {
           await handleLogin();
         }
       } catch (error) {
-        handleError(error);
+        handleErrorNotification(error);
       }
     };
 
@@ -52,7 +53,7 @@ function Login({ onSuccessfulLogin }) {
       await CallApi(method, table, body, null);
       await setUserData();
     } catch (error) {
-      handleError(error);
+      handleErrorNotification(error);
     }
   };
 
@@ -69,13 +70,13 @@ function Login({ onSuccessfulLogin }) {
     }
   };
 
-  if (errorState.showError) {
+  if (notificationState.showNotification) {
     return (
-      <ErrorAlert
-        severity={errorState.errorSeverity}
-        errorType={errorState.errorType}
-        errorMessage={errorState.errorMessage}
-        errorDescription={errorState.errorDescription}
+      <ShowAlert
+        severity={notificationState.severity}
+        title={notificationState.title}
+        message={notificationState.message}
+        description={notificationState.description}
         onClose={handleClose}
       />
     );

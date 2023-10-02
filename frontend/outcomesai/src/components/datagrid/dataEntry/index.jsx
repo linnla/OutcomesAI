@@ -17,8 +17,8 @@ import {
 
 import DefaultToolbar from './DefaultToolbar';
 import { useEffect, useState } from 'react';
-import ErrorAlert from '../../../utils/ErrorAlert';
-import { useErrorHandling } from '../../../utils/ErrorHandling';
+import ShowAlert from '../../../utils/ShowAlert';
+import { useNotificationHandling } from '../../../utils/NotificationHandling';
 
 function DataEntry({
   title,
@@ -34,7 +34,12 @@ function DataEntry({
 }) {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const { errorState, handleError, handleClose } = useErrorHandling();
+  const {
+    notificationState,
+    handleErrorNotification,
+    handleSuccessNotification,
+    handleClose,
+  } = useNotificationHandling();
 
   const apiRef = useGridApiRef();
   const [internalRows, setInternalRows] = useState(rows);
@@ -75,9 +80,14 @@ function DataEntry({
       if (deleteResponse === 'Deleted') {
         setInternalRows(internalRows.filter((row) => row.id !== id));
       }
+      if (row.name !== undefined) {
+        handleSuccessNotification(`${row.name} deleted`);
+      } else {
+        handleSuccessNotification('Deleted');
+      }
       //console.log('handleDeleteClick delete response', deleteResponse);
     } catch (error) {
-      handleError(error);
+      handleErrorNotification(error);
     }
   };
 
@@ -106,11 +116,11 @@ function DataEntry({
       error.response.data &&
       error.response.data.errorType
     ) {
-      handleError(error);
+      handleErrorNotification(error);
     } else {
       const newError = new Error(error.message); // Create an Error object with a message
       newError.name = error.name; // Set the name property
-      handleError(newError);
+      handleErrorNotification(newError);
     }
   }, []);
 
@@ -146,6 +156,11 @@ function DataEntry({
         oldRow,
         internalRows
       );
+      if (savedRow.name !== undefined) {
+        handleSuccessNotification(`${savedRow.name} saved`);
+      } else {
+        handleSuccessNotification('Saved');
+      }
       // This return statement is required or else datagrid will throw an internal error
       // Cannot read properties of undefined (reading 'id') at getRowIdFromRowModel
       return savedRow;
@@ -231,13 +246,13 @@ function DataEntry({
   //pagination
   const [pageSize, setPageSize] = useState(defaultPageSize);
 
-  if (errorState.showError) {
+  if (notificationState.showNotification) {
     return (
-      <ErrorAlert
-        severity={errorState.errorSeverity}
-        errorType={errorState.errorType}
-        errorMessage={errorState.errorMessage}
-        errorDescription={errorState.errorDescription}
+      <ShowAlert
+        severity={notificationState.severity}
+        title={notificationState.title}
+        message={notificationState.message}
+        description={notificationState.description}
         onClose={handleClose}
       />
     );

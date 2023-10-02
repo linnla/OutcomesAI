@@ -9,18 +9,20 @@ import {
   validatePostalCodeFormat,
   validatePostalCodeExists,
   validateRequiredAttributes,
+  validateIsInteger,
   validateDateObject,
   validateEmail,
 } from '../../../utils/ValidationUtils';
 import { parseUTCDate, formatDateToMMDDYYYY } from '../../../utils/DateUtils';
-import ErrorAlert from '../../../utils/ErrorAlert';
-import { useErrorHandling } from '../../../utils/ErrorHandling';
+import ShowAlert from '../../../utils/ShowAlert';
+import { useNotificationHandling } from '../../../utils/NotificationHandling';
 
 // *************** CUSTOMIZE ************** START
 
 export default function PatientsGrid() {
   const { role, practiceId } = useContext(UserContext);
-  const { errorState, handleError, handleClose } = useErrorHandling();
+  const { notificationState, handleErrorNotification, handleClose } =
+    useNotificationHandling();
 
   const title = 'Patients';
   let subtitle = `View ${title}`;
@@ -144,7 +146,7 @@ export default function PatientsGrid() {
       id: newId,
       last_name: '',
       first_name: '',
-      ehr_id: '',
+      ehr_id: null,
       chart_id: '',
       email: '',
       birthdate: '',
@@ -174,12 +176,12 @@ export default function PatientsGrid() {
         setRows(sortedItems);
       })
       .catch((error) => {
-        handleError(error);
+        handleErrorNotification(error);
       })
       .finally(() => {
         setLoading(false);
       });
-  }, [practiceId, handleError]);
+  }, [practiceId, handleErrorNotification]);
 
   function sortItems(items, sort_attribute_1, sort_attribute_2) {
     return items.sort((a, b) => {
@@ -198,6 +200,9 @@ export default function PatientsGrid() {
   async function validateRow(newRow, oldRow) {
     try {
       validateRequiredAttributes(requiredAttributes, attributeNames, newRow);
+      if (newRow['ehr_id'] !== '' && newRow['ehr_id'] !== null) {
+        validateIsInteger('EHR ID', newRow['ehr_id']);
+      }
       validateEmail(newRow.email);
       validateDateObject(newRow.birthdate);
       validatePostalCodeFormat(newRow.postal_code);
@@ -292,13 +297,13 @@ export default function PatientsGrid() {
     }
   }
 
-  if (errorState.showError) {
+  if (notificationState.showError) {
     return (
-      <ErrorAlert
-        severity={errorState.errorSeverity}
-        errorType={errorState.errorType}
-        errorMessage={errorState.errorMessage}
-        errorDescription={errorState.errorDescription}
+      <ShowAlert
+        severity={notificationState.severity}
+        title={notificationState.title}
+        message={notificationState.message}
+        description={notificationState.description}
         onClose={handleClose}
       />
     );

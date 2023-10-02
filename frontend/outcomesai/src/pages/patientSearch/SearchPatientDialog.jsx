@@ -108,9 +108,6 @@ export function SearchPatientDialog({ open, onClose, reset, rows }) {
             console.log('matched object:', matchingObj2);
           }
         });
-
-        //const updatedSuccessStates = [...addSuccessStates];
-        //updatedSuccessStates[index] = true;
         setPatientData(sortedPatientData);
         setAddSuccessStates(updatedSuccessStates);
       } else {
@@ -221,8 +218,7 @@ export function SearchPatientDialog({ open, onClose, reset, rows }) {
 
     try {
       console.log('Saving patient:', patient);
-      const data = await postData('patients', patient);
-
+      await postData('patients', patient);
       const updatedSuccessStates = [...addSuccessStates];
       updatedSuccessStates[index] = true;
       setAddSuccessStates(updatedSuccessStates);

@@ -6,13 +6,14 @@ import ViewOnly from '../../../components/datagrid/viewOnly';
 import UserContext from '../../../contexts/UserContext';
 import { getData, postData, deleteData } from '../../../utils/API';
 import { validateRequiredAttributes } from '../../../utils/ValidationUtils';
-import ErrorAlert from '../../../utils/ErrorAlert';
-import { useErrorHandling } from '../../../utils/ErrorHandling';
+import ShowAlert from '../../../utils/ShowAlert';
+import { useNotificationHandling } from '../../../utils/NotificationHandling';
 
 // *************** CUSTOMIZE ************** START
 export default function PracticeTMSDevicesGrid() {
   const { role, practiceId } = useContext(UserContext);
-  const { errorState, handleError, handleClose } = useErrorHandling();
+  const { notificationState, handleErrorNotification, handleClose } =
+    useNotificationHandling();
 
   const title = 'Office TMS Devices';
   let subtitle = `View ${title}`;
@@ -112,14 +113,14 @@ export default function PracticeTMSDevicesGrid() {
         setRows(rowsWithId);
       })
       .catch((error) => {
-        handleError(error);
+        handleErrorNotification(error);
       })
       .finally(() => {
         setLoading(false);
       });
   }, [
     practiceId,
-    handleError,
+    handleErrorNotification,
     officeNames,
     deviceMfgs,
     deviceNames,
@@ -139,12 +140,12 @@ export default function PracticeTMSDevicesGrid() {
         setOfficeObjects(activeData);
       })
       .catch((error) => {
-        handleError(error);
+        handleErrorNotification(error);
       })
       .finally(() => {
         setLoading(false);
       });
-  }, [practiceId, handleError]);
+  }, [practiceId, handleErrorNotification]);
 
   // Devices
   useEffect(() => {
@@ -162,12 +163,12 @@ export default function PracticeTMSDevicesGrid() {
         setDeviceObjects(data);
       })
       .catch((error) => {
-        handleError(error);
+        handleErrorNotification(error);
       })
       .finally(() => {
         setLoading(false);
       });
-  }, [handleError]);
+  }, [handleErrorNotification]);
 
   // Coils
   useEffect(() => {
@@ -188,12 +189,12 @@ export default function PracticeTMSDevicesGrid() {
         console.log('coil Objects:', data);
       })
       .catch((error) => {
-        handleError(error);
+        handleErrorNotification(error);
       })
       .finally(() => {
         setLoading(false);
       });
-  }, [handleError]);
+  }, [handleErrorNotification]);
 
   function getRandomInt(min, max) {
     min = Math.ceil(min);
@@ -257,13 +258,13 @@ export default function PracticeTMSDevicesGrid() {
     }
   }
 
-  if (errorState.showError) {
+  if (notificationState.showNotification) {
     return (
-      <ErrorAlert
-        severity={errorState.errorSeverity}
-        errorType={errorState.errorType}
-        errorMessage={errorState.errorMessage}
-        errorDescription={errorState.errorDescription}
+      <ShowAlert
+        severity={notificationState.severity}
+        title={notificationState.title}
+        message={notificationState.message}
+        description={notificationState.description}
         onClose={handleClose}
       />
     );

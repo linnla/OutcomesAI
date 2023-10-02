@@ -4,7 +4,7 @@ import UserContext from './UserContext';
 
 const staticDefaultOffice = {
   id: '',
-  ehr_id: '',
+  ehr_id: null,
   practice_id: '',
   name: '',
   virtual: '',

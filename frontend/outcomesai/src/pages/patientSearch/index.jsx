@@ -12,12 +12,13 @@ import { tokens } from '../../theme';
 import { parseUTCDate, formatDateToMMDDYYYY } from '../../utils/DateUtils';
 import { getData } from '../../utils/API';
 import UserContext from '../../contexts/UserContext';
-import ErrorAlert from '../../utils/ErrorAlert';
-import { useErrorHandling } from '../../utils/ErrorHandling';
+import ShowAlert from '../../utils/ShowAlert';
+import { useNotificationHandling } from '../../utils/NotificationHandling';
 
 function PatientSearch({ defaultPageSize, ...props }) {
   const { practiceId } = useContext(UserContext);
-  const { errorState, handleError, handleClose } = useErrorHandling();
+  const { notificationState, handleErrorNotification, handleClose } =
+    useNotificationHandling();
 
   const ehrIntegration = true;
 
@@ -45,6 +46,21 @@ function PatientSearch({ defaultPageSize, ...props }) {
     setRawRows(rows.map((r, i) => ({ ...r, no: i + 1 })));
   };
 
+  const refreshData = async () => {
+    try {
+      setLoading(true);
+      const data = await getData('practice_patients', {
+        practice_id: practiceId,
+      });
+      const sortedItems = sortItems(data, sort_1, sort_2);
+      setRows(sortedItems);
+    } catch (error) {
+      handleErrorNotification(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     if (!practiceId || practiceId === '') {
       // Exit early if practiceId is empty or falsy
@@ -58,12 +74,12 @@ function PatientSearch({ defaultPageSize, ...props }) {
         setRows(sortedItems);
       })
       .catch((error) => {
-        handleError(error);
+        handleErrorNotification(error);
       })
       .finally(() => {
         setLoading(false);
       });
-  }, [practiceId, handleError]);
+  }, [practiceId, handleErrorNotification]);
 
   function sortItems(items, sort_attribute_1, sort_attribute_2) {
     return items.sort((a, b) => {
@@ -164,13 +180,13 @@ function PatientSearch({ defaultPageSize, ...props }) {
     },
   ];
 
-  if (errorState.showError) {
+  if (notificationState.showNotification) {
     return (
-      <ErrorAlert
-        severity={errorState.errorSeverity}
-        errorType={errorState.errorType}
-        errorMessage={errorState.errorMessage}
-        errorDescription={errorState.errorDescription}
+      <ShowAlert
+        severity={notificationState.severity}
+        title={notificationState.title}
+        message={notificationState.message}
+        description={notificationState.description}
         onClose={handleClose}
       />
     );
@@ -223,6 +239,7 @@ function PatientSearch({ defaultPageSize, ...props }) {
             toolbar: {
               columns,
               rows,
+              refreshData: refreshData,
               ehrIntegration, // Pass ehrIntegration as a prop to DefaultToolbar
             },
           }}

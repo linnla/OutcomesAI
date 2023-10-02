@@ -10,14 +10,15 @@ import {
   validateRequiredAttributes,
   validateIsInteger,
 } from '../../../utils/ValidationUtils';
-import ErrorAlert from '../../../utils/ErrorAlert';
-import { useErrorHandling } from '../../../utils/ErrorHandling';
+import ShowAlert from '../../../utils/ShowAlert';
+import { useNotificationHandling } from '../../../utils/NotificationHandling';
 
 // *************** CUSTOMIZE ************** START
 
 export default function OfficesGrid() {
   const { role, practiceId } = useContext(UserContext);
-  const { errorState, handleError, handleClose } = useErrorHandling();
+  const { notificationState, handleErrorNotification, handleClose } =
+    useNotificationHandling();
 
   const title = 'Offices';
   let subtitle = `View ${title}`;
@@ -96,7 +97,7 @@ export default function OfficesGrid() {
     return {
       id: newId,
       name: '',
-      ehr_id: '',
+      ehr_id: null,
       postal_code: '',
       status: 'Active',
       virtual: false,
@@ -129,12 +130,12 @@ export default function OfficesGrid() {
         setRows(sortedItems);
       })
       .catch((error) => {
-        handleError(error);
+        handleErrorNotification(error);
       })
       .finally(() => {
         setLoading(false);
       });
-  }, [practiceId, handleError]);
+  }, [practiceId, handleErrorNotification]);
 
   function sortItems(items, sort_attribute_1, sort_attribute_2) {
     return items.sort((a, b) => {
@@ -155,7 +156,7 @@ export default function OfficesGrid() {
   async function validateRow(newRow, oldRows) {
     try {
       validateRequiredAttributes(requiredAttributes, attributeNames, newRow);
-      if (newRow['ehr_id'] !== '') {
+      if (newRow['ehr_id'] !== '' && newRow['ehr_id'] !== null) {
         validateIsInteger('EHR ID', newRow['ehr_id']);
       }
       validatePostalCodeFormat(newRow.postal_code);
@@ -228,13 +229,13 @@ export default function OfficesGrid() {
     }
   }
 
-  if (errorState.showError) {
+  if (notificationState.showNotification) {
     return (
-      <ErrorAlert
-        severity={errorState.errorSeverity}
-        errorType={errorState.errorType}
-        errorMessage={errorState.errorMessage}
-        errorDescription={errorState.errorDescription}
+      <ShowAlert
+        severity={notificationState.severity}
+        title={notificationState.title}
+        message={notificationState.message}
+        description={notificationState.description}
         onClose={handleClose}
       />
     );

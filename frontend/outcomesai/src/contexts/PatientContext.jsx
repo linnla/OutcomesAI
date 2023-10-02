@@ -22,7 +22,7 @@ const staticDefaultPatient = {
   state: '',
   state_code: '',
   country_code: '',
-  ehr_id: '',
+  ehr_id: null,
   chart_id: '',
   status: '',
   created_at: '',

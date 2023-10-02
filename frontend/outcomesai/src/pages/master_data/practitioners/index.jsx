@@ -7,14 +7,16 @@ import { getData, postData, putData, deleteData } from '../../../utils/API';
 import {
   validateRequiredAttributes,
   validateEmail,
+  validateIsInteger,
 } from '../../../utils/ValidationUtils';
-import ErrorAlert from '../../../utils/ErrorAlert';
-import { useErrorHandling } from '../../../utils/ErrorHandling';
+import ShowAlert from '../../../utils/ShowAlert';
+import { useNotificationHandling } from '../../../utils/NotificationHandling';
 
 // *************** CUSTOMIZE ************** START
 export default function PractitionersGrid() {
   const { role, practiceId } = useContext(UserContext);
-  const { errorState, handleError, handleClose } = useErrorHandling();
+  const { notificationState, handleErrorNotification, handleClose } =
+    useNotificationHandling();
 
   const title = 'Practitioners';
   let subtitle = `View ${title}`;
@@ -111,6 +113,7 @@ export default function PractitionersGrid() {
     const newId = Math.floor(100000 + Math.random() * 900000);
     return {
       id: newId,
+      ehr_id: null,
       last_name: '',
       first_name: '',
       suffix: '',
@@ -145,12 +148,12 @@ export default function PractitionersGrid() {
         setRows(sortedItems);
       })
       .catch((error) => {
-        handleError(error);
+        handleErrorNotification(error);
       })
       .finally(() => {
         setLoading(false);
       });
-  }, [practiceId, handleError]);
+  }, [practiceId, handleErrorNotification]);
 
   function formatFullName(row) {
     let fullName = '';
@@ -187,6 +190,9 @@ export default function PractitionersGrid() {
   async function validateRow(newRow, oldRow) {
     try {
       validateRequiredAttributes(requiredAttributes, attributeNames, newRow);
+      if (newRow['ehr_id'] !== '' && newRow['ehr_id'] !== null) {
+        validateIsInteger('EHR ID', newRow['ehr_id']);
+      }
       validateEmail(newRow.email);
       return newRow;
     } catch (error) {
@@ -280,13 +286,13 @@ export default function PractitionersGrid() {
     }
   }
 
-  if (errorState.showError) {
+  if (notificationState.showNotification) {
     return (
-      <ErrorAlert
-        severity={errorState.errorSeverity}
-        errorType={errorState.errorType}
-        errorMessage={errorState.errorMessage}
-        errorDescription={errorState.errorDescription}
+      <ShowAlert
+        severity={notificationState.severity}
+        title={notificationState.title}
+        message={notificationState.message}
+        description={notificationState.description}
         onClose={handleClose}
       />
     );

@@ -68,7 +68,6 @@ import { ColorModeContext, useMode } from './theme';
 import { RequireAuth } from './utils/RequireAuth';
 import { Authenticator } from '@aws-amplify/ui-react';
 import { Auth } from 'aws-amplify';
-import { OfficeProvider } from './contexts/OfficeContext';
 
 function App() {
   const [theme, colorMode] = useMode();
