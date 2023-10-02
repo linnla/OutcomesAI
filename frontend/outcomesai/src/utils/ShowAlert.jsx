@@ -60,6 +60,9 @@ function ErrorAlert({ open, onClose, title, message, description, severity }) {
 }
 
 function ShowAlert({ title, message, description, onClose, severity }) {
+  console.log('ShowAlert title:', title);
+  console.log('ShowAlert message:', message);
+
   const [isOpen, setIsOpen] = useState(true);
 
   const handleClose = () => {
