@@ -4,7 +4,6 @@ import Box from '@mui/material/Box';
 import ViewOnly from '../../../components/datagrid/viewOnly';
 import DataEntry from '../../../components/datagrid/dataEntry';
 import UserContext from '../../../contexts/UserContext';
-import OfficeContext from '../../../contexts/OfficeContext';
 import { getData, postData, putData, deleteData } from '../../../utils/API';
 import {
   validatePostalCodeFormat,
@@ -14,15 +13,14 @@ import {
   validateEmail,
 } from '../../../utils/ValidationUtils';
 import { parseUTCDate, formatDateToMMDDYYYY } from '../../../utils/DateUtils';
-
-import { createErrorMessage } from '../../../utils/ErrorMessage';
-import ErrorModal from '../../../utils/ErrorModal';
+import ErrorAlert from '../../../utils/ErrorAlert';
+import { useErrorHandling } from '../../../utils/ErrorHandling';
 
 // *************** CUSTOMIZE ************** START
 
 export default function PatientsGrid() {
   const { role, practiceId } = useContext(UserContext);
-  const { offices } = useContext(OfficeContext);
+  const { errorState, handleError, handleClose } = useErrorHandling();
 
   const title = 'Patients';
   let subtitle = `View ${title}`;
@@ -37,19 +35,15 @@ export default function PatientsGrid() {
   const requiredAttributes = [
     'last_name',
     'first_name',
-    'email',
-    'postal_code',
-    'gender',
     'birthdate',
+    'postal_code',
     'status',
   ];
   const attributeNames = [
     'Last Name',
     'First Name',
-    'Email',
-    'Postal Code',
-    'Birth Gender',
     'Birth Date',
+    'Postal Code',
     'Status',
   ];
 
@@ -60,32 +54,32 @@ export default function PatientsGrid() {
       headerName: 'Last',
       editable: true,
       cellClassName: 'name-column--cell',
-      flex: 1,
+      flex: 0.5,
     },
     {
       field: 'first_name',
       headerName: 'First',
       editable: true,
       cellClassName: 'name-column--cell',
-      flex: 1,
+      flex: 0.5,
     },
     {
       field: 'ehr_id',
       headerName: 'EHR ID',
       editable: true,
-      flex: 1,
+      flex: 0.5,
     },
     {
       field: 'chart_id',
       headerName: 'Chart ID',
       editable: true,
-      flex: 1,
+      flex: 0.5,
     },
     {
       field: 'birthdate',
       type: 'date',
       headerName: 'Birth Date',
-      flex: 1,
+      flex: 0.5,
       valueGetter: (params) => new Date(params.row.birthdate),
       renderCell: (params) => {
         if (params.value) {
@@ -106,13 +100,14 @@ export default function PatientsGrid() {
       editable: true,
     },
     {
-      field: 'gender',
+      field: 'gender_birth',
       headerName: 'Birth Gender',
       editable: true,
       headerAlign: 'center',
       align: 'center',
       type: 'singleSelect',
-      valueOptions: ['M', 'F'],
+      valueOptions: ['M', 'F', ''],
+      flex: 0.5,
     },
     {
       field: 'email',
@@ -128,6 +123,7 @@ export default function PatientsGrid() {
       headerAlign: 'center',
       align: 'center',
       editable: true,
+      flex: 0.5,
     },
     {
       field: 'status',
@@ -137,6 +133,7 @@ export default function PatientsGrid() {
       align: 'center',
       type: 'singleSelect',
       valueOptions: ['Active', 'Inactive'],
+      flex: 0.5,
     },
   ];
 
@@ -148,19 +145,18 @@ export default function PatientsGrid() {
       last_name: '',
       first_name: '',
       ehr_id: '',
+      chart_id: '',
       email: '',
       birthdate: '',
-      gender: '',
+      gender_birth: '',
+      postal_code: '',
       status: 'Active',
     };
   };
   // *************** CUSTOMIZE ************** END
 
-  const [rows, setRawRows] = useState([]);
-  const [errorType, setErrorType] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
-  const [showErrorModal, setShowErrorModal] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [rows, setRawRows] = useState([]);
 
   const setRows = (rows) => {
     if (!Array.isArray(rows)) {
@@ -178,15 +174,12 @@ export default function PatientsGrid() {
         setRows(sortedItems);
       })
       .catch((error) => {
-        const errorMessage = createErrorMessage(error, relatedTable);
-        setErrorType('Data Fetch Error');
-        setErrorMessage(errorMessage);
-        setShowErrorModal(true);
+        handleError(error);
       })
       .finally(() => {
         setLoading(false);
       });
-  }, [practiceId]);
+  }, [practiceId, handleError]);
 
   function sortItems(items, sort_attribute_1, sort_attribute_2) {
     return items.sort((a, b) => {
@@ -212,8 +205,7 @@ export default function PatientsGrid() {
       const updatedRow = { ...newRow, ...postalCodeInfo };
       return updatedRow;
     } catch (error) {
-      const errorMessage = createErrorMessage(error, table);
-      throw errorMessage;
+      throw error;
     }
   }
 
@@ -237,17 +229,13 @@ export default function PatientsGrid() {
       }
     } catch (error) {
       setRows(oldRows);
-
-      // *************** CUSTOMIZE **************
-      let fullName = `${row.first_name} ${row.last_name}`;
-      const errorMessage = createErrorMessage(error, fullName);
-      throw errorMessage;
+      throw error;
     }
   }
 
   async function episodesOfCareExists(row) {
     try {
-      const data = await getData('episodes_of_care', {
+      await getData('episodes_of_care', {
         practice_id: practiceId,
         patient_id: row.id,
       });
@@ -258,11 +246,15 @@ export default function PatientsGrid() {
   }
 
   async function deleteRow(id, row, oldRows) {
+    // Need to create an error object for this condition
     const episodeExists = await episodesOfCareExists(row);
     if (episodeExists) {
       let fullName = `${row.first_name} ${row.last_name}`;
-      const errorMessage = `${fullName} has an episode of care and cannot be deleted.\nSet the status to Inactive to hide the Patient.`;
-      throw errorMessage;
+      const customError = new Error();
+      customError.name = 'Delete Error';
+      customError.message = `${fullName} has an episode of care and cannot be deleted.`;
+      customError.stack = 'Set the status to Inactive to hide the Patient';
+      throw customError;
     }
 
     // ADD BACK FOR MULTI-TENANT
@@ -296,18 +288,18 @@ export default function PatientsGrid() {
       return row;
     } catch (error) {
       setRows(oldRows);
-      let fullName = `${row.first_name} ${row.last_name}`;
-      const errorMessage = createErrorMessage(error, fullName);
-      throw errorMessage;
+      throw error;
     }
   }
 
-  if (showErrorModal) {
+  if (errorState.showError) {
     return (
-      <ErrorModal
-        errorType={errorType}
-        errorMessage={errorMessage}
-        onClose={() => setShowErrorModal(false)}
+      <ErrorAlert
+        severity={errorState.errorSeverity}
+        errorType={errorState.errorType}
+        errorMessage={errorState.errorMessage}
+        errorDescription={errorState.errorDescription}
+        onClose={handleClose}
       />
     );
   }

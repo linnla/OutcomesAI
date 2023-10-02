@@ -54,9 +54,9 @@ def create_error_response(error_message):
     except Exception as e:
         error_description = str(e)
         body = {
-            "errorType": "create_error_response",
-            "errorMessage": "database_crud.py",
-            "errorDescription": error_description,
+            "errorType": e.get("errorType", "create error response error"),
+            "errorMessage": e.get("errorMessage", "database_crud.py"),
+            "errorDescription": e.get("errorDescription", "Unknown error"),
         }
 
     response = {"statusCode": 400, "headers": headers, "body": dumps(body)}
@@ -75,9 +75,9 @@ def select_reference_table(event, entity_class):
     except Exception as e:
         error_description = str(e)
         body = {
-            "errorType": "select_reference_table exception",
-            "errorMessage": "database_crud.py",
-            "errorDescription": error_description,
+            "errorType": e.get("errorType", "select reference table error"),
+            "errorMessage": e.get("errorMessage", "database_crud.py"),
+            "errorDescription": e.get("errorDescription", "Unknown error"),
         }
         response = {"statusCode": 500, "headers": headers, "body": dumps(body)}
 
@@ -133,10 +133,12 @@ def select(event, entity_class, required_params, all_params):
 
     except Exception as e:
         error_description = str(e)
+        print(str(e))
+        print(e)
         body = {
-            "errorType": "select exception",
-            "errorMessage": "database_crud.py",
-            "errorDescription": error_description,
+            "errorType": e.get("errorType", "select error"),
+            "errorMessage": e.get("errorMessage", "database_crud.py"),
+            "errorDescription": e.get("errorDescription", "Unknown error"),
         }
         response = {"statusCode": 500, "headers": headers, "body": dumps(body)}
 
@@ -179,9 +181,9 @@ def create(event, entity_class, required_fields, allowed_fields):
     except Exception as e:
         error_description = str(e)
         body = {
-            "errorType": "create exception",
-            "errorMessage": "database_crud.py",
-            "errorDescription": error_description,
+            "errorType": e.get("errorType", "create error"),
+            "errorMessage": e.get("errorMessage", "database_crud.py"),
+            "errorDescription": e.get("errorDescription", "Unknown error"),
         }
         response = {"statusCode": 500, "headers": headers, "body": dumps(body)}
 
@@ -230,9 +232,9 @@ def update(event, entity_class, required_fields, allowed_fields, non_null_fields
     except Exception as e:
         error_description = str(e)
         body = {
-            "errorType": "update exception",
-            "errorMessage": "database_crud.py",
-            "errorDescription": error_description,
+            "errorType": e.get("errorType", "update error"),
+            "errorMessage": e.get("errorMessage", "database_crud.py"),
+            "errorDescription": e.get("errorDescription", "Unknown error"),
         }
         response = {"statusCode": 500, "headers": headers, "body": dumps(body)}
 
@@ -280,9 +282,9 @@ def delete(event, entity_class, required_fields):
     except Exception as e:
         error_description = str(e)
         body = {
-            "errorType": "delete exception",
-            "errorMessage": "database_crud.py",
-            "errorDescription": error_description,
+            "errorType": e.get("errorType", "delete error"),
+            "errorMessage": e.get("errorMessage", "database_crud.py"),
+            "errorDescription": e.get("errorDescription", "Unknown error"),
         }
         response = {"statusCode": 500, "headers": headers, "body": dumps(body)}
 

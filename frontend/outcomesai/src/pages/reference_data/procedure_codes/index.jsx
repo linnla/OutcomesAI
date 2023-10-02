@@ -6,12 +6,13 @@ import ViewOnly from '../../../components/datagrid/viewOnly';
 import UserContext from '../../../contexts/UserContext';
 import { getData, postData, putData, deleteData } from '../../../utils/API';
 import { validateRequiredAttributes } from '../../../utils/ValidationUtils';
-import { createErrorMessage } from '../../../utils/ErrorMessage';
-import ErrorModal from '../../../utils/ErrorModal';
+import ErrorAlert from '../../../utils/ErrorAlert';
+import { useErrorHandling } from '../../../utils/ErrorHandling';
 
 // *************** CUSTOMIZE ************** START
 export default function ProcedureCodesGrid() {
   const { role } = useContext(UserContext);
+  const { errorState, handleError, handleClose } = useErrorHandling();
 
   const title = 'Procedure Codes';
   let subtitle = `View ${title}`;
@@ -55,11 +56,10 @@ export default function ProcedureCodesGrid() {
   }
   // *************** CUSTOMIZE ************** END
 
-  const [rows, setRawRows] = useState([]);
-  const [errorType, setErrorType] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
-  const [showErrorModal, setShowErrorModal] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [rows, setRawRows] = useState([]);
+  const [relatedData, setRelatedData] = useState([]);
+  const [relatedObjects, setRelatedObjects] = useState([]);
 
   const setRows = (rows) => {
     if (!Array.isArray(rows)) {
@@ -78,18 +78,12 @@ export default function ProcedureCodesGrid() {
         setRows(sortedItems);
       })
       .catch((error) => {
-        const errorMessage = createErrorMessage(error, table);
-        setErrorType('Data Fetch Error');
-        setErrorMessage(errorMessage);
-        setShowErrorModal(true);
+        handleError(error);
       })
       .finally(() => {
         setLoading(false);
       });
-  }, []);
-
-  const [relatedData, setRelatedData] = useState([]);
-  const [relatedObjects, setRelatedObjects] = useState([]);
+  }, [handleError, relatedData]);
 
   useEffect(() => {
     setLoading(true);
@@ -102,15 +96,12 @@ export default function ProcedureCodesGrid() {
         setRelatedObjects(data);
       })
       .catch((error) => {
-        const errorMessage = createErrorMessage(error, relatedTable);
-        setErrorType('Error fetching data');
-        setErrorMessage(errorMessage);
-        setShowErrorModal(true);
+        handleError(error);
       })
       .finally(() => {
         setLoading(false);
       });
-  }, []);
+  }, [handleError]);
 
   // These need to load after the related data useEffect
   const columns = [
@@ -194,8 +185,7 @@ export default function ProcedureCodesGrid() {
       validateRequiredAttributes(requiredAttributes, attributeNames, newRow);
       return newRow;
     } catch (error) {
-      const errorMessage = createErrorMessage(error, table);
-      throw errorMessage;
+      throw error;
     }
   }
 
@@ -216,11 +206,7 @@ export default function ProcedureCodesGrid() {
       }
     } catch (error) {
       setRows(oldRows);
-      const errorMessage = createErrorMessage(
-        error,
-        row.procedure_category_name
-      );
-      throw errorMessage;
+      throw error;
     }
   }
 
@@ -235,17 +221,18 @@ export default function ProcedureCodesGrid() {
       return 'Deleted';
     } catch (error) {
       setRows(oldRows);
-      const errorMessage = createErrorMessage(error, row.name);
-      throw errorMessage;
+      throw error;
     }
   }
 
-  if (showErrorModal) {
+  if (errorState.showError) {
     return (
-      <ErrorModal
-        errorType={errorType}
-        errorMessage={errorMessage}
-        onClose={() => setShowErrorModal(false)}
+      <ErrorAlert
+        severity={errorState.errorSeverity}
+        errorType={errorState.errorType}
+        errorMessage={errorState.errorMessage}
+        errorDescription={errorState.errorDescription}
+        onClose={handleClose}
       />
     );
   }

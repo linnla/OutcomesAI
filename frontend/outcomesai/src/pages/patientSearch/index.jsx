@@ -8,15 +8,16 @@ import Header from '../../components/Header';
 import { useTheme } from '@mui/material';
 import React from 'react';
 import DefaultToolbar from './DefaultToolbar.jsx';
-import { createErrorMessage } from '../../utils/ErrorMessage';
-import ErrorModal from '../../utils/ErrorModal';
 import { tokens } from '../../theme';
 import { parseUTCDate, formatDateToMMDDYYYY } from '../../utils/DateUtils';
 import { getData } from '../../utils/API';
 import UserContext from '../../contexts/UserContext';
+import ErrorAlert from '../../utils/ErrorAlert';
+import { useErrorHandling } from '../../utils/ErrorHandling';
 
 function PatientSearch({ defaultPageSize, ...props }) {
-  const { role, practiceId } = useContext(UserContext);
+  const { practiceId } = useContext(UserContext);
+  const { errorState, handleError, handleClose } = useErrorHandling();
 
   const ehrIntegration = true;
 
@@ -32,11 +33,7 @@ function PatientSearch({ defaultPageSize, ...props }) {
   const sort_2 = 'first_name';
 
   const [rows, setRawRows] = useState([]);
-  const [errorType, setErrorType] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
-  const [showErrorModal, setShowErrorModal] = useState(false);
   const [loading, setLoading] = useState(true);
-
   //pagination
   const [pageSize, setPageSize] = useState(defaultPageSize);
 
@@ -55,29 +52,18 @@ function PatientSearch({ defaultPageSize, ...props }) {
     }
 
     setLoading(true);
-    if (typeof practiceId === 'string') {
-      console.log('practiceId is a string:', practiceId);
-    } else if (typeof practiceId === 'number') {
-      console.log('practiceId is a number:', practiceId);
-    } else {
-      console.log('practiceId is a number:', practiceId);
-    }
-
     getData(table, { practice_id: practiceId })
       .then((data) => {
         const sortedItems = sortItems(data, sort_1, sort_2);
         setRows(sortedItems);
       })
       .catch((error) => {
-        const errorMessage = createErrorMessage(error, table);
-        setErrorType('Data Fetch Error');
-        setErrorMessage(errorMessage);
-        setShowErrorModal(true);
+        handleError(error);
       })
       .finally(() => {
         setLoading(false);
       });
-  }, [practiceId]);
+  }, [practiceId, handleError]);
 
   function sortItems(items, sort_attribute_1, sort_attribute_2) {
     return items.sort((a, b) => {
@@ -107,25 +93,29 @@ function PatientSearch({ defaultPageSize, ...props }) {
       field: 'last_name',
       headerName: 'Last',
       cellClassName: 'name-column--cell',
-      flex: 1,
+      flex: 0.5,
     },
     {
       field: 'first_name',
       headerName: 'First',
       cellClassName: 'name-column--cell',
-      flex: 1,
+      flex: 0.5,
     },
     {
       field: 'chart_id',
       headerName: 'Chart ID',
       cellClassName: 'name-column--cell',
-      flex: 1,
+      headerAlign: 'left',
+      align: 'left',
+      flex: 0.5,
     },
     {
       field: 'birthdate',
       type: 'date',
       headerName: 'Birth Date',
-      flex: 1,
+      headerAlign: 'left',
+      align: 'left',
+      flex: 0.5,
       valueGetter: (params) => new Date(params.row.birthdate),
       renderCell: (params) => {
         if (params.value) {
@@ -149,7 +139,7 @@ function PatientSearch({ defaultPageSize, ...props }) {
       headerName: 'Birth Gender',
       headerAlign: 'center',
       align: 'center',
-      flex: 1,
+      flex: 0.33,
     },
     {
       field: 'email',
@@ -163,23 +153,25 @@ function PatientSearch({ defaultPageSize, ...props }) {
       headerName: 'City',
       headerAlign: 'center',
       align: 'center',
-      flex: 1,
+      flex: 0.5,
     },
     {
       field: 'status',
       headerName: 'Status',
       headerAlign: 'center',
       align: 'center',
-      flex: 1,
+      flex: 0.5,
     },
   ];
 
-  if (showErrorModal) {
+  if (errorState.showError) {
     return (
-      <ErrorModal
-        errorType={errorType}
-        errorMessage={errorMessage}
-        onClose={() => setShowErrorModal(false)}
+      <ErrorAlert
+        severity={errorState.errorSeverity}
+        errorType={errorState.errorType}
+        errorMessage={errorState.errorMessage}
+        errorDescription={errorState.errorDescription}
+        onClose={handleClose}
       />
     );
   }
@@ -223,6 +215,7 @@ function PatientSearch({ defaultPageSize, ...props }) {
           rows={rows}
           columns={columns}
           onRowClick={handleRowClick}
+          loading={loading}
           slots={{
             toolbar: ehrIntegration ? DefaultToolbar : undefined, // Conditionally render DefaultToolbar
           }}

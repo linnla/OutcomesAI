@@ -17,7 +17,8 @@ import {
 
 import DefaultToolbar from './DefaultToolbar';
 import { useEffect, useState } from 'react';
-import ErrorModal from '../../../utils/ErrorModal';
+import ErrorAlert from '../../../utils/ErrorAlert';
+import { useErrorHandling } from '../../../utils/ErrorHandling';
 
 function DataEntry({
   title,
@@ -33,14 +34,11 @@ function DataEntry({
 }) {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const { errorState, handleError, handleClose } = useErrorHandling();
 
   const apiRef = useGridApiRef();
   const [internalRows, setInternalRows] = useState(rows);
   const [rowModesModel, setRowModesModel] = useState({});
-
-  const [errorType, setErrorType] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
-  const [showErrorModal, setShowErrorModal] = useState(false);
 
   useEffect(() => {
     setInternalRows(rows);
@@ -79,10 +77,7 @@ function DataEntry({
       }
       //console.log('handleDeleteClick delete response', deleteResponse);
     } catch (error) {
-      console.error('handleDeleteClick error', error);
-      setErrorType('Delete Error');
-      setErrorMessage(error || 'Unknown error');
-      setShowErrorModal(true);
+      handleError(error);
     }
   };
 
@@ -100,18 +95,38 @@ function DataEntry({
   };
 
   const handleProcessRowUpdateError = React.useCallback((error) => {
-    console.error('handleProcessRowUpdateError:', error);
-    setErrorType('Data Error');
-    setErrorMessage(error || 'Unknown error');
-    setShowErrorModal(true);
+    //console.error('handleProcessRowUpdateError:', error);
+    //console.log('error.name:', error.name);
+    //console.log('error.message:', error.message);
+    //console.log('error.stack:', error.stack);
+
+    // Its an axios error
+    if (
+      error.response &&
+      error.response.data &&
+      error.response.data.errorType
+    ) {
+      handleError(error);
+    } else {
+      const newError = new Error(error.message); // Create an Error object with a message
+      newError.name = error.name; // Set the name property
+      handleError(newError);
+    }
   }, []);
 
   const processRowUpdate = async (newRow) => {
-    //console.log('processRowUpdate newRow', newRow);
     const updatedRow = { ...newRow };
+    console.log('processRowUpdate updatedRow beginning:', updatedRow);
     if (!updatedRow.isNew) updatedRow.isNew = false;
-    const oldRow = internalRows.find((r) => r.id === updatedRow.id);
 
+    // When an error is displayed, this code makes sure the previous input data
+    // remains on the row so the user can fix the mistake and not have to re-input
+    // all information again
+    setInternalRows(
+      internalRows.map((row) => (row.id === newRow.id ? updatedRow : row))
+    );
+
+    const oldRow = internalRows.find((r) => r.id === updatedRow.id);
     // If its not a new row and it hasn't changed, don't save the row
     if (updatedRow.isNew === false) {
       if (deepEqual(newRow, oldRow)) {
@@ -124,7 +139,7 @@ function DataEntry({
 
     //console.log('updatedRow', updatedRow);
     try {
-      const validatedRow = await onValidateRow(updatedRow, oldRow);
+      const validatedRow = await onValidateRow(updatedRow);
       const savedRow = await onSaveRow(
         validatedRow.id,
         validatedRow,
@@ -135,8 +150,11 @@ function DataEntry({
       // Cannot read properties of undefined (reading 'id') at getRowIdFromRowModel
       return savedRow;
     } catch (error) {
-      console.error('processRowUpdate', error);
-      apiRef.current.updateRows([{ id: updatedRow.id, ...oldRow }]);
+      console.log('processRowUpdate newRow:', newRow);
+      console.log('processRowUpdate oldRow:', oldRow);
+      console.log('processRowUpdate updatedRow end:', updatedRow);
+      apiRef.current.updateRows([{ id: updatedRow.id, ...newRow }]);
+      console.log('catch error rows:', rows);
       throw error;
     }
   };
@@ -212,6 +230,19 @@ function DataEntry({
 
   //pagination
   const [pageSize, setPageSize] = useState(defaultPageSize);
+
+  if (errorState.showError) {
+    return (
+      <ErrorAlert
+        severity={errorState.errorSeverity}
+        errorType={errorState.errorType}
+        errorMessage={errorState.errorMessage}
+        errorDescription={errorState.errorDescription}
+        onClose={handleClose}
+      />
+    );
+  }
+
   return (
     <Box m='20px'>
       <Header title={title} subtitle={subtitle} />
@@ -282,13 +313,6 @@ function DataEntry({
           onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
           {...props}
         />
-        {showErrorModal && (
-          <ErrorModal
-            errorType={errorType}
-            errorMessage={errorMessage}
-            onClose={() => setShowErrorModal(false)}
-          />
-        )}
       </Box>
     </Box>
   );

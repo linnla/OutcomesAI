@@ -6,12 +6,13 @@ import ViewOnly from '../../../components/datagrid/viewOnly';
 import UserContext from '../../../contexts/UserContext';
 import { getData, postData, deleteData } from '../../../utils/API';
 import { validateRequiredAttributes } from '../../../utils/ValidationUtils';
-import { createErrorMessage } from '../../../utils/ErrorMessage';
-import ErrorModal from '../../../utils/ErrorModal';
+import ErrorAlert from '../../../utils/ErrorAlert';
+import { useErrorHandling } from '../../../utils/ErrorHandling';
 
 // *************** CUSTOMIZE ************** START
 export default function PracticeTMSDevicesGrid() {
   const { role, practiceId } = useContext(UserContext);
+  const { errorState, handleError, handleClose } = useErrorHandling();
 
   const title = 'Office TMS Devices';
   let subtitle = `View ${title}`;
@@ -56,11 +57,8 @@ export default function PracticeTMSDevicesGrid() {
   ];
   // *************** CUSTOMIZE ************** END
 
-  const [rows, setRawRows] = useState([]);
-  const [errorType, setErrorType] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
-  const [showErrorModal, setShowErrorModal] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [rows, setRawRows] = useState([]);
 
   const setRows = (rows) => {
     if (!Array.isArray(rows)) {
@@ -114,16 +112,20 @@ export default function PracticeTMSDevicesGrid() {
         setRows(rowsWithId);
       })
       .catch((error) => {
-        const errorMessage = createErrorMessage(error, table);
-        setErrorType('Data Fetch Error');
-        setErrorMessage(errorMessage);
-        setShowErrorModal(true);
-        //}
+        handleError(error);
       })
       .finally(() => {
         setLoading(false);
       });
-  }, [officeNames, deviceMfgs, deviceNames, coilMfgs, coilNames]);
+  }, [
+    practiceId,
+    handleError,
+    officeNames,
+    deviceMfgs,
+    deviceNames,
+    coilMfgs,
+    coilNames,
+  ]);
 
   // Offices
   useEffect(() => {
@@ -137,16 +139,12 @@ export default function PracticeTMSDevicesGrid() {
         setOfficeObjects(activeData);
       })
       .catch((error) => {
-        console.error('offices:', error);
-        const errorMessage = createErrorMessage(error, 'offices');
-        setErrorType('Error fetching data');
-        setErrorMessage(errorMessage);
-        setShowErrorModal(true);
+        handleError(error);
       })
       .finally(() => {
         setLoading(false);
       });
-  }, [practiceId]);
+  }, [practiceId, handleError]);
 
   // Devices
   useEffect(() => {
@@ -164,16 +162,12 @@ export default function PracticeTMSDevicesGrid() {
         setDeviceObjects(data);
       })
       .catch((error) => {
-        console.error('devices:', error);
-        const errorMessage = createErrorMessage(error, 'devices');
-        setErrorType('Error fetching data');
-        setErrorMessage(errorMessage);
-        setShowErrorModal(true);
+        handleError(error);
       })
       .finally(() => {
         setLoading(false);
       });
-  }, []);
+  }, [handleError]);
 
   // Coils
   useEffect(() => {
@@ -183,24 +177,23 @@ export default function PracticeTMSDevicesGrid() {
         // Filter out rows where status is not Active
         const activeData = data.filter((row) => row.status === 'Active');
         const sortedNames = activeData.map((obj) => obj.name).sort();
+        console.log('coils Names:', sortedNames);
         setCoilNames(sortedNames);
         const sortedMfgs = [
           ...new Set(data.map((obj) => obj.manufacturer)),
         ].sort();
         setCoilMfgs(sortedMfgs);
+        console.log('coils Mfgs:', sortedMfgs);
         setCoilObjects(data);
+        console.log('coil Objects:', data);
       })
       .catch((error) => {
-        console.error('coils:', error);
-        const errorMessage = createErrorMessage(error, 'coils');
-        setErrorType('Error fetching data');
-        setErrorMessage(errorMessage);
-        setShowErrorModal(true);
+        handleError(error);
       })
       .finally(() => {
         setLoading(false);
       });
-  }, []);
+  }, [handleError]);
 
   function getRandomInt(min, max) {
     min = Math.ceil(min);
@@ -232,20 +225,17 @@ export default function PracticeTMSDevicesGrid() {
       row.id = randomNum;
       return row;
     } catch (error) {
-      let message = `${row.office_name} with ${row.device_name} device and coil ${row.coil_name}`;
-      const errorMessage = createErrorMessage(error, message);
-      throw errorMessage;
+      throw error;
     }
   }
 
-  async function saveRow(row) {
+  async function saveRow(row, oldRows) {
     try {
       await postData(table, row);
       return row;
     } catch (error) {
-      let message = `${row.office_name} with ${row.device_name} device and coil ${row.coil_name}`;
-      const errorMessage = createErrorMessage(error, message);
-      throw errorMessage;
+      setRows(oldRows); /// Not sure if this belongs here, need to test
+      throw error;
     }
   }
 
@@ -263,17 +253,18 @@ export default function PracticeTMSDevicesGrid() {
       return 'Deleted';
     } catch (error) {
       setRows(oldRows);
-      const errorMessage = createErrorMessage(error, row.name);
-      throw errorMessage;
+      throw error;
     }
   }
 
-  if (showErrorModal) {
+  if (errorState.showError) {
     return (
-      <ErrorModal
-        errorType={errorType}
-        errorMessage={errorMessage}
-        onClose={() => setShowErrorModal(false)}
+      <ErrorAlert
+        severity={errorState.errorSeverity}
+        errorType={errorState.errorType}
+        errorMessage={errorState.errorMessage}
+        errorDescription={errorState.errorDescription}
+        onClose={handleClose}
       />
     );
   }
@@ -297,7 +288,7 @@ export default function PracticeTMSDevicesGrid() {
           matchAttribute='manufacturer'
           field3Label='TMS Coil'
           field3Objects={coilObjects}
-          field3ValueAttribute='name'
+          field3ValueAttribute='manufacturer'
           attribute3='coil_name'
           onValidateRow={validateRow}
           onSaveRow={saveRow}

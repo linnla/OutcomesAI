@@ -22,14 +22,20 @@ import {
 } from '@mui/x-data-grid-premium';
 
 import DefaultToolbar from './DefaultToolbar';
-import ErrorModal from '../../../utils/ErrorModal';
+import ErrorAlert from '../../../utils/ErrorAlert';
+import { useErrorHandling } from '../../../utils/ErrorHandling';
 
 // Custom hook for handling dynamic fields' state
 function useDynamicFieldsState(fields) {
   const initialState = {};
-  fields.forEach((field) => {
-    initialState[field.attribute] = '';
-  });
+
+  // Check if fields is defined before using it
+  if (fields) {
+    fields.forEach((field) => {
+      initialState[field.attribute] = '';
+    });
+  }
+
   const [fieldStates, setFieldStates] = useState(initialState);
 
   // Handle change for a specific field
@@ -62,14 +68,11 @@ function MultiSelectFieldsDynamic({
 }) {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const { errorState, handleError, handleClose } = useErrorHandling();
 
   const apiRef = useGridApiRef();
   const [internalRows, setInternalRows] = useState(rows);
   const [rowModesModel, setRowModesModel] = useState({});
-
-  const [errorType, setErrorType] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
-  const [showErrorModal, setShowErrorModal] = useState(false);
 
   useEffect(() => {
     setInternalRows(rows);
@@ -77,9 +80,10 @@ function MultiSelectFieldsDynamic({
 
   // Custom hook to manage dynamic fields' state
   const [fieldStates, handleFieldChange, resetFieldStates] =
-    useDynamicFieldsState(fields);
+    //useDynamicFieldsState(fields);
+    useDynamicFieldsState(fields || []);
 
-  const handleClick = async () => {
+  const handleSaveClick = async () => {
     const newRow = {};
     // Populate newRow object with selected values from fieldStates
     fields.forEach((field) => {
@@ -94,9 +98,7 @@ function MultiSelectFieldsDynamic({
       setInternalRows((rows) => [...rows, validatedRow]);
       resetFieldStates(); // Reset field values after successful save
     } catch (error) {
-      setErrorType('Data Error');
-      setErrorMessage(error || 'Unknown error');
-      setShowErrorModal(true);
+      handleError(error);
     }
   };
 
@@ -110,10 +112,7 @@ function MultiSelectFieldsDynamic({
         setInternalRows(internalRows.filter((row) => row.id !== id));
       }
     } catch (error) {
-      console.error('handleDeleteClick error', error);
-      setErrorType('Delete Error');
-      setErrorMessage(error || 'Unknown error');
-      setShowErrorModal(true);
+      handleError(error);
     }
   };
 
@@ -141,43 +140,58 @@ function MultiSelectFieldsDynamic({
   // Pagination
   const [pageSize, setPageSize] = useState(defaultPageSize);
 
+  if (errorState.showError) {
+    return (
+      <ErrorAlert
+        severity={errorState.errorSeverity}
+        errorType={errorState.errorType}
+        errorMessage={errorState.errorMessage}
+        errorDescription={errorState.errorDescription}
+        onClose={handleClose}
+      />
+    );
+  }
+
   return (
     <Box m='20px'>
       <Header title={title} subtitle={subtitle} />
 
       {/* Multi-select data fields */}
       <Box display='flex' gap='20px' my='20px'>
-        {fields.map((field, index) => (
-          <FormControl
-            key={field.label}
-            variant='outlined'
-            style={{ flex: `1 0 calc(30% - 10px)` }}
-          >
-            <InputLabel>{field.label}</InputLabel>
-            <Select
-              value={fieldStates[field.attribute] || '#####'}
-              onChange={(event) =>
-                handleFieldChange(field.attribute, event.target.value)
-              }
-              label={field.label}
-              disabled={index > 0 && !fieldStates[fields[index - 1].attribute]}
+        {Array.isArray(fields) &&
+          fields.map((field, index) => (
+            <FormControl
+              key={field.label}
+              variant='outlined'
+              style={{ flex: `1 0 calc(30% - 10px)` }}
             >
-              <MenuItem value='' disabled>
-                <em>Select {field.label}</em>
-              </MenuItem>
-              {field.options.map((option) => (
-                <MenuItem key={option} value={option}>
-                  {option}
+              <InputLabel>{field.label}</InputLabel>
+              <Select
+                value={fieldStates[field.attribute] || '#####'}
+                onChange={(event) =>
+                  handleFieldChange(field.attribute, event.target.value)
+                }
+                label={field.label}
+                disabled={
+                  index > 0 && !fieldStates[fields[index - 1].attribute]
+                }
+              >
+                <MenuItem value='' disabled>
+                  <em>Select {field.label}</em>
                 </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-        ))}
+                {field.options.map((option) => (
+                  <MenuItem key={option} value={option}>
+                    {option}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          ))}
 
         <Button
           color='secondary'
           startIcon={<AddIcon />}
-          onClick={handleClick}
+          onClick={handleSaveClick}
           style={{ flex: '0 0 auto' }}
         >
           Add record
@@ -233,13 +247,6 @@ function MultiSelectFieldsDynamic({
           onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
           {...props}
         />
-        {showErrorModal && (
-          <ErrorModal
-            errorType={errorType}
-            errorMessage={errorMessage}
-            onClose={() => setShowErrorModal(false)}
-          />
-        )}
       </Box>
     </Box>
   );

@@ -5,12 +5,13 @@ import ViewOnly from '../../../components/datagrid/viewOnly';
 import UserContext from '../../../contexts/UserContext';
 import { getData, postData, putData, deleteData } from '../../../utils/API';
 import { validateRequiredAttributes } from '../../../utils/ValidationUtils';
-import { createErrorMessage } from '../../../utils/ErrorMessage';
-import ErrorModal from '../../../utils/ErrorModal';
+import ErrorAlert from '../../../utils/ErrorAlert';
+import { useErrorHandling } from '../../../utils/ErrorHandling';
 
 // *************** CUSTOMIZE ************** START
 export default function IntegrationTypesGrid() {
   const { role } = useContext(UserContext);
+  const { errorState, handleError, handleClose } = useErrorHandling();
 
   const title = 'Integration Types';
   let subtitle = `View ${title}`;
@@ -55,11 +56,8 @@ export default function IntegrationTypesGrid() {
   };
   // *************** CUSTOMIZE ************** END
 
-  const [rows, setRawRows] = useState([]);
-  const [errorType, setErrorType] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
-  const [showErrorModal, setShowErrorModal] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [rows, setRawRows] = useState([]);
 
   const setRows = (rows) => {
     if (!Array.isArray(rows)) {
@@ -78,15 +76,12 @@ export default function IntegrationTypesGrid() {
         setRows(sortedItems);
       })
       .catch((error) => {
-        const errorMessage = createErrorMessage(error, table);
-        setErrorType('Error fetching data');
-        setErrorMessage(errorMessage);
-        setShowErrorModal(true);
+        handleError(error);
       })
       .finally(() => {
         setLoading(false);
       });
-  }, []);
+  }, [handleError]);
 
   function sortItems(items, sort_attribute_1, sort_attribute_2) {
     return items.sort((a, b) => {
@@ -109,8 +104,7 @@ export default function IntegrationTypesGrid() {
       validateRequiredAttributes(requiredAttributes, attributeNames, newRow);
       return newRow;
     } catch (error) {
-      const errorMessage = createErrorMessage(error, table);
-      throw errorMessage;
+      throw error;
     }
   }
 
@@ -132,8 +126,7 @@ export default function IntegrationTypesGrid() {
       }
     } catch (error) {
       setRows(oldRows);
-      const errorMessage = createErrorMessage(error, row.name);
-      throw errorMessage;
+      throw error;
     }
   }
 
@@ -148,17 +141,18 @@ export default function IntegrationTypesGrid() {
       return 'Deleted';
     } catch (error) {
       setRows(oldRows);
-      const errorMessage = createErrorMessage(error, row.name);
-      throw errorMessage;
+      throw error;
     }
   }
 
-  if (showErrorModal) {
+  if (errorState.showError) {
     return (
-      <ErrorModal
-        errorType={errorType}
-        errorMessage={errorMessage}
-        onClose={() => setShowErrorModal(false)}
+      <ErrorAlert
+        severity={errorState.errorSeverity}
+        errorType={errorState.errorType}
+        errorMessage={errorState.errorMessage}
+        errorDescription={errorState.errorDescription}
+        onClose={handleClose}
       />
     );
   }

@@ -6,13 +6,14 @@ import ViewOnly from '../../../components/datagrid/viewOnly';
 import UserContext from '../../../contexts/UserContext';
 import { getData, postData, putData, deleteData } from '../../../utils/API';
 import { validateRequiredAttributes } from '../../../utils/ValidationUtils';
-import { createErrorMessage } from '../../../utils/ErrorMessage';
-import ErrorModal from '../../../utils/ErrorModal';
 import { GridEditInputCell } from '@mui/x-data-grid-premium';
+import ErrorAlert from '../../../utils/ErrorAlert';
+import { useErrorHandling } from '../../../utils/ErrorHandling';
 
 // *************** CUSTOMIZE **************
 export default function TMSProtocolGrid() {
-  const { role, practiceId } = useContext(UserContext);
+  const { role } = useContext(UserContext);
+  const { errorState, handleError, handleClose } = useErrorHandling();
 
   const title = 'TMS Protocols';
   let subtitle = `View ${title}`;
@@ -60,11 +61,8 @@ export default function TMSProtocolGrid() {
 
   // *************** CUSTOMIZE **************
 
-  const [rows, setRawRows] = useState([]);
-  const [errorType, setErrorType] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
-  const [showErrorModal, setShowErrorModal] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [rows, setRawRows] = useState([]);
 
   const setRows = (rows) => {
     if (!Array.isArray(rows)) {
@@ -109,15 +107,17 @@ export default function TMSProtocolGrid() {
         setRows(sortedItems);
       })
       .catch((error) => {
-        const errorMessage = createErrorMessage(error, table);
-        setErrorType('Data Fetch Error');
-        setErrorMessage(errorMessage);
-        setShowErrorModal(true);
+        handleError(error);
       })
       .finally(() => {
         setLoading(false);
       });
-  }, [pulseTypeObjects, stimulationSitesObjects, frequencyObjects]);
+  }, [
+    handleError,
+    pulseTypeObjects,
+    stimulationSitesObjects,
+    frequencyObjects,
+  ]);
 
   // TMS Pulse Types
   useEffect(() => {
@@ -131,16 +131,12 @@ export default function TMSProtocolGrid() {
         setPulseTypeObjects(activeData);
       })
       .catch((error) => {
-        console.error('tms_pulse_types', error);
-        const errorMessage = createErrorMessage(error, 'tms_pulse_types');
-        setErrorType('Error fetching data');
-        setErrorMessage(errorMessage);
-        setShowErrorModal(true);
+        handleError(error);
       })
       .finally(() => {
         setLoading(false);
       });
-  }, []);
+  }, [handleError]);
 
   // TMS Stimulation Sites
   useEffect(() => {
@@ -154,16 +150,12 @@ export default function TMSProtocolGrid() {
         setStimulationSiteObjects(activeData);
       })
       .catch((error) => {
-        console.error('tms_stimulation_sites', error);
-        const errorMessage = createErrorMessage(error, 'tms_stimulation_sites');
-        setErrorType('Error fetching data');
-        setErrorMessage(errorMessage);
-        setShowErrorModal(true);
+        handleError(error);
       })
       .finally(() => {
         setLoading(false);
       });
-  }, []);
+  }, [handleError]);
 
   // TMS Frequencies
   useEffect(() => {
@@ -177,16 +169,12 @@ export default function TMSProtocolGrid() {
         setFrequencyObjects(activeData);
       })
       .catch((error) => {
-        console.error('tms_frequencies', error);
-        const errorMessage = createErrorMessage(error, 'tms_frequencies');
-        setErrorType('Error fetching data');
-        setErrorMessage(errorMessage);
-        setShowErrorModal(true);
+        handleError(error);
       })
       .finally(() => {
         setLoading(false);
       });
-  }, []);
+  }, [handleError]);
 
   async function validateRow(newRow, oldRow) {
     try {
@@ -218,10 +206,10 @@ export default function TMSProtocolGrid() {
         );
         newRow.frequency_id = frequencyObject.id;
       }
+      validateRequiredAttributes(requiredAttributes, attributeNames, newRow);
       return newRow;
     } catch (error) {
-      const errorMessage = createErrorMessage(error, table);
-      throw errorMessage;
+      throw error;
     }
   }
 
@@ -327,8 +315,7 @@ export default function TMSProtocolGrid() {
       }
     } catch (error) {
       setRows(oldRows);
-      const errorMessage = createErrorMessage(error, row.name);
-      throw errorMessage;
+      throw error;
     }
   }
 
@@ -343,17 +330,18 @@ export default function TMSProtocolGrid() {
       return 'Deleted';
     } catch (error) {
       setRows(oldRows);
-      const errorMessage = createErrorMessage(error, row.name);
-      throw errorMessage;
+      throw error;
     }
   }
 
-  if (showErrorModal) {
+  if (errorState.showError) {
     return (
-      <ErrorModal
-        errorType={errorType}
-        errorMessage={errorMessage}
-        onClose={() => setShowErrorModal(false)}
+      <ErrorAlert
+        severity={errorState.errorSeverity}
+        errorType={errorState.errorType}
+        errorMessage={errorState.errorMessage}
+        errorDescription={errorState.errorDescription}
+        onClose={handleClose}
       />
     );
   }

@@ -8,14 +8,16 @@ import {
   validatePostalCodeFormat,
   validatePostalCodeExists,
   validateRequiredAttributes,
+  validateIsInteger,
 } from '../../../utils/ValidationUtils';
-import { createErrorMessage } from '../../../utils/ErrorMessage';
-import ErrorModal from '../../../utils/ErrorModal';
+import ErrorAlert from '../../../utils/ErrorAlert';
+import { useErrorHandling } from '../../../utils/ErrorHandling';
 
 // *************** CUSTOMIZE ************** START
 
 export default function OfficesGrid() {
   const { role, practiceId } = useContext(UserContext);
+  const { errorState, handleError, handleClose } = useErrorHandling();
 
   const title = 'Offices';
   let subtitle = `View ${title}`;
@@ -94,17 +96,16 @@ export default function OfficesGrid() {
     return {
       id: newId,
       name: '',
+      ehr_id: '',
+      postal_code: '',
       status: 'Active',
       virtual: false,
     };
   }
   // *************** CUSTOMIZE ************** END
 
-  const [rows, setRawRows] = useState([]);
-  const [errorType, setErrorType] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
-  const [showErrorModal, setShowErrorModal] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [rows, setRawRows] = useState([]);
 
   const setRows = (rows) => {
     if (!Array.isArray(rows)) {
@@ -128,15 +129,12 @@ export default function OfficesGrid() {
         setRows(sortedItems);
       })
       .catch((error) => {
-        const errorMessage = createErrorMessage(error, table);
-        setErrorType('Data Fetch Error');
-        setErrorMessage(errorMessage);
-        setShowErrorModal(true);
+        handleError(error);
       })
       .finally(() => {
         setLoading(false);
       });
-  }, [practiceId]);
+  }, [practiceId, handleError]);
 
   function sortItems(items, sort_attribute_1, sort_attribute_2) {
     return items.sort((a, b) => {
@@ -154,16 +152,20 @@ export default function OfficesGrid() {
     });
   }
 
-  async function validateRow(newRow, oldRow) {
+  async function validateRow(newRow, oldRows) {
     try {
       validateRequiredAttributes(requiredAttributes, attributeNames, newRow);
+      if (newRow['ehr_id'] !== '') {
+        validateIsInteger('EHR ID', newRow['ehr_id']);
+      }
       validatePostalCodeFormat(newRow.postal_code);
       const postalCodeInfo = await validatePostalCodeExists(newRow.postal_code);
       const updatedRow = { ...newRow, ...postalCodeInfo };
       return updatedRow;
     } catch (error) {
-      const errorMessage = createErrorMessage(error, table);
-      throw errorMessage;
+      //console.log('validate row error:', error);
+
+      throw error;
     }
   }
 
@@ -183,17 +185,15 @@ export default function OfficesGrid() {
         return row;
       }
     } catch (error) {
+      console.log('index.jsx error', error);
       setRows(oldRows);
-
-      // *************** CUSTOMIZE **************
-      const errorMessage = createErrorMessage(error, row.name);
-      throw errorMessage;
+      throw error;
     }
   }
 
   async function episodesOfCareExists(row) {
     try {
-      const data = await getData('episodes_of_care', {
+      await getData('episodes_of_care', {
         practice_id: practiceId,
         office_id: row.id,
       });
@@ -204,10 +204,13 @@ export default function OfficesGrid() {
   }
 
   async function deleteRow(id, row, oldRows) {
+    // Need to create an error object for this condition
     const episodeExists = await episodesOfCareExists(row);
     if (episodeExists) {
-      const errorMessage = `The ${row.name} office has treated patients and cannot be deleted.\nSet the status to Inactive to hide the Office.`;
-      throw errorMessage;
+      const customError = new Error();
+      customError.name = 'Delete Error';
+      customError.message = `The ${row.name} office has treated patients and cannot be deleted.\nSet the status to Inactive to hide the Office.`;
+      throw customError;
     }
 
     const body = {
@@ -221,19 +224,18 @@ export default function OfficesGrid() {
       return 'Deleted';
     } catch (error) {
       setRows(oldRows);
-
-      // *************** CUSTOMIZE **************
-      const errorMessage = createErrorMessage(error, row.name);
-      throw errorMessage;
+      throw error;
     }
   }
 
-  if (showErrorModal) {
+  if (errorState.showError) {
     return (
-      <ErrorModal
-        errorType={errorType}
-        errorMessage={errorMessage}
-        onClose={() => setShowErrorModal(false)}
+      <ErrorAlert
+        severity={errorState.errorSeverity}
+        errorType={errorState.errorType}
+        errorMessage={errorState.errorMessage}
+        errorDescription={errorState.errorDescription}
+        onClose={handleClose}
       />
     );
   }

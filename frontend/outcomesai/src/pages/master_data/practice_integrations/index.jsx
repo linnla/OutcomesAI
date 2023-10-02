@@ -1,18 +1,18 @@
 import * as React from 'react';
 import '../../../index.css';
 import { useEffect, useState, useContext } from 'react';
-import EditOnly from '../../../components/datagrid/editOnly';
 import DataEntry from '../../../components/datagrid/dataEntry';
 import ViewOnly from '../../../components/datagrid/viewOnly';
 import UserContext from '../../../contexts/UserContext';
 import { getData, postData, putData, deleteData } from '../../../utils/API';
 import { validateRequiredAttributes } from '../../../utils/ValidationUtils';
-import { createErrorMessage } from '../../../utils/ErrorMessage';
-import ErrorModal from '../../../utils/ErrorModal';
+import ErrorAlert from '../../../utils/ErrorAlert';
+import { useErrorHandling } from '../../../utils/ErrorHandling';
 
 // *************** CUSTOMIZE ************** START
 export default function PracticeIntegrationsGrid() {
   const { role, practiceId } = useContext(UserContext);
+  const { errorState, handleError, handleClose } = useErrorHandling();
 
   const title = 'EHR Integrations';
   let subtitle = `View ${title}`;
@@ -53,11 +53,8 @@ export default function PracticeIntegrationsGrid() {
   }
   // *************** CUSTOMIZE ************** END
 
-  const [rows, setRawRows] = useState([]);
-  const [errorType, setErrorType] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
-  const [showErrorModal, setShowErrorModal] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [rows, setRawRows] = useState([]);
 
   const setRows = (rows) => {
     if (!Array.isArray(rows)) {
@@ -86,15 +83,12 @@ export default function PracticeIntegrationsGrid() {
         setRows(rowsWithId);
       })
       .catch((error) => {
-        const errorMessage = createErrorMessage(error, table);
-        setErrorType('Data Fetch Error');
-        setErrorMessage(errorMessage);
-        setShowErrorModal(true);
+        handleError(error);
       })
       .finally(() => {
         setLoading(false);
       });
-  }, [practiceId]);
+  }, [practiceId, handleError]);
 
   const [integrationTypeData, setIntegrationTypeData] = useState([]);
   const [integrationTypeObjects, setIntegrationTypeObjects] = useState([]);
@@ -110,15 +104,12 @@ export default function PracticeIntegrationsGrid() {
         setIntegrationTypeObjects(data);
       })
       .catch((error) => {
-        const errorMessage = createErrorMessage(error, 'integration_types');
-        setErrorType('Error fetching data');
-        setErrorMessage(errorMessage);
-        setShowErrorModal(true);
+        handleError(error);
       })
       .finally(() => {
         setLoading(false);
       });
-  }, []);
+  }, [handleError]);
 
   const [integrationVendorData, setIntegrationVendorData] = useState([]);
   const [integrationVendorObjects, setIntegrationVendorObjects] = useState([]);
@@ -134,15 +125,12 @@ export default function PracticeIntegrationsGrid() {
         setIntegrationVendorObjects(data);
       })
       .catch((error) => {
-        const errorMessage = createErrorMessage(error, 'integration_vendors');
-        setErrorType('Error fetching data');
-        setErrorMessage(errorMessage);
-        setShowErrorModal(true);
+        handleError(error);
       })
       .finally(() => {
         setLoading(false);
       });
-  }, []);
+  }, [handleError]);
 
   // These need to load after the related data useEffect
   const columns = [
@@ -171,7 +159,6 @@ export default function PracticeIntegrationsGrid() {
       editable: true,
       headerAlign: 'left',
       align: 'left',
-      editable: true,
       cellClassName: 'wrap-column--cell',
       flex: 1,
     },
@@ -229,8 +216,7 @@ export default function PracticeIntegrationsGrid() {
       console.log('newRow', newRow);
       return newRow;
     } catch (error) {
-      const errorMessage = createErrorMessage(error, table);
-      throw errorMessage;
+      throw error;
     }
   }
 
@@ -254,11 +240,7 @@ export default function PracticeIntegrationsGrid() {
       }
     } catch (error) {
       setRows(oldRows);
-      const errorMessage = createErrorMessage(
-        error,
-        row.procedure_category_name
-      );
-      throw errorMessage;
+      throw error;
     }
   }
 
@@ -273,17 +255,18 @@ export default function PracticeIntegrationsGrid() {
       return 'Deleted';
     } catch (error) {
       setRows(oldRows);
-      const errorMessage = createErrorMessage(error, row.name);
-      throw errorMessage;
+      throw error;
     }
   }
 
-  if (showErrorModal) {
+  if (errorState.showError) {
     return (
-      <ErrorModal
-        errorType={errorType}
-        errorMessage={errorMessage}
-        onClose={() => setShowErrorModal(false)}
+      <ErrorAlert
+        severity={errorState.errorSeverity}
+        errorType={errorState.errorType}
+        errorMessage={errorState.errorMessage}
+        errorDescription={errorState.errorDescription}
+        onClose={handleClose}
       />
     );
   }

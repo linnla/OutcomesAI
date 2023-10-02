@@ -25,7 +25,8 @@ import {
 
 import DefaultToolbar from './DefaultToolbar';
 import { useEffect, useState } from 'react';
-import ErrorModal from '../../../utils/ErrorModal';
+import ErrorAlert from '../../../utils/ErrorAlert';
+import { useErrorHandling } from '../../../utils/ErrorHandling';
 
 function MultiSelectFieldsFilters({
   title,
@@ -53,6 +54,7 @@ function MultiSelectFieldsFilters({
 }) {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const { errorState, handleError, handleClose } = useErrorHandling();
 
   // States for the multi-select fields
   const [field1, setField1] = useState('');
@@ -66,10 +68,6 @@ function MultiSelectFieldsFilters({
   const apiRef = useGridApiRef();
   const [internalRows, setInternalRows] = useState(rows);
   const [rowModesModel, setRowModesModel] = useState({});
-
-  const [errorType, setErrorType] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
-  const [showErrorModal, setShowErrorModal] = useState(false);
 
   useEffect(() => {
     setInternalRows(rows);
@@ -96,7 +94,7 @@ function MultiSelectFieldsFilters({
     setField3Options(names);
   }, [field3Objects, field3ValueAttribute]);
 
-  const handleClick = async () => {
+  const handleSaveClick = async () => {
     let row = {};
     row[attribute1] = field1;
     row[attribute2] = field2;
@@ -109,9 +107,7 @@ function MultiSelectFieldsFilters({
         return [...rows, validatedRow];
       });
     } catch (error) {
-      setErrorType('Data Error');
-      setErrorMessage(error || 'Unknown error');
-      setShowErrorModal(true);
+      handleError(error);
     } finally {
       setField1('');
       setField2('');
@@ -129,10 +125,7 @@ function MultiSelectFieldsFilters({
         setInternalRows(internalRows.filter((row) => row.id !== id));
       }
     } catch (error) {
-      console.error('handleDeleteClick error', error);
-      setErrorType('Delete Error');
-      setErrorMessage(error || 'Unknown error');
-      setShowErrorModal(true);
+      handleError(error);
     }
   };
 
@@ -159,6 +152,19 @@ function MultiSelectFieldsFilters({
 
   //pagination
   const [pageSize, setPageSize] = useState(defaultPageSize);
+
+  if (errorState.showError) {
+    return (
+      <ErrorAlert
+        severity={errorState.errorSeverity}
+        errorType={errorState.errorType}
+        errorMessage={errorState.errorMessage}
+        errorDescription={errorState.errorDescription}
+        onClose={handleClose}
+      />
+    );
+  }
+
   return (
     <Box m='20px'>
       <Header title={title} subtitle={subtitle} />
@@ -201,12 +207,21 @@ function MultiSelectFieldsFilters({
               );
 
               // Field 3 values presented are dependent on value selected in Field 2
+              console.log('field3Objects:', field3Objects);
+              console.log('field3ValueAttribute:', field3ValueAttribute);
+              console.log('field3Options:', field3Options);
+
               if (matchedItem) {
+                console.log('matchedItem:', matchedItem);
                 const matchValue = matchedItem[matchAttribute];
+                console.log('matchValue:', matchValue);
                 const matchedItems = field3Objects.filter(
-                  (item) => item[matchValue] === matchValue
+                  //(item) => item[matchValue] === matchValue
+                  (item) => item[field3ValueAttribute] === matchValue
                 );
+                console.log('matchedItems:', matchedItems);
                 const matchedNames = matchedItems.map((option) => option.name);
+                console.log('matchedNames:', matchedNames);
                 setField3Options(matchedNames);
               }
             }}
@@ -248,7 +263,7 @@ function MultiSelectFieldsFilters({
         <Button
           color='secondary'
           startIcon={<AddIcon />}
-          onClick={handleClick}
+          onClick={handleSaveClick}
           style={{ flex: '0 0 auto' }}
         >
           Add record
@@ -304,13 +319,6 @@ function MultiSelectFieldsFilters({
           onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
           {...props}
         />
-        {showErrorModal && (
-          <ErrorModal
-            errorType={errorType}
-            errorMessage={errorMessage}
-            onClose={() => setShowErrorModal(false)}
-          />
-        )}
       </Box>
     </Box>
   );

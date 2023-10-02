@@ -6,12 +6,13 @@ import ViewOnly from '../../../components/datagrid/viewOnly';
 import UserContext from '../../../contexts/UserContext';
 import { getData, postData, deleteData } from '../../../utils/API';
 import { validateRequiredAttributes } from '../../../utils/ValidationUtils';
-import { createErrorMessage } from '../../../utils/ErrorMessage';
-import ErrorModal from '../../../utils/ErrorModal';
+import ErrorAlert from '../../../utils/ErrorAlert';
+import { useErrorHandling } from '../../../utils/ErrorHandling';
 
 // *************** CUSTOMIZE ************** START
 export default function PracticeTMSProtocolsGrid() {
   const { role, practiceId } = useContext(UserContext);
+  const { errorState, handleError, handleClose } = useErrorHandling();
 
   const title = 'Practice TMS Procotols';
   let subtitle = `View ${title}`;
@@ -68,12 +69,9 @@ export default function PracticeTMSProtocolsGrid() {
   ];
   // *************** CUSTOMIZE ************** END
 
-  const [rows, setRawRows] = useState([]);
-  const [errorType, setErrorType] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
-  const [showErrorModal, setShowErrorModal] = useState(false);
+  const [fieldConfig, setFieldConfig] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [fieldConfig, setFieldConfig] = useState([]);
+  const [rows, setRawRows] = useState([]);
 
   const setRows = (rows) => {
     if (!Array.isArray(rows)) {
@@ -106,16 +104,12 @@ export default function PracticeTMSProtocolsGrid() {
         setRows(rowsWithId);
       })
       .catch((error) => {
-        const errorMessage = createErrorMessage(error, table);
-        setErrorType('Data Fetch Error');
-        setErrorMessage(errorMessage);
-        setShowErrorModal(true);
-        //}
+        handleError(error);
       })
       .finally(() => {
         setLoading(false);
       });
-  }, [practiceId, tmsProtocolObjects]);
+  }, [practiceId, handleError, tmsProtocolObjects, fieldConfig]);
 
   // TMS Protocols
   useEffect(() => {
@@ -128,16 +122,12 @@ export default function PracticeTMSProtocolsGrid() {
         setTMSProtocolObjects(activeData);
       })
       .catch((error) => {
-        console.error('tms_protocols:', error);
-        const errorMessage = createErrorMessage(error, 'tms_protocols');
-        setErrorType('Error fetching data');
-        setErrorMessage(errorMessage);
-        setShowErrorModal(true);
+        handleError(error);
       })
       .finally(() => {
         setLoading(false);
       });
-  }, []);
+  }, [handleError]);
 
   // Fields
   useEffect(() => {
@@ -155,7 +145,7 @@ export default function PracticeTMSProtocolsGrid() {
       },
     ];
     setFieldConfig(selectFields);
-  }, [tmsProtocolObjects]);
+  }, [handleError, tmsProtocolObjects]);
 
   function sortItems(items, sort_attribute_1, sort_attribute_2) {
     return items.sort((a, b) => {
@@ -200,20 +190,17 @@ export default function PracticeTMSProtocolsGrid() {
 
       return row;
     } catch (error) {
-      let message = `${row.office_name} with ${row.device_name} device and coil ${row.coil_name}`;
-      const errorMessage = createErrorMessage(error, message);
-      throw errorMessage;
+      throw error;
     }
   }
 
-  async function saveRow(row) {
+  async function saveRow(row, oldRows) {
     try {
       await postData(table, row);
       return row;
     } catch (error) {
-      let message = `${row.office_name} with ${row.device_name} device and coil ${row.coil_name}`;
-      const errorMessage = createErrorMessage(error, message);
-      throw errorMessage;
+      setRows(oldRows); /// Not sure if this belongs here, need to test
+      throw error;
     }
   }
 
@@ -229,17 +216,18 @@ export default function PracticeTMSProtocolsGrid() {
       return 'Deleted';
     } catch (error) {
       setRows(oldRows);
-      const errorMessage = createErrorMessage(error, row.name);
-      throw errorMessage;
+      throw error;
     }
   }
 
-  if (showErrorModal) {
+  if (errorState.showError) {
     return (
-      <ErrorModal
-        errorType={errorType}
-        errorMessage={errorMessage}
-        onClose={() => setShowErrorModal(false)}
+      <ErrorAlert
+        severity={errorState.errorSeverity}
+        errorType={errorState.errorType}
+        errorMessage={errorState.errorMessage}
+        errorDescription={errorState.errorDescription}
+        onClose={handleClose}
       />
     );
   }

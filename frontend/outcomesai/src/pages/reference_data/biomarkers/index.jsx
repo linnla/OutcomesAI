@@ -6,13 +6,14 @@ import ViewOnly from '../../../components/datagrid/viewOnly';
 import UserContext from '../../../contexts/UserContext';
 import { getData, postData, putData, deleteData } from '../../../utils/API';
 import { validateRequiredAttributes } from '../../../utils/ValidationUtils';
-import { createErrorMessage } from '../../../utils/ErrorMessage';
-import ErrorModal from '../../../utils/ErrorModal';
-import { Box, Chip, Stack } from '@mui/material';
+import { Chip, Stack } from '@mui/material';
+import ErrorAlert from '../../../utils/ErrorAlert';
+import { useErrorHandling } from '../../../utils/ErrorHandling';
 
 // *************** CUSTOMIZE ************** START
 export default function BiomarkersGrid() {
   const { role } = useContext(UserContext);
+  const { errorState, handleError, handleClose } = useErrorHandling();
 
   const title = 'Biomarkers';
   let subtitle = `View ${title}`;
@@ -54,11 +55,10 @@ export default function BiomarkersGrid() {
   }
   // *************** CUSTOMIZE ************** END
 
-  const [rows, setRawRows] = useState([]);
-  const [errorType, setErrorType] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
-  const [showErrorModal, setShowErrorModal] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [rows, setRawRows] = useState([]);
+  const [relatedData, setRelatedData] = useState([]);
+  const [relatedObjects, setRelatedObjects] = useState([]);
 
   const setRows = (rows) => {
     if (!Array.isArray(rows)) {
@@ -77,18 +77,12 @@ export default function BiomarkersGrid() {
         setRows(sortedItems);
       })
       .catch((error) => {
-        const errorMessage = createErrorMessage(error, table);
-        setErrorType('Data Fetch Error');
-        setErrorMessage(errorMessage);
-        setShowErrorModal(true);
+        handleError(error);
       })
       .finally(() => {
         setLoading(false);
       });
-  }, []);
-
-  const [relatedData, setRelatedData] = useState([]);
-  const [relatedObjects, setRelatedObjects] = useState([]);
+  }, [handleError, relatedData]);
 
   useEffect(() => {
     setLoading(true);
@@ -101,15 +95,12 @@ export default function BiomarkersGrid() {
         setRelatedObjects(data);
       })
       .catch((error) => {
-        const errorMessage = createErrorMessage(error, relatedTable);
-        setErrorType('Error fetching data');
-        setErrorMessage(errorMessage);
-        setShowErrorModal(true);
+        handleError(error);
       })
       .finally(() => {
         setLoading(false);
       });
-  }, []);
+  }, [handleError]);
 
   // This has to load after related data useEffect
   const columns = [
@@ -195,8 +186,7 @@ export default function BiomarkersGrid() {
       validateRequiredAttributes(requiredAttributes, attributeNames, newRow);
       return newRow;
     } catch (error) {
-      const errorMessage = createErrorMessage(error, table);
-      throw errorMessage;
+      throw error;
     }
   }
 
@@ -217,8 +207,7 @@ export default function BiomarkersGrid() {
       }
     } catch (error) {
       setRows(oldRows);
-      const errorMessage = createErrorMessage(error, row.name);
-      throw errorMessage;
+      throw error;
     }
   }
 
@@ -233,17 +222,18 @@ export default function BiomarkersGrid() {
       return 'Deleted';
     } catch (error) {
       setRows(oldRows);
-      const errorMessage = createErrorMessage(error, row.name);
-      throw errorMessage;
+      throw error;
     }
   }
 
-  if (showErrorModal) {
+  if (errorState.showError) {
     return (
-      <ErrorModal
-        errorType={errorType}
-        errorMessage={errorMessage}
-        onClose={() => setShowErrorModal(false)}
+      <ErrorAlert
+        severity={errorState.errorSeverity}
+        errorType={errorState.errorType}
+        errorMessage={errorState.errorMessage}
+        errorDescription={errorState.errorDescription}
+        onClose={handleClose}
       />
     );
   }

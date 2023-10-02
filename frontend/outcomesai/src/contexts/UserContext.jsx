@@ -1,11 +1,8 @@
 import { createContext, useState } from 'react';
-import { ThemeProvider } from '@mui/material';
-import { useTheme } from '@mui/material';
-import { tokens } from '../theme';
 import { Auth } from 'aws-amplify';
 import { getOne } from '../utils/API';
-import { createErrorMessage } from '../utils/ErrorMessage';
-import ErrorModal from '../utils/ErrorModal';
+import ErrorAlert from '../utils/ErrorAlert';
+import { useErrorHandling } from '../utils/ErrorHandling';
 
 const staticDefaultUserValue = {
   role: '',
@@ -18,12 +15,7 @@ const staticDefaultUserValue = {
 const UserContext = createContext(staticDefaultUserValue);
 
 function UserProvider({ children }) {
-  const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
-  const [error, setError] = useState(null);
-  const [errorType, setErrorType] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
-  const [showErrorModal, setShowErrorModal] = useState(false);
+  const { errorState, handleError, handleClose } = useErrorHandling();
 
   const [user, setUser] = useState(staticDefaultUserValue);
   const [defaultUserData, setDefaultUserData] = useState(
@@ -40,9 +32,11 @@ function UserProvider({ children }) {
       });
 
       if (userData.status === 'Inactive') {
-        setErrorType('Your account has been inactivated.');
-        setErrorMessage('Contract your system administrator to regain access.');
-        setShowErrorModal(true);
+        const customError = new Error();
+        customError.name = 'Your account has been inactivated.';
+        customError.message =
+          'Contract your system administrator to regain access.';
+        handleError(customError);
         await signOut();
       }
 
@@ -63,11 +57,8 @@ function UserProvider({ children }) {
       }
 
       return user;
-    } catch (err) {
-      console.error('Error getting user data:', err);
-      const errorMessage = createErrorMessage(err, 'user');
-      console.log('UserContext errorMessage:', errorMessage);
-      setError(errorMessage);
+    } catch (error) {
+      handleError(error);
     }
   };
 
@@ -76,7 +67,7 @@ function UserProvider({ children }) {
       const result = await Auth.deleteUser();
       console.log(result);
     } catch (error) {
-      console.log('Error deleting user', error);
+      handleError(error);
     }
   }
 
@@ -84,7 +75,7 @@ function UserProvider({ children }) {
     try {
       await Auth.signOut();
     } catch (error) {
-      console.log('error signing out: ', error);
+      handleError(error);
     }
   }
 
@@ -93,30 +84,18 @@ function UserProvider({ children }) {
     setUserData,
   };
 
-  if (showErrorModal) {
-    return (
-      <ThemeProvider theme={theme}>
-        <ErrorModal
-          errorType={errorType}
-          errorMessage={errorMessage}
-          onClose={() => setShowErrorModal(false)}
-        />
-      </ThemeProvider>
-    );
-  }
-
   return (
     <UserContext.Provider value={userInfo}>
-      <ThemeProvider theme={theme}>
-        {error && (
-          <ErrorModal
-            errorType='User Retrieval Error'
-            errorMessage={error}
-            onClose={() => setError(null)}
-          />
-        )}
-        {children}
-      </ThemeProvider>
+      {errorState.showError && (
+        <ErrorAlert
+          severity={errorState.errorSeverity}
+          errorType={errorState.errorType}
+          errorMessage={errorState.errorMessage}
+          errorDescription={errorState.errorDescription}
+          onClose={handleClose}
+        />
+      )}
+      {children}
     </UserContext.Provider>
   );
 }

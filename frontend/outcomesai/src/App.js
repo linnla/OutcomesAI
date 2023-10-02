@@ -6,6 +6,7 @@ import { CssBaseline, ThemeProvider } from '@mui/material';
 import PatientsDashboard from './pages/dashboards/patientsDashboard';
 import OutcomesDashboard from './pages/dashboards/outcomesDashboard';
 import PatientDashboard from './pages/dashboards/patientDashboard';
+import TestDashboard from './pages/dashboards/testDashboard';
 
 // Components and pages
 import Topbar from './components/Topbar';
@@ -122,6 +123,14 @@ function App() {
           element={
             <RequireAuth>
               <OutcomesDashboard />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path='/dashboard/test'
+          element={
+            <RequireAuth>
+              <TestDashboard />
             </RequireAuth>
           }
         />

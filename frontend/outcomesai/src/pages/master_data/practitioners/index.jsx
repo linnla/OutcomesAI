@@ -8,12 +8,13 @@ import {
   validateRequiredAttributes,
   validateEmail,
 } from '../../../utils/ValidationUtils';
-import { createErrorMessage } from '../../../utils/ErrorMessage';
-import ErrorModal from '../../../utils/ErrorModal';
+import ErrorAlert from '../../../utils/ErrorAlert';
+import { useErrorHandling } from '../../../utils/ErrorHandling';
 
 // *************** CUSTOMIZE ************** START
 export default function PractitionersGrid() {
   const { role, practiceId } = useContext(UserContext);
+  const { errorState, handleError, handleClose } = useErrorHandling();
 
   const title = 'Practitioners';
   let subtitle = `View ${title}`;
@@ -120,11 +121,8 @@ export default function PractitionersGrid() {
   };
   // *************** CUSTOMIZE ************** END
 
-  const [rows, setRawRows] = useState([]);
-  const [errorType, setErrorType] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
-  const [showErrorModal, setShowErrorModal] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [rows, setRawRows] = useState([]);
 
   const setRows = (rows) => {
     if (!Array.isArray(rows)) {
@@ -147,15 +145,12 @@ export default function PractitionersGrid() {
         setRows(sortedItems);
       })
       .catch((error) => {
-        const errorMessage = createErrorMessage(error, relatedTable);
-        setErrorType('Data Fetch Error');
-        setErrorMessage(errorMessage);
-        setShowErrorModal(true);
+        handleError(error);
       })
       .finally(() => {
         setLoading(false);
       });
-  }, [practiceId]);
+  }, [practiceId, handleError]);
 
   function formatFullName(row) {
     let fullName = '';
@@ -195,8 +190,7 @@ export default function PractitionersGrid() {
       validateEmail(newRow.email);
       return newRow;
     } catch (error) {
-      const errorMessage = createErrorMessage(error, table);
-      throw errorMessage;
+      throw error;
     }
   }
 
@@ -235,19 +229,13 @@ export default function PractitionersGrid() {
       }
     } catch (error) {
       setRows(oldRows);
-
-      // *************** CUSTOMIZE ************** START
-      const fullName = formatFullName(row);
-      const errorMessage = createErrorMessage(error, fullName);
-      // *************** CUSTOMIZE ************** END
-
-      throw errorMessage;
+      throw error;
     }
   }
 
   async function episodesOfCareExists(row) {
     try {
-      const data = await getData('episodes_of_care', {
+      await getData('episodes_of_care', {
         practice_id: practiceId,
         practitioner_id: row.id,
       });
@@ -258,11 +246,16 @@ export default function PractitionersGrid() {
   }
 
   async function deleteRow(id, row, oldRows) {
+    // Need to create an error object for this condition
     const episodeExists = await episodesOfCareExists(row);
     if (episodeExists) {
       let fullName = formatFullName(row);
-      const errorMessage = `${fullName} has treated a patient and cannot be deleted.\nSet the status to Inactive to hide the Practitioner.`;
-      throw errorMessage;
+      const customError = new Error();
+      customError.name = 'Delete Error';
+      customError.message = `${fullName} has treated a patient and cannot be deleted.`;
+      customError.stack =
+        'Set the status to Inactive to hide the Practitioner.';
+      throw customError;
     }
 
     try {
@@ -283,18 +276,18 @@ export default function PractitionersGrid() {
       return row;
     } catch (error) {
       setRows(oldRows);
-      let fullName = `${row.first_name} ${row.last_name}`;
-      const errorMessage = createErrorMessage(error, fullName);
-      throw errorMessage;
+      throw error;
     }
   }
 
-  if (showErrorModal) {
+  if (errorState.showError) {
     return (
-      <ErrorModal
-        errorType={errorType}
-        errorMessage={errorMessage}
-        onClose={() => setShowErrorModal(false)}
+      <ErrorAlert
+        severity={errorState.errorSeverity}
+        errorType={errorState.errorType}
+        errorMessage={errorState.errorMessage}
+        errorDescription={errorState.errorDescription}
+        onClose={handleClose}
       />
     );
   }
