@@ -63,7 +63,7 @@ function UserProvider({ children }) {
       const customError = new Error();
       customError.name = 'Authentication Error';
       customError.message = 'Login to OutcomesAI to continue';
-      handleErrorNotification(newError);
+      handleErrorNotification(customError);
     }
   };
 
