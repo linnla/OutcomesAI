@@ -59,7 +59,11 @@ function UserProvider({ children }) {
 
       return user;
     } catch (error) {
-      handleErrorNotification(error);
+      console.error('user context error:', error);
+      const customError = new Error();
+      customError.name = 'Authentication Error';
+      customError.message = 'Login to OutcomesAI to continue';
+      handleErrorNotification(newError);
     }
   };
 
