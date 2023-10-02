@@ -63,6 +63,10 @@ function ShowAlert({ title, message, description, onClose, severity }) {
   console.log('ShowAlert title:', title);
   console.log('ShowAlert message:', message);
 
+  if (title === undefined || title === '') {
+    return; // Return early
+  }
+
   const [isOpen, setIsOpen] = useState(true);
 
   const handleClose = () => {
