@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
 import Snackbar from '@mui/material/Snackbar';
@@ -60,20 +60,24 @@ function ErrorAlert({ open, onClose, title, message, description, severity }) {
 }
 
 function ShowAlert({ title, message, description, onClose, severity }) {
-  console.log('ShowAlert title:', title);
-  console.log('ShowAlert message:', message);
-
-  if (title === undefined || title === '') {
-    return null; // Return early without rendering anything
-  }
-
   const [isOpen, setIsOpen] = useState(true);
 
+  useEffect(() => {
+    if (title === undefined || title === '') {
+      setIsOpen(false); // Close the alert if title is undefined or empty
+    } else {
+      setIsOpen(true); // Open the alert if title is defined and not empty
+    }
+  }, [title]);
+
   const handleClose = () => {
-    console.log('ShowAlert handleClose');
     setIsOpen(false);
     onClose();
   };
+
+  if (!isOpen) {
+    return null; // Return early without rendering anything if the alert is closed
+  }
 
   return (
     <Box

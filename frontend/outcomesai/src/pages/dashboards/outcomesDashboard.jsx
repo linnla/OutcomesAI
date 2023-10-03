@@ -1,29 +1,24 @@
 import { Box, Button, IconButton, Typography, useTheme } from '@mui/material';
+import React, { useState, useEffect } from 'react';
 import { tokens } from '../../theme';
 import { mockMissingTestScores } from '../../data/mockData';
 import { mockRecentlyCompletedTreament } from '../../data/mockData';
 import { mockMissingTMSProtocols } from '../../data/mockData';
 import DownloadOutlinedIcon from '@mui/icons-material/DownloadOutlined';
-import EmailIcon from '@mui/icons-material/Email';
-import PointOfSaleIcon from '@mui/icons-material/PointOfSale';
-import PersonAddIcon from '@mui/icons-material/PersonAdd';
-import TrafficIcon from '@mui/icons-material/Traffic';
 import Header from '../../components/Header';
-import LineChart from '../../components/LineChart';
-import GeographyChart from '../../components/GeographyChart';
-import OutcomesBarChart from '../../components/charts/OutcomesBarChart';
-import StatBox from '../../components/StatBox';
-import ProgressCircle from '../../components/ProgressCircle';
-import React from 'react';
-import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
-import VerifiedOutlinedIcon from '@mui/icons-material/VerifiedOutlined';
-import AutorenewOutlinedIcon from '@mui/icons-material/AutorenewOutlined';
-import DateRangeOutlinedIcon from '@mui/icons-material/DateRangeOutlined';
-import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
 
 const OutcomesDashboard = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+
+  const [dataIsLoaded, setDataIsLoaded] = useState(false); // Initialize to false initially
+
+  useEffect(() => {
+    // Simulate loading your static data (replace this with your actual data loading logic)
+    setTimeout(() => {
+      setDataIsLoaded(true); // Set dataIsLoaded to true when your data is "loaded"
+    }, 2000); // Simulate a 2-second delay
+  }, []); // Run this effect only once on component mount
 
   return (
     <Box m='20px' height='75%'>

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Routes, Route } from 'react-router-dom';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 
@@ -75,6 +76,8 @@ function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loginSuccess, setLoginSuccess] = useState(false);
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     async function checkAuthentication() {
       try {
@@ -98,8 +101,16 @@ function App() {
       <Routes>
         <Route index element={<OutcomesDashboard />} />
         <Route path='/' element={<OutcomesDashboard />} />
-        <Route path='home' element={<OutcomesDashboard />} />
-        <Route path='/login' element={<Login />} />
+        <Route
+          path='/login'
+          element={
+            isAuthenticated ? (
+              <navigate to='/' />
+            ) : (
+              <Login onSuccessfulLogin={handleSuccessfulLogin} />
+            )
+          }
+        />
         <Route path='/dashboard' element={<OutcomesDashboard />} />
         <Route
           path='/dashboard/patients'

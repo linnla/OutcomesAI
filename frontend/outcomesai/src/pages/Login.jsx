@@ -5,39 +5,16 @@ import '@aws-amplify/ui-react/styles.css';
 import CallApi from '../api/CallApi';
 import { Auth } from 'aws-amplify';
 import UserContext from '../contexts/UserContext';
-import ShowAlert from '../utils/ShowAlert';
-import { useNotificationHandling } from '../utils/NotificationHandling';
 
 function Login({ onSuccessfulLogin }) {
   const { route } = useAuthenticator((context) => [context.route]);
   const location = useLocation();
   const navigate = useNavigate();
-  const { notificationState, handleErrorNotification, handleClose } =
-    useNotificationHandling();
 
   const { setUserData } = useContext(UserContext);
   const [loadingUserData, setLoadingUserData] = useState(false);
 
   let from = location.state?.from?.pathname || '/';
-
-  useEffect(() => {
-    const checkAndHandleLogin = async () => {
-      try {
-        const user = await Auth.currentAuthenticatedUser();
-        if (user) {
-          await handleLogin();
-        }
-      } catch (error) {
-        handleErrorNotification(error);
-      }
-    };
-
-    checkAndHandleLogin();
-
-    if (route === 'authenticated' && !loadingUserData) {
-      navigate(from, { replace: true });
-    }
-  }, [route]);
 
   const createNewUser = async () => {
     const current = await Auth.currentAuthenticatedUser();
@@ -53,11 +30,12 @@ function Login({ onSuccessfulLogin }) {
       await CallApi(method, table, body, null);
       await setUserData();
     } catch (error) {
-      handleErrorNotification(error);
+      console.error('createNewUser error:', error);
     }
   };
 
   const handleLogin = async () => {
+    console.log('handleLogin');
     setLoadingUserData(true);
     try {
       await setUserData();
@@ -67,28 +45,40 @@ function Login({ onSuccessfulLogin }) {
     } finally {
       setLoadingUserData(false);
       onSuccessfulLogin();
+      navigate('/');
     }
   };
 
-  if (notificationState.showNotification) {
-    return (
-      <ShowAlert
-        severity={notificationState.severity}
-        title={notificationState.title}
-        message={notificationState.message}
-        description={notificationState.description}
-        onClose={handleClose}
-      />
-    );
-  }
+  // Use the shouldExecuteEffect flag to control the useEffect
+  useEffect(() => {
+    console.log('login useEffect');
+    const checkAndHandleLogin = async () => {
+      console.log('login checkAndHandleLogin');
+      try {
+        const user = await Auth.currentAuthenticatedUser();
+        if (user) {
+          await handleLogin();
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    checkAndHandleLogin();
+
+    if (route === 'authenticated' && !loadingUserData) {
+      navigate(from, { replace: true });
+    }
+  }, [route]);
 
   return (
     <Authenticator
       loginMechanisms={['email']}
       signUpAttributes={['family_name', 'given_name']}
       onAuthEvent={async (event) => {
+        console.log('login event:', event);
         if (event.type === 'signIn') {
-          await handleLogin();
+          handleLogin();
         }
       }}
     />
