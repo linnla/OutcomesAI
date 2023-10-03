@@ -1,70 +1,9 @@
-import React, { useState } from 'react';
-import Alert from '@mui/material/Alert';
-import AlertTitle from '@mui/material/AlertTitle';
-import Snackbar from '@mui/material/Snackbar';
-import { Typography, Box, IconButton, Collapse } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
-
-function SuccessSnackbar({ open, onClose, title, message, description }) {
-  return (
-    <Snackbar
-      open={open}
-      autoHideDuration={1000}
-      anchorOrigin={{
-        vertical: 'top',
-        horizontal: 'center',
-      }}
-      onClose={onClose}
-    >
-      <Alert
-        variant='outlined'
-        sx={{ mb: 2, maxWidth: '800px' }}
-        severity='success'
-      >
-        <AlertTitle>{title}</AlertTitle>
-        <strong>{message}</strong>
-        <Typography variant='body1' component='div'>
-          {description}
-        </Typography>
-      </Alert>
-    </Snackbar>
-  );
-}
-
-function ErrorAlert({ open, onClose, title, message, description, severity }) {
-  return (
-    <Collapse in={open}>
-      <Alert
-        variant='outlined'
-        action={
-          <IconButton
-            aria-label='close'
-            color='inherit'
-            size='small'
-            onClick={onClose}
-          >
-            <CloseIcon fontSize='inherit' />
-          </IconButton>
-        }
-        sx={{ mb: 2, maxWidth: '800px' }}
-        severity={severity}
-      >
-        <AlertTitle>{title}</AlertTitle>
-        <strong>{message}</strong>
-        <Typography variant='body1' component='div'>
-          {description}
-        </Typography>
-      </Alert>
-    </Collapse>
-  );
-}
-
 function ShowAlert({ title, message, description, onClose, severity }) {
   console.log('ShowAlert title:', title);
   console.log('ShowAlert message:', message);
 
   if (title === undefined || title === '') {
-    return; // Return early
+    return null; // Return early without rendering anything
   }
 
   const [isOpen, setIsOpen] = useState(true);
