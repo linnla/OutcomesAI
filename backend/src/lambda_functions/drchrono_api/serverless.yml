@@ -1,4 +1,4 @@
-service: outcomesai-drchrono-patient-http
+service: outcomesai-drchrono-http
 
 frameworkVersion: '3'
 
@@ -6,7 +6,7 @@ plugins:
   - serverless-prune-plugin
 
 custom:
-  config: ${file(../../../lambda_config/outcomesai-${self:provider.stage}-config.json)}
+  config: ${file(../../lambda_config/outcomesai-${self:provider.stage}-config.json)}
   prune:
     automatic: true
     number: 3
@@ -33,4 +33,4 @@ functions:
     handler: handler.lambda_handler
     description: Handles HTTP GET requests to drchrono API.
     memorySize: 1024
-    timeout: 30
+    timeout: 90

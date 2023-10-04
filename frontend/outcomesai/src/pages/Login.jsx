@@ -35,12 +35,12 @@ function Login({ onSuccessfulLogin }) {
   };
 
   const handleLogin = async () => {
-    console.log('handleLogin');
+    //console.log('handleLogin');
     setLoadingUserData(true);
     try {
       await setUserData();
     } catch (error) {
-      console.log('User data not found. Creating user', error);
+      //console.log('User data not found. Creating user', error);
       await createNewUser();
     } finally {
       setLoadingUserData(false);
@@ -51,9 +51,9 @@ function Login({ onSuccessfulLogin }) {
 
   // Use the shouldExecuteEffect flag to control the useEffect
   useEffect(() => {
-    console.log('login useEffect');
+    //console.log('login useEffect');
     const checkAndHandleLogin = async () => {
-      console.log('login checkAndHandleLogin');
+      //console.log('login checkAndHandleLogin');
       try {
         const user = await Auth.currentAuthenticatedUser();
         if (user) {

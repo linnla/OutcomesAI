@@ -11,7 +11,7 @@ import AddIcon from '@mui/icons-material/Add';
 import { SearchPatientDialog } from './SearchPatientDialog';
 
 function DefaultToolbar(props) {
-  console.log('DefaultToolBar props:', props);
+  //console.log('DefaultToolBar props:', props);
   const { refreshData } = props;
   const [openDialog, setOpenDialog] = useState(false);
   const [rows, setRows] = useState([]); // State to manage rows

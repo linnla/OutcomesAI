@@ -12,6 +12,11 @@ import { tokens } from '../../theme';
 import '../../styles/styles.css';
 import { getDrchronoData, getOne, postData } from '../../utils/API';
 import UserContext from '../../contexts/UserContext';
+import Appointments from '../../components/drchrono/appointments';
+import {
+  MedicationsGet,
+  MedicationsPost,
+} from '../../components/drchrono/medications';
 
 export function SearchPatientDialog({ open, onClose, reset, rows }) {
   const theme = useTheme();
@@ -77,9 +82,14 @@ export function SearchPatientDialog({ open, onClose, reset, rows }) {
   };
 
   async function drchronoPatient(fields) {
-    console.log('SearchPatientDialog rows:', rows);
+    //console.log('SearchPatientDialog rows:', rows);
+
+    const body = {
+      api: 'Patient',
+      fields: fields,
+    };
     try {
-      const response = await getDrchronoData('drchrono_patient', fields);
+      const response = await getDrchronoData('drchrono', body);
       if (Array.isArray(response)) {
         const sortedPatientData = [...response].sort((a, b) => {
           const fullNameA = a.last_name + a.first_name;
@@ -90,22 +100,22 @@ export function SearchPatientDialog({ open, onClose, reset, rows }) {
 
         // Loop through sortedPatientData and if one of the patients is already in the datagrid
         const updatedSuccessStates = [...addSuccessStates];
-        console.log('sorted drchrono patients:', sortedPatientData);
+        //console.log('sorted drchrono patients:', sortedPatientData);
         sortedPatientData.forEach((obj1, index1) => {
           // Check if there's a matching object in array2
           const matchingObj2 = rows.find((obj2) => obj1.id === obj2.ehr_id);
 
           // Log the values for debugging
-          console.log('obj1.ehr_id:', obj1.ehr_id);
-          console.log(
-            'obj2.id:',
-            matchingObj2 ? matchingObj2.id : 'No match found'
-          );
+          //console.log('obj1.ehr_id:', obj1.ehr_id);
+          //console.log(
+          //  'obj2.id:',
+          //  matchingObj2 ? matchingObj2.id : 'No match found'
+          //);
 
           if (matchingObj2) {
             // If a match is found, set the corresponding index in updatedSuccessStates to true
             updatedSuccessStates[index1] = true;
-            console.log('matched object:', matchingObj2);
+            //console.log('matched object:', matchingObj2);
           }
         });
         setPatientData(sortedPatientData);
@@ -145,7 +155,7 @@ export function SearchPatientDialog({ open, onClose, reset, rows }) {
     }
 
     if (Object.keys(fields).length > 0) {
-      console.log('fields contains data');
+      //console.log('fields contains data');
       await drchronoPatient(fields); // Fetch patient data
       setSearchAttempted(true);
       setIsSearching(false);
@@ -158,7 +168,7 @@ export function SearchPatientDialog({ open, onClose, reset, rows }) {
   // Function to add a patient
   const handleAddPatient = async (patient, index) => {
     // You can perform the add action here using patient data
-    console.log('Saving patient:', patient);
+    //console.log('Saving patient:', patient);
 
     // This disables the add button and prevents user from repetitively
     // clicking the add button while the post operation is in progress
@@ -218,10 +228,132 @@ export function SearchPatientDialog({ open, onClose, reset, rows }) {
 
     try {
       console.log('Saving patient:', patient);
-      await postData('patients', patient);
+      const response = await postData('patients', patient);
+      //console.log('response.data:', response.data);
+
       const updatedSuccessStates = [...addSuccessStates];
       updatedSuccessStates[index] = true;
       setAddSuccessStates(updatedSuccessStates);
+
+      // patient_id just created in postgres
+      const patientID = response.data.patient_id;
+      console.log('PostGress patient_id:', patientID);
+      console.log('patient ehr_id:', patient.ehr_id);
+      const dateFirstAppointment = patient['date_of_first_appointment'];
+      const dateLastAppointment = patient['date_of_last_appointment'];
+
+      let searchAppointments = false;
+      if (dateLastAppointment !== undefined && dateLastAppointment !== null) {
+        // Convert the date string to a JavaScript Date object
+        const lastAppointment = new Date(dateLastAppointment);
+
+        // Calculate the current date
+        const currentDate = new Date();
+
+        // Calculate the date 2 years ago from the current date
+        const twoYearsAgo = new Date();
+        twoYearsAgo.setFullYear(currentDate.getFullYear() - 2);
+
+        // Check if dateLastAppointment is older than 2 years
+        if (lastAppointment < twoYearsAgo) {
+          console.log('dateLastAppointment is older than 2 years');
+        } else {
+          console.log('dateLastAppointment is not older than 2 years');
+          searchAppointments = true;
+        }
+      } else if (
+        dateFirstAppointment !== undefined &&
+        dateFirstAppointment !== null
+      ) {
+        // Convert the date string to a JavaScript Date object
+        const firstAppointment = new Date(dateFirstAppointment);
+
+        // Calculate the current date
+        const currentDate = new Date();
+
+        // Calculate the date x number of years ago from the current date
+        const years = 2;
+        const pastDate = new Date();
+        pastDate.setFullYear(currentDate.getFullYear() - years);
+
+        // Check if dateLastAppointment is older than x years
+        if (firstAppointment < pastDate) {
+          console.log(`dateFirstAppointment is OLDER than ${years} years`);
+        } else {
+          console.log(`dateFirstAppointment is NOT OLDER than ${years} years`);
+          searchAppointments = true;
+        }
+      } else {
+        console.error(`Patient ${patient.ehr_id} has no appointments`);
+        return;
+      }
+
+      if (searchAppointments === true) {
+        const yesterday = new Date();
+        yesterday.setDate(yesterday.getDate() - 1);
+        const year = yesterday.getFullYear();
+        const month = String(yesterday.getMonth() + 1).padStart(2, '0'); // Month is zero-based, so add 1
+        const day = String(yesterday.getDate()).padStart(2, '0');
+
+        const formattedDate = `${year}-${month}-${day}`;
+        const dateRange = `2023-01-01/${formattedDate}`;
+        const fields = { patient: patient.ehr_id, date_range: dateRange };
+        console.log('appointment api:', fields);
+
+        const bodyAppt = {
+          api: 'Appointments',
+          fields: fields,
+        };
+        const appointments = await getDrchronoData('drchrono', bodyAppt);
+        console.log('appointments:', appointments);
+
+        //const patientAppointments = await Appointments(fields);
+        //console.log('appointments:', patientAppointments);
+      }
+
+      console.log('medication api patient ehr_id:', patient.ehr_id);
+      const bodyMed = {
+        api: 'Medications',
+        fields: {
+          patient: patient.ehr_id,
+        },
+      };
+      const medications = await getDrchronoData('drchrono', bodyMed);
+      //console.log('medications:', medications);
+      //const medications = await MedicationsGet(patient.ehr_id);
+      //console.log('medications:', patientMedications);
+
+      const medicationsFound = medications.length;
+      console.log(
+        `${medicationsFound} medications found for patient ${patient.ehr_id}`
+      );
+      if (medicationsFound === 0) {
+        return;
+      }
+
+      const patientMedications = medications.map((obj) => ({
+        ...obj, // Copy the existing object properties
+        patient_id: patientID,
+        practice_id: practiceId,
+        ehr_patient_id: obj.patient,
+        ehr_practitioner_id: obj.doctor,
+        ehr_appointment_id: obj.appointment,
+        ehr_id: obj.id,
+      }));
+
+      console.log('medications:', patientMedications);
+
+      let saved = 0;
+      for (const object of patientMedications) {
+        let medicationObject = await MedicationsPost(object);
+        // Assuming you want to post each object to the 'practice_medications' table
+        await postData('patient_medications', medicationObject);
+        saved = saved + 1;
+        console.log('saved:', saved, medicationObject);
+      }
+      console.log('Successfully posted all objects');
+
+      //await MedicationsPost(patientMedications);
     } catch (error) {
       console.error(error);
     } finally {

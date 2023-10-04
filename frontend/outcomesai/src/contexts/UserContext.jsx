@@ -24,16 +24,15 @@ function UserProvider({ children }) {
   );
 
   const setUserData = async () => {
-    console.log('setUserData start');
     try {
       const currentUser = await Auth.currentAuthenticatedUser();
-      console.log(currentUser);
+      //console.log(currentUser);
       const emailAttribute = currentUser.attributes.email;
 
       const userData = await getOne('practice_users', {
         email: emailAttribute,
       });
-      console.log(userData);
+      //console.log(userData);
 
       if (userData.status === 'Inactive') {
         const customError = new Error();

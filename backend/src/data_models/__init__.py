@@ -16,6 +16,7 @@ from .diagnosis_code import DiagnosisCode
 from .disorder import Disorder
 from .dosage_form import DosageForm
 from .dosage_unit import DosageUnit
+from .ehr_vendor import EHRVendor
 from .episode_of_care import EpisodeOfCare
 from .episode_of_care_diagnosis_codes import EpisodeOfCareDiagnosisCode
 from .integration_type import IntegrationType
@@ -23,6 +24,7 @@ from .integration_vendor import IntegrationVendor
 from .medication_type import MedicationType
 from .office import Office
 from .patient_biomarker import PatientBiomarker
+from .patient_medication import PatientMedication
 from .patient import Patient
 from .postal_code import PostalCode
 from .practice_integration import PracticeIntegration

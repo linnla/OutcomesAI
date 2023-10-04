@@ -4,17 +4,26 @@ import urllib3
 
 logger = logging.getLogger(__name__)
 
-URL = "https://app.drchrono.com/api/patients"
+URL_PROBLEMS = "https://app.drchrono.com/api/problems"
+URL_PROCEDURES = "https://app.drchrono.com/api/procedures"
+URL_APPOINTMENTS = "https://app.drchrono.com/api/appointments"
+URL_MEDICATIONS = "https://app.drchrono.com/api/medications"
+URL_PATIENT = "https://app.drchrono.com/api/patients"
+
 URL_TOKEN = "https://drchrono.com/o/token/"
 HEADERS = {"Access-Control-Allow-Origin": "*"}
 
 
 def lambda_handler(event, context):
-    event_body = event.get("body", None)
+    print("event:", event)
 
+    event_body = event.get("body", None)
     if event_body is None:
         # Handle the case where the 'body' field is missing or empty
         return create_response(400, {"message": "Missing or empty request body"})
+
+    body_json = json.loads(event_body)
+    print("body:", body_json)
 
     try:
         refresh_token = get_refresh_token()
@@ -45,21 +54,73 @@ def lambda_handler(event, context):
             "Authorization": "Bearer %s" % access_token,
         }
 
-        fields = json.loads(event_body)
-        if fields is None:
-            response = http.request("GET", URL, headers=headers)
-        else:
-            response = http.request("GET", URL, fields=fields, headers=headers)
+        fields = body_json.get("fields")
+        print("fields:", fields)
 
+        api = body_json.get("api")
+        print("api:", api)
+
+        url_body = body_json.get("url")
+        print("url_body:", url_body)
+
+        if fields is None and url_body is None:
+            return create_response(
+                400, {"message": "Missing query parameter fields or url"}
+            )
+        if api is None:
+            return create_response(400, {"message": "Missing query parameter api"})
+
+        api_url = ""
+        if url_body is None:
+            if api == "Patient":
+                api_url = URL_PATIENT
+            elif api == "Medications":
+                api_url = URL_MEDICATIONS
+            elif api == "Appointments":
+                api_url = URL_APPOINTMENTS
+            elif api == "Procedures":
+                api_url = URL_PROCEDURES
+            elif api == "Problems":
+                api_url = URL_PROBLEMS
+            else:
+                return create_response(
+                    400, {"message": "Missing or invalid api in request body"}
+                )
+        else:
+            api_url = url_body
+
+        print("api_url:", api_url)
+
+        if fields is None:
+            response = http.request("GET", api_url, headers=headers)
+        else:
+            response = http.request("GET", api_url, fields=fields, headers=headers)
+
+        items = []
         if response.status == 200:
             response_json = json.loads(response.data.decode("utf-8"))
+            # results = response_json["results"]
+            # return create_response(200, results)
 
             if "results" in response_json:
                 results = response_json["results"]
             elif "data" in response_json:
                 results = response_json["data"]
 
-            return create_response(200, results)
+            # print("results:", results)
+            items.extend(results)
+            url = response_json["next"]
+
+            while url:
+                response = http.request("GET", url, headers=headers)
+                response_json = json.loads(response.data.decode("utf-8"))
+                results = response_json["results"]
+                # print("results:", results)
+                items.extend(results)
+                url = response_json["next"]
+                # print("url next:", url)
+
+            return create_response(200, items)
         else:
             error_message = response.data.decode("utf-8")
             return create_response(response.status, error_message)
