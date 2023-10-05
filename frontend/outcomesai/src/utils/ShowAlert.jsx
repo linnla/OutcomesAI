@@ -31,6 +31,32 @@ function SuccessSnackbar({ open, onClose, title, message, description }) {
   );
 }
 
+function InfoSnackbar({ open, onClose, title, message, description }) {
+  return (
+    <Snackbar
+      open={open}
+      autoHideDuration={1000}
+      anchorOrigin={{
+        vertical: 'top',
+        horizontal: 'center',
+      }}
+      onClose={onClose}
+    >
+      <Alert
+        variant='outlined'
+        sx={{ mb: 2, maxWidth: '800px' }}
+        severity='info' // Set the severity to 'info' for an info Snackbar
+      >
+        <AlertTitle>{title}</AlertTitle>
+        <strong>{message}</strong>
+        <Typography variant='body1' component='div'>
+          {description}
+        </Typography>
+      </Alert>
+    </Snackbar>
+  );
+}
+
 function ErrorAlert({ open, onClose, title, message, description, severity }) {
   return (
     <Collapse in={open}>
@@ -92,6 +118,14 @@ function ShowAlert({ title, message, description, onClose, severity }) {
     >
       {severity === 'success' ? (
         <SuccessSnackbar
+          open={isOpen}
+          onClose={handleClose}
+          title={title}
+          message={message}
+          description={description}
+        />
+      ) : severity === 'info' ? ( // Check for 'info' severity
+        <InfoSnackbar
           open={isOpen}
           onClose={handleClose}
           title={title}

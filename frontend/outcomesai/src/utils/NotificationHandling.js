@@ -24,6 +24,18 @@ export function useNotificationHandling() {
     []
   );
 
+  const handleInfoNotification = useCallback((title, message, description) => {
+    let severity = 'info';
+
+    setNotificationState({
+      severity,
+      title: title || 'Information',
+      message: message || '',
+      description: description || '',
+      showNotification: true,
+    });
+  }, []);
+
   const handleErrorNotification = useCallback((error) => {
     let severity = 'error';
 
@@ -83,6 +95,7 @@ export function useNotificationHandling() {
     notificationState,
     handleErrorNotification,
     handleSuccessNotification,
+    handleInfoNotification,
     handleClose,
   };
 }

@@ -27,8 +27,19 @@ def lambda_handler(event, context):
             entity_class.select_required_params,
             entity_class.all_params_select,
         )
+        print("response from lambda:", response)
+        # if response.statusCode != 200:
+        #    print("not equal to 200")
+        #    return response
+
         body = response["body"]
         body_json = loads(body)
+
+        # If not data is returned, return the original response object
+        # that contains the error
+        if len(body_json) == 0:
+            return response
+
         medication_history = body_json["data"]
         sorted_medication_history = sortMedicationHistory(medication_history)
         summaryByMedication = summarizeByMedication(medication_history)

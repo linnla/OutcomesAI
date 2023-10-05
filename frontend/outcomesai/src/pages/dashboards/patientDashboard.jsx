@@ -17,23 +17,22 @@ const PatientDashboard = () => {
 
   const colors = tokens(theme.palette.mode);
   const patient = location.state;
-  const { notificationState, handleErrorNotification, handleClose } =
-    useNotificationHandling();
-  const [loading, setLoading] = useState(true);
+  const {
+    notificationState,
+    handleErrorNotification,
+    handleInfoNotification,
+    handleClose,
+  } = useNotificationHandling();
 
   const [detail, setDetail] = useState([]);
   const [summaryByItem, setSummaryByItem] = useState([]);
   const [summaryByDate, setSummaryByDate] = useState([]);
-
-  console.log(patient.patient.id);
+  const [loading, setLoading] = useState(true);
+  const [patientID, setPatientID] = useState(patient.patient.id);
 
   const fullName = `${patient.patient.first_name} ${patient.patient.last_name}`;
-
-  //const sortByDateDescending = (a, b) => {
-  //  const dateA = new Date(a.date_prescribed);
-  //  const dateB = new Date(b.date_prescribed);
-  //  return dateB - dateA;
-  //};
+  console.log('patient:', fullName);
+  console.log('patient_id:', patient.patient.id);
 
   useEffect(() => {
     if (!practiceId || practiceId === '') {
@@ -50,6 +49,7 @@ const PatientDashboard = () => {
 
     getData('patient_medications', query_params)
       .then((data) => {
+        console.log('useEffect no error');
         const detail = data['detail'];
         const summaryByItem = data['summary_by_item'];
         const summaryByDate = data['summary_by_date'];
@@ -63,12 +63,19 @@ const PatientDashboard = () => {
         setSummaryByDate(summaryByDate);
       })
       .catch((error) => {
-        handleErrorNotification(error);
+        console.log('useEffect error');
+        console.log(error);
+        if (error?.response?.data?.errorType === 'NoResultFound') {
+          handleInfoNotification('No medication history found');
+        } else {
+          handleErrorNotification(error);
+        }
       })
       .finally(() => {
+        console.log('useEffect finally');
         setLoading(false);
       });
-  }, [practiceId]);
+  }, [practiceId, patientID]);
 
   if (notificationState.showNotification) {
     return (
@@ -82,6 +89,10 @@ const PatientDashboard = () => {
     );
   }
 
+  if (loading) {
+    return <div>Loading...</div>; // You can replace this with a loading spinner or message
+  }
+
   return (
     <Box m='20px' height='75%'>
       {/* HEADER */}
@@ -93,34 +104,39 @@ const PatientDashboard = () => {
         <Grid container spacing={2}>
           {/* Column 1 */}
           <Grid item xs={4}>
-            <Paper elevation={3}>
-              <Box
-                display='flex'
-                justifyContent='space-between'
-                alignItems='center'
-                borderBottom={`4px solid ${colors.primary[500]}`}
-                backgroundColor={colors.primary[400]}
-                colors={colors.grey[100]}
-                p='15px'
+            <Box
+              // Box for grid column title
+              backgroundColor={colors.primary[400]}
+              display='flex'
+              justifyContent='space-between'
+              borderBottom={`4px solid ${colors.primary[500]}`}
+              colors={colors.grey[100]}
+              p='15px'
+            >
+              <Typography
+                color={colors.grey[100]}
+                variant='h5'
+                fontWeight='600'
+                style={{
+                  display: 'flex',
+                  justifyContent: 'center', // Center horizontally
+                  alignItems: 'center', // Center vertically
+                  height: '100%', // Make sure the box takes up the full height
+                }}
               >
-                <Typography
-                  color={colors.grey[100]}
-                  variant='h5'
-                  fontWeight='600'
-                >
-                  MEDICATION HISTORY
-                </Typography>
-              </Box>
-              <div style={{ overflowY: 'scroll', maxHeight: '600px' }}>
-                {summaryByItem.map((item) => (
-                  <MedicationSummaryCard
-                    title={item.name} // Make sure to provide a unique key for each card
-                    subtitle={item.signature_note}
-                    gridRows={item.dispense_details}
-                  />
-                ))}
-              </div>
-            </Paper>
+                MEDICATION HISTORY
+              </Typography>
+            </Box>
+
+            <div style={{ overflowY: 'scroll', maxHeight: '600px' }}>
+              {summaryByItem.map((item) => (
+                <MedicationSummaryCard
+                  title={item.name} // Make sure to provide a unique key for each card
+                  subtitle={item.signature_note}
+                  gridRows={item.dispense_details}
+                />
+              ))}
+            </div>
           </Grid>
 
           {/* Column 2 */}
@@ -130,8 +146,8 @@ const PatientDashboard = () => {
                 display='flex'
                 justifyContent='space-between'
                 alignItems='center'
-                borderBottom={`4px solid ${colors.primary[500]}`}
                 backgroundColor={colors.primary[400]}
+                borderBottom={`4px solid ${colors.primary[500]}`}
                 colors={colors.grey[100]}
                 p='15px'
               >
@@ -140,7 +156,7 @@ const PatientDashboard = () => {
                   variant='h5'
                   fontWeight='600'
                 >
-                  BY PRESCRIPTION DATE
+                  APPOINTMENT HISTORY
                 </Typography>
               </Box>
             </Paper>
