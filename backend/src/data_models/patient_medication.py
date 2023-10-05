@@ -56,26 +56,18 @@ class PatientMedication(ModelBase):
     def to_dict(self):
         created = self.created_at.strftime("%Y-%m-%d %H:%M")
         updated = self.updated_at.strftime("%Y-%m-%d %H:%M")
-        practitioner = self.practitioner.to_dict()
-        ehr_vendor = self.ehr_vendor.to_dict()
+
         full_name = ""
-        if self.prefix and self.prefix.strip() != "":
-            full_name += self.prefix + " "
-
-        full_name += f"{self.first_name} {self.last_name}"
-
-        if self.suffix and self.suffix.strip() != "":
-            full_name += ", " + self.suffix
+        if self.practitioner_id:
+            practitioner = self.practitioner.to_dict()
+            full_name = practitioner["full_name"]
 
         return {
             "practice_id": self.practice_id,
             "patient_id": self.patient_id,
             "practitioner_full_name": full_name,
-            "practitioner_last_name": practitioner["last_name"],
-            "practitioner_first_name": practitioner["first_name"],
-            "ehr_vendor_name": ehr_vendor["name"],
-            "date_prescribed": self.date_prescribed,
-            "date_stopped_taking": self.date_stopped_taking,
+            "date_prescribed": str(self.date_prescribed),
+            "date_stopped_taking": str(self.date_stopped_taking),
             "number_refills": self.number_refills,
             "dispense_quantity": self.dispense_quantity,
             "signature_note": self.signature_note,
