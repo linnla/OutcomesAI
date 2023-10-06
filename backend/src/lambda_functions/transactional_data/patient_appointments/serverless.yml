@@ -1,4 +1,4 @@
-service: outcomesai-patient-diagnosis-http
+service: outcomesai-patient-appointments-http
 
 frameworkVersion: '3'
 
@@ -46,6 +46,6 @@ functions:
     handler: handler.lambda_handler
     description:
       Handles HTTP requests for CRUD operations on RDS PostgreSQL
-      patient_diagnosis table.
+      patient_appointments table.
     memorySize: 512
     timeout: 5

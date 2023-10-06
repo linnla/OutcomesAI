@@ -23,6 +23,8 @@ from .integration_type import IntegrationType
 from .integration_vendor import IntegrationVendor
 from .medication_type import MedicationType
 from .office import Office
+from .patient_appointment import PatientAppointment
+from .patient_diagnosis import PatientDiagnosis
 from .patient_biomarker import PatientBiomarker
 from .patient_medication import PatientMedication
 from .patient import Patient

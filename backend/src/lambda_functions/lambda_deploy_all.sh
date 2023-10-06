@@ -4,7 +4,7 @@
 stage="dev"
 transactional_data="transactional_data"
 transactional_directories=("episodes_of_care" "episodes_of_care_diagnosis_codes"
-"patient_medications")
+"patient_appointments" "patient_diagnosis" "patient_medications")
 
 drchrono_data="drchrono_api"
 

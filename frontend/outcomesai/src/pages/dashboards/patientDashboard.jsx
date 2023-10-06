@@ -1,19 +1,13 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import {
-  Box,
-  Button,
-  Grid,
-  Typography,
-  useTheme,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-} from '@mui/material';
+import { styled } from '@mui/material/styles';
+import { Box, Typography, useTheme, Accordion } from '@mui/material';
+import MuiAccordionSummary from '@mui/material/AccordionSummary';
+import MuiAccordionDetails from '@mui/material/AccordionSummary';
+import ArrowForwardIosSharpIcon from '@mui/icons-material/ArrowForwardIosSharp';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { tokens } from '../../theme';
 import Header from '../../components/Header';
-import MedicationDetailCard from '../../components/MedicationDetailCard';
 import MedicationSummaryCard from '../../components/MedicationSummeryCard';
 import UserContext from '../../contexts/UserContext';
 import { getData } from '../../utils/API';
@@ -21,6 +15,12 @@ import ShowAlert from '../../utils/ShowAlert';
 import { useNotificationHandling } from '../../utils/NotificationHandling';
 
 const PatientDashboard = () => {
+  const [expanded, setExpanded] = React.useState('panel1');
+
+  const handleChange = (panel) => (event, newExpanded) => {
+    setExpanded(newExpanded ? panel : false);
+  };
+
   const location = useLocation();
   const theme = useTheme();
   const { practiceId } = useContext(UserContext);
@@ -34,15 +34,10 @@ const PatientDashboard = () => {
     handleClose,
   } = useNotificationHandling();
 
-  const [detail, setDetail] = useState([]);
   const [summaryByItem, setSummaryByItem] = useState([]);
-  const [summaryByDate, setSummaryByDate] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [patientID, setPatientID] = useState(patient.patient.id);
 
   const fullName = `${patient.patient.first_name} ${patient.patient.last_name}`;
-  console.log('patient:', fullName);
-  console.log('patient_id:', patient.patient.id);
 
   useEffect(() => {
     if (!practiceId || practiceId === '') {
@@ -60,17 +55,11 @@ const PatientDashboard = () => {
     getData('patient_medications', query_params)
       .then((data) => {
         console.log('useEffect no error');
-        const detail = data['detail'];
         const summaryByItem = data['summary_by_item'];
-        const summaryByDate = data['summary_by_date'];
 
-        console.log('detail:', detail);
         console.log('summaryByItem:', summaryByItem);
-        console.log('summaryByDate:', summaryByDate);
 
-        setDetail(detail);
         setSummaryByItem(summaryByItem);
-        setSummaryByDate(summaryByDate);
       })
       .catch((error) => {
         console.log('useEffect error');
@@ -85,7 +74,7 @@ const PatientDashboard = () => {
         console.log('useEffect finally');
         setLoading(false);
       });
-  }, [practiceId, patientID]);
+  }, [practiceId, patient.patient.id]);
 
   if (notificationState.showNotification) {
     return (
@@ -103,95 +92,76 @@ const PatientDashboard = () => {
     return <div>Loading...</div>; // You can replace this with a loading spinner or message
   }
 
+  const AccordionSummary = styled((props) => (
+    <MuiAccordionSummary
+      expandIcon={<ArrowForwardIosSharpIcon sx={{ fontSize: '0.9rem' }} />}
+      {...props}
+    />
+  ))(({ theme }) => ({
+    backgroundColor:
+      theme.palette.mode === 'dark' ? colors.primary[300] : colors.primary[800],
+    flexDirection: 'row-reverse',
+    '& .MuiAccordionSummary-expandIconWrapper.Mui-expanded': {
+      transform: 'rotate(90deg)',
+    },
+    '& .MuiAccordionSummary-content': {
+      marginLeft: theme.spacing(1),
+    },
+  }));
+
+  const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
+    padding: theme.spacing(2),
+    borderTop: `2px solid ${colors.primary[500]}`,
+  }));
+
   return (
     <Box m='20px' height='75%'>
       {/* HEADER */}
       <Box display='flex' justifyContent='space-between' alignItems='center'>
         <Header title='PATIENT DASHBOARD' subtitle={fullName} />
       </Box>
-      <Box>
-        {/* Grid Container */}
-        <Grid
-          container
-          spacing={{ xs: 2, md: 3 }}
-          columns={{ xs: 4, sm: 8, md: 12 }}
-          direction='row'
-          justifyContent='flex-end'
-          alignItems='flex-start'
-          style={{ height: '100%' }}
-        >
-          {/* Column 1 */}
-          <Grid item xs={2} sm={4} md={4}>
-            <Accordion>
-              <AccordionSummary
-                expandIcon={<ExpandMoreIcon />}
-                aria-controls='panel1a-content'
-                id='panel1a-header'
-              >
-                <Typography
-                  color={colors.grey[100]}
-                  variant='h5'
-                  fontWeight='600'
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    height: '100%',
-                  }}
-                >
-                  MEDICATION HISTORY
-                </Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                <div style={{ overflowY: 'scroll', maxHeight: '600px' }}>
-                  {summaryByItem.map((item) => (
-                    <MedicationSummaryCard
-                      title={item.name} // Make sure to provide a unique key for each card
-                      subtitle={item.signature_note}
-                      gridRows={item.dispense_details}
-                    />
-                  ))}
-                </div>
-              </AccordionDetails>
-            </Accordion>
-          </Grid>
+      <Box display='flex' flexDirection='column' alignItems='flex-end'>
+        {/* Accordion 1 */}
+        <Accordion>
+          <AccordionSummary aria-controls='panel1a-content' id='panel1a-header'>
+            <Typography color={colors.grey[100]} variant='h5' fontWeight='600'>
+              MEDICATION HISTORY
+            </Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <div style={{ overflowY: 'scroll', maxHeight: '600px' }}>
+              {summaryByItem.map((item) => (
+                <MedicationSummaryCard
+                  key={item.name}
+                  title={item.name}
+                  subtitle={item.signature_note}
+                  gridRows={item.dispense_details}
+                />
+              ))}
+            </div>
+          </AccordionDetails>
+        </Accordion>
 
-          {/* Column 2 */}
-          <Grid item xs={2} sm={4} md={4}>
-            <Accordion>
-              <AccordionSummary
-                expandIcon={<ExpandMoreIcon />}
-                aria-controls='panel2a-content'
-                id='panel2a-header'
-              >
-                <Typography
-                  color={colors.grey[100]}
-                  variant='h5'
-                  fontWeight='600'
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    height: '100%',
-                  }}
-                >
-                  APPOINTMENT HISTORY
-                </Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                <div style={{ overflowY: 'scroll', maxHeight: '600px' }}>
-                  {summaryByItem.map((item) => (
-                    <MedicationSummaryCard
-                      title={item.name} // Make sure to provide a unique key for each card
-                      subtitle={item.signature_note}
-                      gridRows={item.dispense_details}
-                    />
-                  ))}
-                </div>
-              </AccordionDetails>
-            </Accordion>
-          </Grid>
-        </Grid>
+        {/* Accordion 2 */}
+        <Accordion>
+          <AccordionSummary aria-controls='panel2a-content' id='panel2a-header'>
+            <Typography color={colors.grey[100]} variant='h5' fontWeight='600'>
+              APPOINTMENT HISTORY
+            </Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <div style={{ overflowY: 'scroll', maxHeight: '600px' }}>
+              {summaryByItem.map((item) => (
+                <MedicationSummaryCard
+                  key={item.name}
+                  title={item.name}
+                  subtitle={item.signature_note}
+                  gridRows={item.dispense_details}
+                />
+              ))}
+            </div>
+          </AccordionDetails>
+        </Accordion>
       </Box>
     </Box>
   );

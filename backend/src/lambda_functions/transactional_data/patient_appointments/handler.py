@@ -1,4 +1,4 @@
-from data_models.patient_diagnosis import PatientDiagnosis
+from data_models.patient_appointment import PatientAppointment
 from lambda_libs.database_crud import select, create, update, delete
 from json import dumps, loads
 import logging
@@ -12,7 +12,7 @@ logging.basicConfig(
 logger = logging.getLogger()
 
 
-entity_class = PatientDiagnosis
+entity_class = PatientAppointment
 
 
 def lambda_handler(event, context):
@@ -83,7 +83,7 @@ def sortHistory(history):
     # Define a custom sorting key function
     def custom_sort_key(obj):
         # Sort by "date_prescribed" in descending order
-        return obj["year"], obj["month"], obj["day"]
+        return obj["scheduled_time"]
 
     # Sort the medication_history array using the custom sorting key
     sorted_history = sorted(history, key=custom_sort_key, reverse=True)

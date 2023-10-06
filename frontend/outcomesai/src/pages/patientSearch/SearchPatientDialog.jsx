@@ -279,6 +279,7 @@ export function SearchPatientDialog({ open, onClose, reset, rows }) {
         // Check if dateLastAppointment is older than x years
         if (firstAppointment < pastDate) {
           console.log(`dateFirstAppointment is OLDER than ${years} years`);
+          searchAppointments = true;
         } else {
           console.log(`dateFirstAppointment is NOT OLDER than ${years} years`);
           searchAppointments = true;
@@ -296,7 +297,7 @@ export function SearchPatientDialog({ open, onClose, reset, rows }) {
         const day = String(yesterday.getDate()).padStart(2, '0');
 
         const formattedDate = `${year}-${month}-${day}`;
-        const dateRange = `2023-01-01/${formattedDate}`;
+        const dateRange = `${dateFirstAppointment}/${formattedDate}`;
         const fields = { patient: patient.ehr_id, date_range: dateRange };
         console.log('appointment api:', fields);
 

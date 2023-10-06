@@ -18,7 +18,7 @@ $$ LANGUAGE plpgsql;
 
 -- Create an AFTER INSERT trigger that calls the set_patient_medication_practitioner_id function
 CREATE TRIGGER set_patient_medication_practitioner_id_trigger
-AFTER INSERT ON patient_medications
+AFTER INSERT OR UPDATE ON patient_medications
 FOR EACH ROW
 EXECUTE FUNCTION set_patient_medication_practitioner_id();
 
