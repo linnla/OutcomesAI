@@ -7,7 +7,8 @@ from .patient import Patient
 from .practitioner import Practitioner
 from .office import Office
 from .diagnosis_code import DiagnosisCode
-from .patient_appointment import PatientAppointment
+
+# from .patient_appointment import PatientAppointment
 
 
 class PatientDiagnosis(ModelBase):
@@ -43,9 +44,9 @@ class PatientDiagnosis(ModelBase):
     patient = relationship(Patient, foreign_keys=[patient_id])
     practitioner = relationship(Practitioner, foreign_keys=[practitioner_id])
     office = relationship(Office, foreign_keys=[office_id])
-    patient_appointment = relationship(
-        PatientAppointment, foreign_keys=[patient_appointment_id]
-    )
+    # patient_appointment = relationship(
+    #    PatientAppointment, foreign_keys=[patient_appointment_id]
+    # )
     diagnosis_code = relationship(DiagnosisCode, foreign_keys=[diagnosis_code_id])
 
     def to_dict(self):
@@ -80,7 +81,7 @@ class PatientDiagnosis(ModelBase):
         "patient_id",
         "practitioner_id",
         "office_id",
-        "patient_appointment_id",
+        # "patient_appointment_id",
         "diagnosis_code_id",
         "primary",
         "order",
@@ -96,7 +97,7 @@ class PatientDiagnosis(ModelBase):
     update_allowed_fields = [
         "practitioner_id",
         "office_id",
-        "patient_appointment_id",
+        # "patient_appointment_id",
         "diagnosis_code_id",
         "primary",
         "order",

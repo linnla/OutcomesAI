@@ -34,7 +34,7 @@ def lambda_handler(event, context):
 
         body = response["body"]
         body_json = loads(body)
-        if len(body_json) == 0:
+        if "data" not in body_json:
             return response
 
         history = body_json["data"]

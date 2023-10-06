@@ -12,11 +12,8 @@ import { tokens } from '../../theme';
 import '../../styles/styles.css';
 import { getDrchronoData, getOne, postData } from '../../utils/API';
 import UserContext from '../../contexts/UserContext';
-import Appointments from '../../components/drchrono/appointments';
-import {
-  MedicationsGet,
-  MedicationsPost,
-} from '../../components/drchrono/medications';
+import AppointmentObject from '../../components/drchrono/appointments';
+import { MedicationObject } from '../../components/drchrono/medications';
 
 export function SearchPatientDialog({ open, onClose, reset, rows }) {
   const theme = useTheme();
@@ -308,6 +305,9 @@ export function SearchPatientDialog({ open, onClose, reset, rows }) {
         const appointments = await getDrchronoData('drchrono', bodyAppt);
         console.log('appointments:', appointments);
 
+        // CONVERT TO APPOINTMENT OBJECT
+        // POST TO patient_appointments
+
         //const patientAppointments = await Appointments(fields);
         //console.log('appointments:', patientAppointments);
       }
@@ -346,7 +346,7 @@ export function SearchPatientDialog({ open, onClose, reset, rows }) {
 
       let saved = 0;
       for (const object of patientMedications) {
-        let medicationObject = await MedicationsPost(object);
+        let medicationObject = await MedicationObject(object);
         // Assuming you want to post each object to the 'practice_medications' table
         await postData('patient_medications', medicationObject);
         saved = saved + 1;

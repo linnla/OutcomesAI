@@ -32,7 +32,7 @@ function formatDate(dateString) {
   console.log(formattedDate); // Output: A Date object representing the date
 }
 
-export async function MedicationsPost(medication) {
+export async function MedicationObject(medication) {
   let medicationObject = medication;
 
   try {
@@ -63,10 +63,6 @@ export async function MedicationsPost(medication) {
       dosageQuantity = parseInt(medication.dosage_quantity, 10);
     }
     medicationObject['dosage_quantity'] = dosageQuantity;
-
-    // Convert string to a boolean (assuming "prn" and "daw" are boolean fields)
-    //const prn = medication.prn !== null ? medication.prn.toLowerCase() === 'true' : false;
-    //const daw = medication.daw !== null ? medication.daw.toLowerCase() === 'true' : false;
 
     return medicationObject;
   } catch (error) {

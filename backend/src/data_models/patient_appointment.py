@@ -78,7 +78,7 @@ class PatientAppointment(ModelBase):
     office = relationship(Office, foreign_keys=[office_id])
 
     # Define the one-to-many relationship with PatientDiagnosis
-    patient_diagnoses = relationship(
+    patient_diagnosis = relationship(
         "PatientDiagnosis",  # Name of the related model
         backref="appointment",  # Name of the reverse relationship in PatientDiagnosis
         lazy="dynamic",  # Specify the loading strategy (you can change this)

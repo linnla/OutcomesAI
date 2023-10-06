@@ -34,10 +34,7 @@ def lambda_handler(event, context):
 
         body = response["body"]
         body_json = loads(body)
-
-        # If not data is returned, return the original response object
-        # that contains the error
-        if len(body_json) == 0:
+        if "data" not in body_json:
             return response
 
         medication_history = body_json["data"]
