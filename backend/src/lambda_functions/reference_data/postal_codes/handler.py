@@ -1,5 +1,5 @@
-from data_models.postal_code import PostalCode
-from lambda_libs.database_crud import select
+from sqlalchemy_data_models.postal_code import PostalCode
+from backend.src.lambda_libs.postgres.postgres_sqlalchemy_crud import select
 from json import dumps
 import logging
 

@@ -1,5 +1,9 @@
-from data_models.user import User
-from lambda_libs.database_crud import select, create, update
+from sqlalchemy_data_models.user import User
+from backend.src.lambda_libs.postgres.postgres_sqlalchemy_crud import (
+    select,
+    create,
+    update,
+)
 from json import dumps
 import logging
 

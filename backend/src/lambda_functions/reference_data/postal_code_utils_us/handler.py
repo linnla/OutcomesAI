@@ -1,8 +1,8 @@
 import pandas as pd
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from data_models.postal_code import PostalCode
-from lambda_libs.database import get_database_session
+from sqlalchemy_data_models.postal_code import PostalCode
+from backend.src.lambda_libs.postgres_sqlalchemy import get_database_session
 
 """
 ZIP CODE DATA SOURCE

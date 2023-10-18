@@ -6,7 +6,7 @@ plugins:
   - serverless-prune-plugin
 
 custom:
-  config: ${file(../../../lambda_config/outcomesai-${self:provider.stage}-config.json)}
+  config: ${file(../../../lambda_config/outcomesai-${self:provider.stage}-postgres-config.json)}
   prune:
     automatic: true
     number: 3
@@ -33,9 +33,9 @@ provider:
 
 package:
   include:
-    - ../../../data_models/__init__.py
-    - ../../../lambda_libs/*.py
-    - ../../../data_models/*.py
+    - ../../../sqlalchemy_data_models/__init__.py
+    - ../../../lambda_libs/postgres/*.py
+    - ../../../sqlalchemy_data_models/*.py
 
 functions:
   http:
@@ -48,4 +48,4 @@ functions:
       Handles HTTP requests for CRUD operations on RDS PostgreSQL
       patient_appointments table.
     memorySize: 512
-    timeout: 5
+    timeout: 20

@@ -1,0 +1,158 @@
+service: outcomesai-drchrono-line-items
+
+frameworkVersion: '3'
+
+plugins:
+  - serverless-prune-plugin
+
+custom:
+  dynamodbTableName: outcomesai_drchrono_line_items_${self:provider.stage}
+  config: ${file(../../../lambda_config/outcomesai-${self:provider.stage}-postgres-config.json)}
+  prune:
+    automatic: true
+    number: 3
+    dryRun: false
+    olderThan: 7
+
+provider:
+  name: aws
+  runtime: python3.8
+  stage: ${opt:stage, 'dev'}
+  region: ${opt:region, 'us-west-2'}
+  deploymentBucket: outcomesai-${opt:stage}
+  logRetentionInDays: 3
+  environment:
+    REGION: ${self:provider.region}
+    DRCHRONOSECRET: '{{resolve:ssm:/drchrono/SECRET_KEYS}}'
+  iam:
+    role: ${self:custom.config.iamRole}
+  vpc:
+    securityGroupIds: ${self:custom.config.securityGroupIds}
+    subnetIds: ${self:custom.config.subnets}
+
+resources:
+  Resources:
+    lineItemsTable:
+      Type: AWS::DynamoDB::Table
+      DeletionPolicy: Retain
+      Properties:
+        TableName: ${self:custom.dynamodbTableName}
+        AttributeDefinitions:
+          - AttributeName: practice_id
+            AttributeType: N
+          - AttributeName: id
+            AttributeType: N
+          - AttributeName: patient
+            AttributeType: N
+          - AttributeName: year
+            AttributeType: N
+          - AttributeName: service_date
+            AttributeType: S
+          - AttributeName: code
+            AttributeType: S
+        KeySchema:
+          - AttributeName: practice_id
+            KeyType: HASH
+          - AttributeName: id
+            KeyType: RANGE
+        LocalSecondaryIndexes:
+          - IndexName: practice_id_service_date
+            KeySchema:
+              - AttributeName: practice_id
+                KeyType: HASH
+              - AttributeName: service_date
+                KeyType: RANGE
+            Projection:
+              NonKeyAttributes:
+                - id
+                - appointment
+                - doctor
+                - patient
+                - day
+                - week
+                - year
+                - month
+                - quarter
+                - year_month
+                - code
+              ProjectionType: INCLUDE
+          - IndexName: practice_id_code
+            KeySchema:
+              - AttributeName: practice_id
+                KeyType: HASH
+              - AttributeName: code
+                KeyType: RANGE
+            Projection:
+              NonKeyAttributes:
+                - id
+                - appointment
+                - doctor
+                - patient
+                - day
+                - week
+                - year
+                - month
+                - quarter
+                - service_date
+                - year_month
+              ProjectionType: INCLUDE
+          - IndexName: practice_id_patient
+            KeySchema:
+              - AttributeName: practice_id
+                KeyType: HASH
+              - AttributeName: patient
+                KeyType: RANGE
+            Projection:
+              NonKeyAttributes:
+                - id
+                - appointment
+                - doctor
+                - year
+                - month
+                - day
+                - week
+                - quarter
+                - code
+                - service_date
+                - year_month
+              ProjectionType: INCLUDE
+          - IndexName: practice_id_year
+            KeySchema:
+              - AttributeName: practice_id
+                KeyType: HASH
+              - AttributeName: year
+                KeyType: RANGE
+            Projection:
+              NonKeyAttributes:
+                - id
+                - appointment
+                - doctor
+                - patient
+                - day
+                - week
+                - month
+                - quarter
+                - service_date
+                - code
+                - year_month
+              ProjectionType: INCLUDE
+        BillingMode: PAY_PER_REQUEST
+        SSESpecification:
+          SSEEnabled: true
+
+package:
+  include:
+    - ../../../lambda_libs/drchrono/*.py
+    - ../../../lambda_libs/dynamodb/*.py
+    - ../../../lambda_libs/day_parts.py
+    - ../../../lambda_libs/error_handling.py
+
+functions:
+  DrChronoAPI:
+    name: ${self:service}-${self:provider.stage}
+    handler: handler.lambda_handler
+    description:
+      Performs HTTP GET request on DrChrono line_items api and saves items to
+      Dynamodb outcomesai_drchrono_line_items table.
+    memorySize: 1024
+    timeout: 90

@@ -30,8 +30,7 @@ export default function PatientsGrid() {
     subtitle = 'Add, Edit, Delete';
   }
 
-  const table = 'patients';
-  const relatedTable = 'practice_patients';
+  const table = 'practice_patients';
   const sort_1 = 'last_name';
   const sort_2 = 'first_name';
   const requiredAttributes = [
@@ -144,6 +143,7 @@ export default function PatientsGrid() {
     const newId = Math.floor(100000 + Math.random() * 900000);
     return {
       id: newId,
+      practice_id: practiceId,
       last_name: '',
       first_name: '',
       ehr_id: null,
@@ -170,7 +170,7 @@ export default function PatientsGrid() {
 
   useEffect(() => {
     setLoading(true);
-    getData(relatedTable, { practice_id: practiceId })
+    getData(table, { practice_id: practiceId })
       .then((data) => {
         const sortedItems = sortItems(data, sort_1, sort_2);
         setRows(sortedItems);
@@ -251,46 +251,23 @@ export default function PatientsGrid() {
   }
 
   async function deleteRow(id, row, oldRows) {
-    // Need to create an error object for this condition
-    const episodeExists = await episodesOfCareExists(row);
-    if (episodeExists) {
-      let fullName = `${row.first_name} ${row.last_name}`;
-      const customError = new Error();
-      customError.name = 'Delete Error';
-      customError.message = `${fullName} has an episode of care and cannot be deleted.`;
-      customError.stack = 'Set the status to Inactive to hide the Patient';
-      throw customError;
-    }
-
-    // ADD BACK FOR MULTI-TENANT
-    // If episode exists an error is thrown, otherwise execution continues and
-    // patient is deleted from the practice_patients and patients table
-    /*
     try {
-      const relatedRow = {
-        practice_id: practiceId,
-        patient_id: row.id,
-      };
-      await deleteData(relatedTable, relatedRow);
-    */
-
-    // MAKE CHANGE HERE FOR MULTI-TENANT --- ONLY WORKS FOR SINGLE TENANT
-    // If any episode of care exists for any practice, don't delete the patient
-    try {
-      const practice_patients_body = {
-        patient_id: row.id,
-        practice_id: practiceId,
-      };
-      await deleteData(relatedTable, practice_patients_body);
-
-      const patients_body = {
-        id: row.id,
-      };
-      await deleteData(table, patients_body);
-
-      // After both deletes have finished, update the rows
-      setRows(oldRows.filter((r) => r.id !== id));
-      return row;
+      const episodeExists = await episodesOfCareExists(row);
+      if (episodeExists) {
+        let fullName = `${row.first_name} ${row.last_name}`;
+        const customError = new Error();
+        customError.name = 'Delete Error';
+        customError.message = `${fullName} has an episode of care and cannot be deleted.`;
+        customError.stack = 'Set the status to Inactive to hide the Patient';
+        throw customError;
+      } else {
+        const patients_body = {
+          id: row.id,
+        };
+        await deleteData(table, patients_body);
+        setRows(oldRows.filter((r) => r.id !== id));
+        return row;
+      }
     } catch (error) {
       setRows(oldRows);
       throw error;

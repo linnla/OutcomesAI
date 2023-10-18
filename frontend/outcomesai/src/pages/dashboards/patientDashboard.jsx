@@ -11,8 +11,14 @@ import Header from '../../components/Header';
 import MedicationSummaryCard from '../../components/MedicationSummeryCard';
 import UserContext from '../../contexts/UserContext';
 import { getData } from '../../utils/API';
+import { calculateAge } from '../../utils/DateUtils';
 import ShowAlert from '../../utils/ShowAlert';
 import { useNotificationHandling } from '../../utils/NotificationHandling';
+
+import EmailIcon from '@mui/icons-material/Email';
+import CakeOutlinedIcon from '@mui/icons-material/CakeOutlined';
+
+import StatBox from '../../components/StatBox';
 
 const PatientDashboard = () => {
   const [expanded, setExpanded] = React.useState('panel1');
@@ -38,6 +44,43 @@ const PatientDashboard = () => {
   const [loading, setLoading] = useState(true);
 
   const fullName = `${patient.patient.first_name} ${patient.patient.last_name}`;
+  let age = 0;
+  if (patient.patient.birthdate) {
+    age = calculateAge(patient.patient.birthdate);
+  }
+
+  const gender = patient.patient.gender_birth;
+  let displayGender = 'Gender unknown';
+  if (gender === 'M') {
+    displayGender = 'Male';
+  } else {
+    displayGender = 'Female';
+  }
+  const race = patient.patient.race;
+  let displayRace = 'Race unknown';
+  if (race) {
+    displayRace = race;
+  }
+  const ethnicity = patient.patient.ethnicity;
+  let displayEthnicity = 'Ethnicity unknown';
+  if (ethnicity && ethnicity !== 'blank') {
+    displayEthnicity = ethnicity;
+  }
+  const email = patient.patient.email;
+  let displayEmail = 'Ethnicity unknown';
+  if (email && email !== 'blank') {
+    displayEmail = email;
+  }
+  const cellPhone = patient.patient.cell_phone;
+  let displayCellPhone = 'Ethnicity unknown';
+  if (cellPhone && cellPhone !== 'blank') {
+    displayCellPhone = cellPhone;
+  }
+  const city = patient.patient.city;
+  let displayCity = 'Ethnicity unknown';
+  if (city && city !== 'blank') {
+    displayCity = city;
+  }
 
   useEffect(() => {
     if (!practiceId || practiceId === '') {
@@ -49,7 +92,7 @@ const PatientDashboard = () => {
 
     const query_params = {
       practice_id: practiceId,
-      patient_id: patient.patient.id,
+      practice_patient_id: patient.patient.id,
     };
 
     getData('patient_medications', query_params)
@@ -118,50 +161,101 @@ const PatientDashboard = () => {
     <Box m='20px' height='75%'>
       {/* HEADER */}
       <Box display='flex' justifyContent='space-between' alignItems='center'>
-        <Header title='PATIENT DASHBOARD' subtitle={fullName} />
+        <Header title={fullName} subtitle='Your Behaviorial Health' />
       </Box>
-      <Box display='flex' flexDirection='column' alignItems='flex-end'>
-        {/* Accordion 1 */}
-        <Accordion>
-          <AccordionSummary aria-controls='panel1a-content' id='panel1a-header'>
-            <Typography color={colors.grey[100]} variant='h5' fontWeight='600'>
-              MEDICATION HISTORY
-            </Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            <div style={{ overflowY: 'scroll', maxHeight: '600px' }}>
-              {summaryByItem.map((item) => (
-                <MedicationSummaryCard
-                  key={item.name}
-                  title={item.name}
-                  subtitle={item.signature_note}
-                  gridRows={item.dispense_details}
-                />
-              ))}
-            </div>
-          </AccordionDetails>
-        </Accordion>
+      <Box
+        display='grid'
+        gridTemplateColumns='70% 30%'
+        gridAutoRows='300px'
+        gap='0px'
+      >
+        <Box
+          //backgroundColor={colors.primary[400]}
+          sx={{
+            padding: '0px',
+          }}
+        >
+          {/* ROW 1 */}
 
-        {/* Accordion 2 */}
-        <Accordion>
-          <AccordionSummary aria-controls='panel2a-content' id='panel2a-header'>
-            <Typography color={colors.grey[100]} variant='h5' fontWeight='600'>
-              APPOINTMENT HISTORY
-            </Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            <div style={{ overflowY: 'scroll', maxHeight: '600px' }}>
-              {summaryByItem.map((item) => (
-                <MedicationSummaryCard
-                  key={item.name}
-                  title={item.name}
-                  subtitle={item.signature_note}
-                  gridRows={item.dispense_details}
-                />
-              ))}
-            </div>
-          </AccordionDetails>
-        </Accordion>
+          <Box
+            gridColumn='span 1'
+            display='flex'
+            alignItems='center'
+            justifyContent='center'
+          >
+            <StatBox title={age} subtitle='Years' />
+            <StatBox title='2' subtitle='TMS Episodes' />
+            <StatBox title='Remission' subtitle='Outcome' />
+            <StatBox title='6 months' subtitle='Last Treated' />
+          </Box>
+
+          {/* Add more content as needed */}
+        </Box>
+        <Box
+          display='flex'
+          flexDirection='column'
+          alignItems='flex-start'
+          overflowY='auto'
+          maxHeight='100vh'
+        >
+          {/* Accordion 1 */}
+          <Accordion style={{ width: '100%' }}>
+            <AccordionSummary
+              aria-controls='panel1a-content'
+              id='panel1a-header'
+              sx={{ minHeight: '66px' }}
+            >
+              <Typography
+                color={colors.grey[100]}
+                variant='h5'
+                fontWeight='600'
+              >
+                MEDICATION HISTORY
+              </Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <div style={{ overflowY: 'scroll', maxHeight: '100vh' }}>
+                {summaryByItem.map((item) => (
+                  <MedicationSummaryCard
+                    key={item.name}
+                    title={item.name}
+                    subtitle={item.signature_note}
+                    gridRows={item.dispense_details}
+                  />
+                ))}
+              </div>
+            </AccordionDetails>
+          </Accordion>
+
+          {/* Accordion 2 */}
+          <Accordion style={{ width: '100%' }}>
+            <AccordionSummary
+              aria-controls='panel2a-content'
+              id='panel2a-header'
+              sx={{ minHeight: '66px' }}
+            >
+              <Typography
+                color={colors.grey[100]}
+                variant='h5'
+                fontWeight='600'
+              >
+                APPOINTMENT HISTORY
+              </Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <div style={{ overflowY: 'scroll', maxHeight: '100vh' }}>
+                {summaryByItem.map((item) => (
+                  <MedicationSummaryCard
+                    key={item.name}
+                    title={item.name}
+                    subtitle={item.signature_note}
+                    gridRows={item.dispense_details}
+                  />
+                ))}
+              </div>
+            </AccordionDetails>
+          </Accordion>
+        </Box>
       </Box>
     </Box>
   );

@@ -1,5 +1,10 @@
-from data_models.disorder import Disorder
-from lambda_libs.database_crud import select_reference_table, create, update, delete
+from sqlalchemy_data_models.disorder import Disorder
+from backend.src.lambda_libs.postgres.postgres_sqlalchemy_crud import (
+    select_reference_table,
+    create,
+    update,
+    delete,
+)
 from json import dumps
 import logging
 

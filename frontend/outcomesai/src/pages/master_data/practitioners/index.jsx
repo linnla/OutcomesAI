@@ -265,12 +265,6 @@ export default function PractitionersGrid() {
     }
 
     try {
-      const relatedRow = {
-        practice_id: practiceId,
-        practitioner_id: row.id,
-      };
-      await deleteData(relatedTable, relatedRow);
-
       // Delete from patients
       const body = {
         id: row.id,

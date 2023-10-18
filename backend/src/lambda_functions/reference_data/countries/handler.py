@@ -1,5 +1,8 @@
-from data_models.country import Country
-from lambda_libs.database_crud import select, select_reference_table
+from sqlalchemy_data_models.country import Country
+from backend.src.lambda_libs.postgres.postgres_sqlalchemy_crud import (
+    select,
+    select_reference_table,
+)
 from json import dumps
 import logging
 

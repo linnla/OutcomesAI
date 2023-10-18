@@ -6,10 +6,11 @@ transactional_data="transactional_data"
 transactional_directories=("episodes_of_care" "episodes_of_care_diagnosis_codes"
 "patient_appointments" "patient_diagnosis" "patient_medications")
 
-drchrono_data="drchrono_api"
+drchrono_api="drchrono_api"
+drchrono_api_directories=("line_items" "appointments")
 
 master_data="master_data"
-master_directories=("offices" "patient_biomarkers" "patients" "practice_integrations" 
+master_directories=("offices" "patient_biomarkers" "practice_integrations" 
 "practice_patients" "practice_practitioners" "practice_tms_devices" 
 "practice_tms_protocols" "practice_users" "practices" "practitioners" "users")
 
@@ -68,8 +69,13 @@ for directory in "${transactional_directories[@]}"; do
 done
 cd ..
 
-# drchrono Data
-deploy_directory "$drchrono_data"
+# DrChrono Data
+cd "$drchrono_api" || exit
+echo "DrChrono API Directory: $(pwd)"
+for directory in "${drchrono_api_directories[@]}"; do
+    deploy_directory "$directory"
+done
+cd ..
 
 cd ..
 echo "Current directory: $(pwd)"

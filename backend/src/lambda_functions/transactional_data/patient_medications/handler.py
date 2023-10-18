@@ -1,5 +1,10 @@
-from data_models.patient_medication import PatientMedication
-from lambda_libs.database_crud import select, create, update, delete
+from sqlalchemy_data_models.patient_medication import PatientMedication
+from backend.src.lambda_libs.postgres.postgres_sqlalchemy_crud import (
+    select,
+    create,
+    update,
+    delete,
+)
 from json import dumps, loads
 import logging
 
@@ -28,10 +33,8 @@ def lambda_handler(event, context):
             entity_class.all_params_select,
         )
         print("response from lambda:", response)
-        # if response.statusCode != 200:
-        #    print("not equal to 200")
-        #    return response
 
+        # Sort Response
         body = response["body"]
         body_json = loads(body)
         if "data" not in body_json:

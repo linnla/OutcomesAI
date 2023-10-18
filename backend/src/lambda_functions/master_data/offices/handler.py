@@ -1,5 +1,10 @@
-from data_models.office import Office
-from lambda_libs.database_crud import select, create, update, delete
+from sqlalchemy_data_models.office import Office
+from backend.src.lambda_libs.postgres.postgres_sqlalchemy_crud import (
+    select,
+    create,
+    update,
+    delete,
+)
 from json import dumps
 import logging
 

@@ -1,0 +1,11 @@
+{
+  "vpcId": "vpc-048abf81303b6dfe8",
+  "securityGroupIds": ["sg-0d09574dd338c8eb9"],
+  "subnets": [
+    "subnet-0c1c8364e5045a1d2",
+    "subnet-063846f4dac40c71b",
+    "subnet-0ffb4874a055fb071",
+    "subnet-0b5e9cf36b222c366"
+  ],
+  "iamRole": "arn:aws:iam::258232201551:role/Lambda-VPC-SecretsManager"
+}
