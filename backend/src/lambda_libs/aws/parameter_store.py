@@ -1,5 +1,5 @@
 import boto3
-from backend.src.lambda_libs.aws.error_handling import ParameterNotFoundError
+from lambda_libs.aws.error_handling import ParameterNotFoundError
 
 
 def get_paramter_value(parameter_name):

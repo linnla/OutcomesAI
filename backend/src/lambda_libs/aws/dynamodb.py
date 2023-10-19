@@ -1,7 +1,7 @@
 import json
 import boto3
 from boto3.dynamodb.conditions import Key
-from backend.src.lambda_libs.aws.error_handling import (
+from lambda_libs.aws.error_handling import (
     DynamodbDeleteError,
     DynamodbSaveError,
     DynamodbQueryError,
@@ -56,7 +56,16 @@ def save_items(table_name, items):
         raise DynamodbSaveError(str(e))
 
 
-def query_dynamodb_items(table_name, practice_id, key, value, index_name=None):
+def query_dynamodb_items(
+    table_name, practice_id, key=None, value=None, index_name=None
+):
+    # print("Query Dynamodb")
+    # print("table_name:", table_name)
+    # print("IndexName:", index_name)
+    # print("practice_id:", practice_id)
+    # print("key:", key)
+    # print("value:", value)
+
     try:
         dynamodb = boto3.resource("dynamodb")
         table = dynamodb.Table(table_name)
@@ -64,10 +73,17 @@ def query_dynamodb_items(table_name, practice_id, key, value, index_name=None):
         data_array = []
 
         while True:
-            query_params = {
-                "KeyConditionExpression": Key("practice_id").eq(practice_id)
-                & Key(key).eq(value)
-            }
+            query_params = None
+
+            if key and value:
+                query_params = {
+                    "KeyConditionExpression": Key("practice_id").eq(practice_id)
+                    & Key(key).eq(value)
+                }
+            else:
+                query_params = {
+                    "KeyConditionExpression": Key("practice_id").eq(practice_id)
+                }
 
             if index_name:
                 query_params["IndexName"] = index_name
@@ -76,6 +92,7 @@ def query_dynamodb_items(table_name, practice_id, key, value, index_name=None):
                 query_params["ExclusiveStartKey"] = last_evaluated_key
 
             response = table.query(**query_params)
+            # print('Query Response:', response)
 
             if "Items" in response:
                 for dynamodb_item in response["Items"]:

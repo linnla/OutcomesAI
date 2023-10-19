@@ -1,6 +1,6 @@
 import boto3
 import json
-from backend.src.lambda_libs.aws.error_handling import SecretNotFoundError
+from lambda_libs.aws.error_handling import SecretNotFoundError
 
 
 def get_secret(secret_name, region):

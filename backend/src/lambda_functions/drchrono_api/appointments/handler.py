@@ -11,7 +11,7 @@ from lambda_libs.day_parts import (
     date_obj_to_str,
 )
 
-from backend.src.lambda_libs.aws.error_handling import (
+from lambda_libs.aws.error_handling import (
     handle_access_token_error,
     handle_drchrono_api_error,
     handle_drchrono_http_error,
@@ -25,7 +25,7 @@ from backend.src.lambda_libs.aws.error_handling import (
     handle_secret_not_found_error,
     handle_unexpected_error,
 )
-from backend.src.lambda_libs.aws.error_handling import (
+from lambda_libs.aws.error_handling import (
     AccessTokenError,
     DrChronoAPIError,
     DrChronoHTTPError,
@@ -46,7 +46,7 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.WARNING)
 
 STAGE = "dev"
-DYNAMODB_TABLE_NAME = f"outcomesai_drchrono_appointments_dev_{STAGE}"
+DYNAMODB_TABLE_NAME = f"outcomesai_drchrono_appointments_{STAGE}"
 URL_DRCHRONO_DATA = "https://drchrono.com/api/appointments"
 
 # This API requires a date range, date or since query string parameter.
@@ -95,7 +95,9 @@ def lambda_handler(event, context):
         print(f"Found {len(drchrono_items)} items in DrChrono for {fields}.")
 
         if drchrono_items and len(drchrono_items) > 0:
-            transformed_items = transform_data(drchrono_items, practice_id)
+            transformed_items = transform_data(
+                items=drchrono_items, practice_id=practice_id
+            )
             print(
                 f"Transformed {len(transformed_items)} of {len(drchrono_items)} DrChrono items."
             )
@@ -116,11 +118,11 @@ def lambda_handler(event, context):
                     )
 
                 existing_dynamodb_items = query_dynamodb_items(
-                    DYNAMODB_TABLE_NAME,
-                    practice_id,
-                    key,
-                    value,
-                    dynamodb_index,
+                    table_name=DYNAMODB_TABLE_NAME,
+                    practice_id=practice_id,
+                    key=key,
+                    value=value,
+                    index_name=dynamodb_index,
                 )
                 print(
                     f"Found {len(existing_dynamodb_items)} items in DynamoDB for key: {key} value: {value}."
@@ -128,14 +130,19 @@ def lambda_handler(event, context):
 
                 if existing_dynamodb_items and len(existing_dynamodb_items) > 0:
                     deleted_count = delete_items(
-                        DYNAMODB_TABLE_NAME, existing_dynamodb_items, True, practice_id
+                        table_name=DYNAMODB_TABLE_NAME,
+                        items=existing_dynamodb_items,
+                        id_is_string=True,
+                        practice_id=practice_id,
                     )
                     print(
                         f"Deleted {deleted_count} existing items from DynamoDB for {fields}."
                     )
 
             if transformed_items and len(transformed_items) > 0:
-                saved_count = save_items(DYNAMODB_TABLE_NAME, transformed_items)
+                saved_count = save_items(
+                    table_name=DYNAMODB_TABLE_NAME, items=transformed_items
+                )
                 print(f"Saved {saved_count} items in DynamoDB for {fields}.")
 
     except AccessTokenError as e:
@@ -228,13 +235,13 @@ def get_parameter(event, parameter_name):
     return parameter_value
 
 
-def transform_data(appointments, practice_id):
+def transform_data(items, practice_id):
     try:
-        new_appointments = []
+        new_items = []
         created_at = datetime.now()
         created_at_str = created_at.strftime("%Y-%m-%d %H:%M:%S")
 
-        for item in appointments:
+        for item in items:
             # Ignore deleted appointments and breaks
             if item["appt_is_break"] == True:
                 continue
@@ -253,11 +260,9 @@ def transform_data(appointments, practice_id):
             item.update(day_time_parts_for_date)
             item["practice_id"] = practice_id
             item["created_at"] = created_at_str
-            new_appointments.append(item)
+            new_items.append(item)
 
-            # print("transformed_item:", item)
-
-        return new_appointments
+        return new_items
 
     except Exception as e:
         print("transform_data Exception:", str(e))

@@ -2,7 +2,7 @@ import json
 import urllib3
 from urllib3.exceptions import HTTPError
 from json.decoder import JSONDecodeError
-from backend.src.lambda_libs.aws.error_handling import (
+from lambda_libs.aws.error_handling import (
     DrChronoAPIError,
     DrChronoHTTPError,
     JSONError,

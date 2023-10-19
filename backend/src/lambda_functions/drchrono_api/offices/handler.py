@@ -7,7 +7,7 @@ from lambda_libs.drchrono.drchrono_api import get_drchrono_data
 from lambda_libs.aws.dynamodb import query_dynamodb_items, delete_items, save_items
 from lambda_libs.day_parts import day_parts
 
-from backend.src.lambda_libs.aws.error_handling import (
+from lambda_libs.aws.error_handling import (
     handle_access_token_error,
     handle_drchrono_api_error,
     handle_drchrono_http_error,
@@ -21,7 +21,7 @@ from backend.src.lambda_libs.aws.error_handling import (
     handle_secret_not_found_error,
     handle_unexpected_error,
 )
-from backend.src.lambda_libs.aws.error_handling import (
+from lambda_libs.aws.error_handling import (
     AccessTokenError,
     DrChronoAPIError,
     DrChronoHTTPError,
@@ -63,11 +63,6 @@ def lambda_handler(event, context):
         practice_id = get_parameter(event, "practice_id")
         delete_dynamodb_items = get_parameter(event, "delete_dynamodb_items")
 
-        dynamodb_index = None
-        print(f"Delete Dynamodb Items: {delete_dynamodb_items}")
-        if delete_dynamodb_items:
-            dynamodb_index = get_parameter(event, "dynamodb_index")
-
         drchrono_items = []
         drchrono_items = get_drchrono_data(
             url=URL_DRCHRONO_DATA,
@@ -83,41 +78,38 @@ def lambda_handler(event, context):
         print(f"Found {len(drchrono_items)} items in DrChrono.")
 
         if drchrono_items and len(drchrono_items) > 0:
-            transformed_items = transform_data(drchrono_items, practice_id)
+            transformed_items = transform_data(
+                items=drchrono_items, practice_id=practice_id
+            )
             print(
                 f"Transformed {len(transformed_items)} of {len(drchrono_items)} DrChrono items."
             )
 
             if delete_dynamodb_items:
-                key = "practice_id"
-                value = practice_id
-
-                if not key or not value:
-                    raise UnExpectedError(
-                        "Dynamodb query error, patient or service_date is None"
-                    )
-
                 existing_dynamodb_items = query_dynamodb_items(
-                    DYNAMODB_TABLE_NAME,
-                    practice_id,
-                    key,
-                    value,
-                    dynamodb_index,
+                    table_name=DYNAMODB_TABLE_NAME,
+                    practice_id=practice_id,
+                    key=None,
+                    value=None,
+                    index_name=None,
                 )
-                print(
-                    f"Found {len(existing_dynamodb_items)} items in DynamoDB for key: {key} value: {value}."
-                )
+                print(f"Found {len(existing_dynamodb_items)} items in DynamoDB.")
 
                 if existing_dynamodb_items and len(existing_dynamodb_items) > 0:
                     deleted_count = delete_items(
-                        DYNAMODB_TABLE_NAME, existing_dynamodb_items, True, practice_id
+                        table_name=DYNAMODB_TABLE_NAME,
+                        items=existing_dynamodb_items,
+                        id_is_string=False,
+                        practice_id=practice_id,
                     )
                     print(
                         f"Deleted {deleted_count} existing items from DynamoDB for practice_id {practice_id}."
                     )
 
             if transformed_items and len(transformed_items) > 0:
-                saved_count = save_items(DYNAMODB_TABLE_NAME, transformed_items)
+                saved_count = save_items(
+                    table_name=DYNAMODB_TABLE_NAME, items=transformed_items
+                )
                 print(
                     f"Saved {saved_count} items in DynamoDB for practice_id {practice_id}."
                 )
@@ -176,7 +168,6 @@ def lambda_handler(event, context):
 
     response_body = {
         "table": DYNAMODB_TABLE_NAME,
-        "index": dynamodb_index,
         "url": URL_DRCHRONO_DATA,
         "practice_id": practice_id,
         "drchrono_items": len(drchrono_items),

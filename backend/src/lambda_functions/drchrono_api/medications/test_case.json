@@ -19,6 +19,6 @@
     "delete_dynamodb_items": false,
     "fields": {
       "patient": 100355407
-    },
+    }
   }
 }

@@ -54,8 +54,8 @@ package:
     - ../../../lambda_libs/aws/dynamodb.py
     - ../../../lambda_libs/aws/parameter_store.py
     - ../../../lambda_libs/aws/secrets_manager.py
+    - ../../../lambda_libs/aws/error_handling.py
     - ../../../lambda_libs/day_parts.py
-    - ../../../lambda_libs/error_handling.py
 
 functions:
   DrChronoAPI:

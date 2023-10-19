@@ -7,7 +7,7 @@ from lambda_libs.drchrono.drchrono_api import get_drchrono_data
 from lambda_libs.aws.dynamodb import query_dynamodb_items, delete_items, save_items
 from lambda_libs.day_parts import day_parts
 
-from backend.src.lambda_libs.aws.error_handling import (
+from lambda_libs.aws.error_handling import (
     handle_access_token_error,
     handle_drchrono_api_error,
     handle_drchrono_http_error,
@@ -21,7 +21,7 @@ from backend.src.lambda_libs.aws.error_handling import (
     handle_secret_not_found_error,
     handle_unexpected_error,
 )
-from backend.src.lambda_libs.aws.error_handling import (
+from lambda_libs.aws.error_handling import (
     AccessTokenError,
     DrChronoAPIError,
     DrChronoHTTPError,
@@ -85,7 +85,9 @@ def lambda_handler(event, context):
         print(f"Found {len(drchrono_items)} items in DrChrono for {fields}.")
 
         if drchrono_items and len(drchrono_items) > 0:
-            transformed_items = transform_data(drchrono_items, practice_id)
+            transformed_items = transform_data(
+                items=drchrono_items, practice_id=practice_id
+            )
             print(
                 f"Transformed {len(transformed_items)} of {len(drchrono_items)} DrChrono items."
             )
@@ -103,11 +105,11 @@ def lambda_handler(event, context):
                     )
 
                 existing_dynamodb_items = query_dynamodb_items(
-                    DYNAMODB_TABLE_NAME,
-                    practice_id,
-                    key,
-                    value,
-                    dynamodb_index,
+                    table_name=DYNAMODB_TABLE_NAME,
+                    practice_id=practice_id,
+                    key=key,
+                    value=value,
+                    index_name=dynamodb_index,
                 )
                 print(
                     f"Found {len(existing_dynamodb_items)} items in DynamoDB for key: {key} value: {value}."
@@ -115,14 +117,19 @@ def lambda_handler(event, context):
 
                 if existing_dynamodb_items and len(existing_dynamodb_items) > 0:
                     deleted_count = delete_items(
-                        DYNAMODB_TABLE_NAME, existing_dynamodb_items, True, practice_id
+                        table_name=DYNAMODB_TABLE_NAME,
+                        items=existing_dynamodb_items,
+                        id_is_string=False,
+                        practice_id=practice_id,
                     )
                     print(
                         f"Deleted {deleted_count} existing items from DynamoDB for {fields}."
                     )
 
             if transformed_items and len(transformed_items) > 0:
-                saved_count = save_items(DYNAMODB_TABLE_NAME, transformed_items)
+                saved_count = save_items(
+                    table_name=DYNAMODB_TABLE_NAME, items=transformed_items
+                )
                 print(f"Saved {saved_count} items in DynamoDB for {fields}.")
 
     except AccessTokenError as e:
