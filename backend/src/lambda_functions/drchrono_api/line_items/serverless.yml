@@ -7,7 +7,7 @@ plugins:
 
 custom:
   dynamodbTableName: outcomesai_drchrono_line_items_${self:provider.stage}
-  config: ${file(../../../lambda_config/outcomesai-${self:provider.stage}-postgres-config.json)}
+  config: ${file(../../../lambda_config/outcomesai-${self:provider.stage}-dynamodb-config.json)}
   prune:
     automatic: true
     number: 3
@@ -21,9 +21,6 @@ provider:
   region: ${opt:region, 'us-west-2'}
   deploymentBucket: outcomesai-${opt:stage}
   logRetentionInDays: 3
-  environment:
-    REGION: ${self:provider.region}
-    DRCHRONOSECRET: '{{resolve:ssm:/drchrono/SECRET_KEYS}}'
   iam:
     role: ${self:custom.config.iamRole}
   vpc:
@@ -55,7 +52,7 @@ resources:
             KeyType: HASH
           - AttributeName: id
             KeyType: RANGE
-        LocalSecondaryIndexes:
+        GlobalSecondaryIndexes:
           - IndexName: practice_id_service_date
             KeySchema:
               - AttributeName: practice_id
@@ -142,8 +139,10 @@ resources:
 
 package:
   include:
-    - ../../../lambda_libs/drchrono/*.py
-    - ../../../lambda_libs/dynamodb/*.py
+    - ../../../lambda_libs/drchrono/drchrono_api.py
+    - ../../../lambda_libs/aws/dynamodb.py
+    - ../../../lambda_libs/aws/parameter_store.py
+    - ../../../lambda_libs/aws/secrets_manager.py
     - ../../../lambda_libs/day_parts.py
     - ../../../lambda_libs/error_handling.py
 

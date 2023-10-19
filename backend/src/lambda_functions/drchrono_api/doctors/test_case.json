@@ -1,0 +1,8 @@
+{
+  "queryStringParameters": {
+    "practice_id": 1,
+    "region": "us-west-2",
+    "ssm_parameter_name": "/drchrono/SECRET_KEYS",
+    "delete_dynamodb_items": false
+  }
+}

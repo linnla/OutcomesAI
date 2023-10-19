@@ -6,10 +6,10 @@ import json
 HEADERS = {"Access-Control-Allow-Origin": "*"}
 
 
-class AccessKeysError(Exception):
-    def __init__(self, message):
-        self.message = message
-        super().__init__(self.message)
+# class AccessKeysError(Exception):
+#    def __init__(self, message):
+#        self.message = message
+#        super().__init__(self.message)
 
 
 class AccessTokenError(Exception):
@@ -19,6 +19,12 @@ class AccessTokenError(Exception):
 
 
 class DrChronoAPIError(Exception):
+    def __init__(self, message):
+        self.message = message
+        super().__init__(self.message)
+
+
+class DrChronoHTTPError(Exception):
     def __init__(self, message):
         self.message = message
         super().__init__(self.message)
@@ -54,13 +60,19 @@ class JSONError(Exception):
         super().__init__(self.message)
 
 
+class ParameterNotFoundError(Exception):
+    def __init__(self, message):
+        self.message = message
+        super().__init__(self.message)
+
+
 class QueryStringParameterError(Exception):
     def __init__(self, message):
         self.message = message
         super().__init__(self.message)
 
 
-class SecretKeysError(Exception):
+class SecretNotFoundError(Exception):
     def __init__(self, message):
         self.message = message
         super().__init__(self.message)
@@ -72,11 +84,11 @@ class UnExpectedError(Exception):
         super().__init__(self.message)
 
 
-def handle_access_key_error(error):
-    status_code = 501
-    error_message = "Access Key Error"
-    error_description = str(error)
-    return error_response(status_code, error_message, error_description)
+# def handle_access_key_error(error):
+#    status_code = 501
+#    error_message = "Access Key Error"
+#    error_description = str(error)
+#    return error_response(status_code, error_message, error_description)
 
 
 def handle_access_token_error(error):
@@ -88,7 +100,7 @@ def handle_access_token_error(error):
 
 def handle_drchrono_api_error(error):
     status_code = 503
-    error_message = "DrChrono HTTP Error"
+    error_message = "DrChrono API Error"
     error_description = str(error)
     return error_response(status_code, error_message, error_description)
 
@@ -135,16 +147,23 @@ def handle_json_error(error):
     return error_response(status_code, error_message, error_description)
 
 
-def handle_query_string_parameter_error(error):
+def handle_parameter_not_found_error(error):
     status_code = 510
+    error_message = "SSM Parameter Error"
+    error_description = str(error)
+    return error_response(status_code, error_message, error_description)
+
+
+def handle_query_string_parameter_error(error):
+    status_code = 511
     error_message = "Query String Parameter Error"
     error_description = str(error)
     return error_response(status_code, error_message, error_description)
 
 
-def handle_secrets_error(error):
-    status_code = 511
-    error_message = "Secrets Error"
+def handle_secret_not_found_error(error):
+    status_code = 512
+    error_message = "Secret Not Found Error"
     error_description = str(error)
     return error_response(status_code, error_message, error_description)
 

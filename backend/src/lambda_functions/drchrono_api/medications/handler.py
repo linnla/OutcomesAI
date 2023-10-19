@@ -1,7 +1,7 @@
 import os
 import json
 import logging
-from datetime import datetime, timedelta
+from datetime import datetime
 import boto3
 from lambda_libs.drchrono.drchrono_api import get_drchrono_data
 from lambda_libs.aws.dynamodb import query_dynamodb_items, delete_items, save_items
@@ -42,8 +42,8 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.WARNING)
 
 STAGE = "dev"
-DYNAMODB_TABLE_NAME = f"outcomesai_drchrono_line_items_{STAGE}"
-URL_DRCHRONO_DATA = "https://drchrono.com/api/line_items"
+DYNAMODB_TABLE_NAME = f"outcomesai_drchrono_medications_{STAGE}"
+URL_DRCHRONO_DATA = "https://drchrono.com/api/medications"
 
 HEADERS = {"Access-Control-Allow-Origin": "*"}
 
@@ -96,9 +96,6 @@ def lambda_handler(event, context):
                 if "patient" in fields:
                     key = "patient"
                     value = fields["patient"]
-                elif "service_date" in fields:
-                    key = "service_date"
-                    value = fields["service_date"]
 
                 if not key or not value:
                     raise UnExpectedError(
@@ -218,23 +215,23 @@ def get_parameter(event, parameter_name):
     return parameter_value
 
 
-def transform_data(line_items, practice_id):
+def transform_data(items, practice_id):
     try:
-        new_line_items = []
+        new_items = []
         created_at = datetime.now()
         created_at_str = created_at.strftime("%Y-%m-%d %H:%M:%S")
 
-        service_date = line_items[0]["service_date"]
+        date = items[0]["date_prescribed"]
         date_format = "%Y-%m-%d"
-        day_parts_for_date = day_parts(service_date, date_format)
+        day_parts_for_date = day_parts(date, date_format)
 
-        for item in line_items:
+        for item in items:
             item.update(day_parts_for_date)
             item["practice_id"] = practice_id
             item["created_at"] = created_at_str
-            new_line_items.append(item)
+            new_items.append(item)
 
-        return new_line_items
+        return new_items
 
     except Exception as e:
         print("transform_data Exception:", str(e))

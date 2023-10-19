@@ -1,4 +1,4 @@
-service: outcomesai-drchrono-offices
+service: outcomesai-drchrono-medications
 
 frameworkVersion: '3'
 
@@ -6,7 +6,7 @@ plugins:
   - serverless-prune-plugin
 
 custom:
-  dynamodbTableName: outcomesai_drchrono_offices_${self:provider.stage}
+  dynamodbTableName: outcomesai_drchrono_medications_${self:provider.stage}
   config: ${file(../../../lambda_config/outcomesai-${self:provider.stage}-dynamodb-config.json)}
   prune:
     automatic: true
@@ -29,7 +29,7 @@ provider:
 
 resources:
   Resources:
-    officesTable:
+    medicationsTable:
       Type: AWS::DynamoDB::Table
       DeletionPolicy: Retain
       Properties:
@@ -39,11 +39,22 @@ resources:
             AttributeType: N
           - AttributeName: id
             AttributeType: N
+          - AttributeName: patient
+            AttributeType: N
         KeySchema:
           - AttributeName: practice_id
             KeyType: HASH
           - AttributeName: id
             KeyType: RANGE
+        GlobalSecondaryIndexes:
+          - IndexName: practice_id_patient
+            KeySchema:
+              - AttributeName: practice_id
+                KeyType: HASH
+              - AttributeName: patient
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
         BillingMode: PAY_PER_REQUEST
         SSESpecification:
           SSEEnabled: true
@@ -62,7 +73,7 @@ functions:
     name: ${self:service}-${self:provider.stage}
     handler: handler.lambda_handler
     description:
-      Performs HTTP GET request on DrChrono offices api and saves items to
-      Dynamodb outcomesai_drchrono_offices table.
+      Performs HTTP GET request on DrChrono medications api and saves items to
+      Dynamodb outcomesai_drchrono_medications table.
     memorySize: 1024
     timeout: 90

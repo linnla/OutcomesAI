@@ -1,7 +1,7 @@
 import json
 import boto3
 from boto3.dynamodb.conditions import Key
-from lambda_libs.error_handling import (
+from backend.src.lambda_libs.aws.error_handling import (
     DynamodbDeleteError,
     DynamodbSaveError,
     DynamodbQueryError,

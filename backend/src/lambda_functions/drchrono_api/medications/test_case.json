@@ -1,0 +1,24 @@
+{
+  "queryStringParameters": {
+    "practice_id": 1,
+    "region": "us-west-2",
+    "ssm_parameter_name": "/drchrono/SECRET_KEYS",
+    "delete_dynamodb_items": true,
+    "dynamodb_index": "practice_id_patient",
+    "fields": {
+      "patient": 100355407
+    }
+  }
+}
+
+{
+  "queryStringParameters": {
+    "practice_id": 1,
+    "region": "us-west-2",
+    "ssm_parameter_name": "/drchrono/SECRET_KEYS",
+    "delete_dynamodb_items": false,
+    "fields": {
+      "patient": 100355407
+    },
+  }
+}
