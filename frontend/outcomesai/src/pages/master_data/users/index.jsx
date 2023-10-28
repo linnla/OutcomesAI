@@ -135,7 +135,7 @@ export default function UsersGrid() {
   async function validateRow(newRow, oldRow) {
     try {
       validateRequiredAttributes(requiredAttributes, attributeNames, newRow);
-      if (newRow.role_name !== oldRow.role_name) {
+      if (!oldRow || newRow.role_name !== oldRow.role_name) {
         const correspondingObject = relatedObjects.find(
           (obj) => obj.name === newRow.role_name
         );

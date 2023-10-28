@@ -133,19 +133,21 @@ const Sidebar = () => {
           </MenuItem>
           <Box paddingLeft={isCollapsed ? undefined : '5%'}>
             <Item
-              title='Outcomes Dashboard'
-              to='/dashboard/outcomes'
-              icon={<HomeOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <Item
-              title='Patients Dashboard'
+              title='Practice Dashboard'
               to='/dashboard/patients'
               icon={<HomeOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
+            <Item
+              title='Issues Dashboard'
+              to='/dashboard/outcomes'
+              icon={<HomeOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+
+            {/*
             <Item
               title='Test Dashboard'
               to='/dashboard/test'
@@ -153,6 +155,7 @@ const Sidebar = () => {
               selected={selected}
               setSelected={setSelected}
             />
+            */}
             <Typography
               variant='h6'
               color={colors.grey[300]}
@@ -229,6 +232,7 @@ const Sidebar = () => {
                 selected={selected}
                 setSelected={setSelected}
               />
+              {/*
               <Item
                 title='EHR Integration'
                 to='/practice/integrations'
@@ -236,6 +240,7 @@ const Sidebar = () => {
                 selected={selected}
                 setSelected={setSelected}
               />
+            */}
             </SubMenu>
             <SubMenu prefix='Reference Data'>
               <Typography
@@ -243,8 +248,9 @@ const Sidebar = () => {
                 color={colors.grey[300]}
                 sx={{ m: '15px 0 5px 20px' }}
               >
-                Medications
+                {/*Medications */}
               </Typography>
+              {/* 
               <Item
                 title='Active Ingredients'
                 to='/reference_data/active_ingredients'
@@ -287,6 +293,7 @@ const Sidebar = () => {
                 selected={selected}
                 setSelected={setSelected}
               />
+              */}
               <Typography
                 variant='h6'
                 color={colors.grey[300]}
@@ -334,8 +341,9 @@ const Sidebar = () => {
                 color={colors.grey[300]}
                 sx={{ m: '15px 0 5px 20px' }}
               >
-                Data Integrations
+                {/* Data Integrations */}
               </Typography>
+              {/*
               <Item
                 title='Integration Types'
                 to='/reference_data/integration_types'
@@ -350,6 +358,7 @@ const Sidebar = () => {
                 selected={selected}
                 setSelected={setSelected}
               />
+            */}
               <Typography
                 variant='h6'
                 color={colors.grey[300]}
@@ -399,6 +408,7 @@ const Sidebar = () => {
                 selected={selected}
                 setSelected={setSelected}
               />
+              {/*
               <Typography
                 variant='h6'
                 color={colors.grey[300]}
@@ -413,6 +423,7 @@ const Sidebar = () => {
                 selected={selected}
                 setSelected={setSelected}
               />
+          */}
               <Typography
                 variant='h6'
                 color={colors.grey[300]}

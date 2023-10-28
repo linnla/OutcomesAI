@@ -176,7 +176,10 @@ export default function ProcedureCodesGrid() {
         newRow
       );
 
-      if (newRow.procedure_category_name !== oldRow.procedure_category_name) {
+      if (
+        !oldRow ||
+        newRow.procedure_category_name !== oldRow.procedure_category_name
+      ) {
         const correspondingObject = relatedObjects.find(
           (obj) => obj.name === newRow.procedure_category_name
         );

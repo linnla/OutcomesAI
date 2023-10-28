@@ -150,12 +150,14 @@ function DataEntry({
     //console.log('updatedRow', updatedRow);
     try {
       const validatedRow = await onValidateRow(updatedRow);
+      console.log('validatedRow:', validatedRow);
       const savedRow = await onSaveRow(
         validatedRow.id,
         validatedRow,
         oldRow,
         internalRows
       );
+      console.log('savedRow:', savedRow);
       if (savedRow.name !== undefined) {
         handleSuccessNotification(`${savedRow.name} saved`);
       } else {

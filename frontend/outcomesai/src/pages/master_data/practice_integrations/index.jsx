@@ -199,14 +199,20 @@ export default function PracticeIntegrationsGrid() {
     try {
       validateRequiredAttributes(requiredAttributes, attributeNames, newRow);
 
-      if (newRow.integration_type_name !== oldRow.integration_type_name) {
+      if (
+        !oldRow ||
+        newRow.integration_type_name !== oldRow.integration_type_name
+      ) {
         const correspondingObject = integrationTypeObjects.find(
           (obj) => obj.name === newRow.integration_type_name
         );
         newRow.integration_type_id = correspondingObject.id;
       }
 
-      if (newRow.integration_vendor_name !== oldRow.integration_vendor_name) {
+      if (
+        !oldRow ||
+        newRow.integration_vendor_name !== oldRow.integration_vendor_name
+      ) {
         const correspondingObject = integrationVendorObjects.find(
           (obj) => obj.name === newRow.integration_vendor_name
         );

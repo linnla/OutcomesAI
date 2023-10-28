@@ -151,7 +151,7 @@ export default function DiagnosisCodesGrid() {
     try {
       validateRequiredAttributes(['disorder_name'], ['Disorder'], newRow);
 
-      if (newRow.disorder_name !== oldRow.disorder_name) {
+      if (!oldRow || newRow.disorder_name !== oldRow.disorder_name) {
         const correspondingObject = relatedObjects.find(
           (obj) => obj.name === newRow.disorder_name
         );

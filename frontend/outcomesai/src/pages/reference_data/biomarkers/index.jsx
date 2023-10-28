@@ -177,7 +177,10 @@ export default function BiomarkersGrid() {
         ['Biomarker Name'],
         newRow
       );
-      if (newRow.biomarker_type_name !== oldRow.biomarker_type_name) {
+      if (
+        !oldRow ||
+        newRow.biomarker_type_name !== oldRow.biomarker_type_name
+      ) {
         const correspondingObject = relatedObjects.find(
           (obj) => obj.name === newRow.biomarker_typer_name
         );

@@ -26,17 +26,23 @@ export default function TMSProtocolGrid() {
   const sort_1 = 'pulse_type_name';
   const sort_2 = 'stimulation_site_name';
   const requiredAttributes = [
+    'name',
     'pulse_type_id',
     'stimulation_site_id',
-    'frequency_id',
+    'pulse_frequency_id',
+    'motor_threshold_percent',
+    'trains',
     'train_time',
     'inter_train_time',
     'status',
   ];
   const attributeNames = [
+    'Protocol Name',
     'Pulse Type',
     'Stimulation Site',
-    'Frequency',
+    'Pulse Frequency',
+    'Motor Threshold Percent',
+    'Trains',
     'Train Time',
     'Inter Train Time',
     'Status',
@@ -46,16 +52,19 @@ export default function TMSProtocolGrid() {
     const newId = Math.floor(100000 + Math.random() * 900000);
     return {
       id: newId,
-      procedure_category_id: 6,
-      procedure_category_name: '',
+      name: '',
       pulse_type_id: 0,
       pulse_type_name: '',
       stimulation_site_id: 0,
       stimulation_site_name: '',
-      frequency_id: 0,
-      frequency_name: '',
-      train_time: 1,
-      inter_train_time: 1,
+      motor_threshold_percent: 0,
+      pulse_frequency_id: 0,
+      pulse_frequency_name: '',
+      burst_frequency_id: 0,
+      burst_frequency_name: '',
+      trains: 0,
+      train_time: 0,
+      inter_train_time: 0,
       status: 'Active',
     };
   }
@@ -185,29 +194,52 @@ export default function TMSProtocolGrid() {
         newRow
       );
       validateRequiredAttributes(['pulse_type_name'], ['Pulse Type'], newRow);
-      validateRequiredAttributes(['frequency_name'], ['Frequency'], newRow);
+      validateRequiredAttributes(
+        ['pulse_frequency_name'],
+        ['Pulse Frequency'],
+        newRow
+      );
 
-      if (newRow.stimulation_site_name !== oldRow.stimulation_site_name) {
+      if (
+        !oldRow ||
+        newRow.stimulation_site_name !== oldRow.stimulation_site_name
+      ) {
         const stimulationSiteObject = stimulationSitesObjects.find(
           (obj) => obj.name === newRow.stimulation_site_name
         );
         newRow.stimulation_site_id = stimulationSiteObject.id;
       }
 
-      if (newRow.pulse_type_name !== oldRow.pulse_type_name) {
+      if (!oldRow || newRow.pulse_type_name !== oldRow.pulse_type_name) {
         const pulseTypeObject = pulseTypeObjects.find(
           (obj) => obj.name === newRow.pulse_type_name
         );
         newRow.pulse_type_id = pulseTypeObject.id;
       }
 
-      if (newRow.frequency_name !== oldRow.frequency_name) {
-        const frequencyObject = frequencyObjects.find(
-          (obj) => obj.name === newRow.frequency_name
+      let frequencyObject = {};
+      if (
+        !oldRow ||
+        newRow.pulse_frequency_name !== oldRow.pulse_frequency_name
+      ) {
+        frequencyObject = frequencyObjects.find(
+          (obj) => obj.name === newRow.pulse_frequency_name
         );
-        newRow.frequency_id = frequencyObject.id;
+        newRow.pulse_frequency_id = frequencyObject.id;
+      }
+
+      frequencyObject = 0;
+      if (
+        !oldRow ||
+        newRow.burst_frequency_name !== oldRow.burst_frequency_name
+      ) {
+        frequencyObject = frequencyObjects.find(
+          (obj) => obj.name === newRow.burst_frequency_name
+        );
+        newRow.burst_frequency_id = frequencyObject.id;
       }
       validateRequiredAttributes(requiredAttributes, attributeNames, newRow);
+      console.log('End Validate Row:', newRow);
       return newRow;
     } catch (error) {
       throw error;
@@ -221,11 +253,11 @@ export default function TMSProtocolGrid() {
       headerName: 'Protocol Name',
       editable: true,
       cellClassName: 'name-column--cell',
-      width: 250,
+      width: 200,
     },
     {
       field: 'pulse_type_name',
-      headerName: 'Pulse Type',
+      headerName: 'Type',
       type: 'singleSelect',
       valueOptions: pulseTypeNames,
       editable: true,
@@ -233,25 +265,71 @@ export default function TMSProtocolGrid() {
     },
     {
       field: 'stimulation_site_name',
-      headerName: 'Stimulation Site',
+      headerName: 'Site',
       type: 'singleSelect',
       valueOptions: stimulationSitesNames,
       editable: true,
       flex: 1,
     },
     {
-      field: 'frequency_name',
-      headerName: 'Frequency',
+      field: 'motor_threshold_percent',
+      headerName: 'MT %',
+      type: 'number',
+      editable: true,
+      align: 'center',
+      headerAlign: 'center',
+      renderEditCell: (params) => (
+        <GridEditInputCell
+          {...params}
+          inputProps={{
+            max: 200,
+            min: 50,
+          }}
+        />
+      ),
+      width: 100,
+    },
+    {
+      field: 'pulse_frequency_name',
+      headerName: 'Pulse',
       type: 'singleSelect',
       align: 'center',
       headerAlign: 'center',
       valueOptions: frequencyNames,
       editable: true,
-      width: 100,
+      width: 75,
+    },
+    {
+      field: 'burst_frequency_name',
+      headerName: 'Burst',
+      type: 'singleSelect',
+      align: 'center',
+      headerAlign: 'center',
+      valueOptions: frequencyNames,
+      editable: true,
+      width: 75,
+    },
+    {
+      field: 'trains',
+      headerName: 'Trains',
+      type: 'number',
+      editable: true,
+      align: 'center',
+      headerAlign: 'center',
+      renderEditCell: (params) => (
+        <GridEditInputCell
+          {...params}
+          inputProps={{
+            max: 100,
+            min: 1,
+          }}
+        />
+      ),
+      width: 75,
     },
     {
       field: 'train_time',
-      headerName: 'Train Time',
+      headerName: 'Train',
       type: 'number',
       editable: true,
       align: 'center',
@@ -260,16 +338,16 @@ export default function TMSProtocolGrid() {
         <GridEditInputCell
           {...params}
           inputProps={{
-            max: 10,
+            max: 100,
             min: 1,
           }}
         />
       ),
-      width: 100,
+      width: 75,
     },
     {
       field: 'inter_train_time',
-      headerName: 'Inter-Train Time',
+      headerName: 'Inter-Train',
       type: 'number',
       editable: true,
       align: 'center',
@@ -278,23 +356,12 @@ export default function TMSProtocolGrid() {
         <GridEditInputCell
           {...params}
           inputProps={{
-            max: 10,
+            max: 100,
             min: 1,
           }}
         />
       ),
-      width: 100,
-    },
-    {
-      field: 'status',
-      headerName: 'Status',
-      editable: true,
-      headerAlign: 'center',
-      align: 'center',
-      type: 'singleSelect',
-      valueOptions: ['Active', 'Inactive'],
-      defaultValueGetter: () => 'Active',
-      width: 100,
+      width: 75,
     },
   ];
 
